@@ -1,4 +1,4 @@
-# GeoTanks by Richard Hansen, Indhu, Steven Dellamore
+# GeoTanks by Richard Hansen(hansen94@purdue.edu), Indhu Meena Ramanathan(iramanat@purdue.edu), Steven Dellamore(sdellamo@purdue.edu)
 
 
 
