@@ -1,4 +1,4 @@
-# GeoTanks
+# GeoTanks by Richard Hansen, Indhu, Steven Dellamore
 
 
 
