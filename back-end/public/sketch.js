@@ -5,8 +5,8 @@ var w = 500;
 var h = 500;
 var speed;
 var tank;
-var speed;
-var oldData;
+let oldData;
+let oldAngle;
 
 /**
  * This function is the first thing that is called when setting up the program. 
@@ -15,20 +15,35 @@ var oldData;
 
 
 function setup() {
-    oldData = createVector(0,0);
+    oldData = createVector(0, 0);
+    oldAngle = 0.0;
     socket = io.connect('http://localhost:4001');
     socket.on('data', newDraw);
     createCanvas(w, h);
     background(0);
-    speed = 1; //change to go faster!
+    speed = 3; //change to go faster!
     tank = new GeoTank();
+    // angleMode(DEGREES);
+    rectMode(CENTER);
 }
-
-function newDraw(data){
-    console.log('HERE ' + data.x, data.y);
+/** @bug works perfectly with 2 tanks, but once u try to have 3
+ * it does some wanky stuff.
+ *
+ * @params data holds the meta data of the other tanks. 
+ */
+function newDraw(data) {
+    push();
+    if(data.ang != undefined){
+        oldAngle = data.ang
+    }
+    translate(data.x, data.y);
+    /* rotate other tanks */
+    rotate(oldAngle);
     fill(0, 180, 150, 255); //fills the rect with RGBA 255,20,40,255
-    rect(data.x, data.y, 50, 50);
-    oldData = createVector(data.x,data.y);
+
+    rect(0, 0, 50, 70);
+    oldData = createVector(data.x, data.y);
+    pop();
 }
 
 /**
@@ -38,7 +53,8 @@ function newDraw(data){
 function draw() {
     background(0); //repaints the background to black
     tank.update(); //calls update in GeoTank
-    newDraw(oldData)
+    newDraw(oldData); //*****
+    keyPressed();
 }
 
 
@@ -48,27 +64,33 @@ function draw() {
  */
 function GeoTank() {
     /* Position */
-    this.x = 0;
-    this.y = 0;
-
-    /* direction */
-    this.xspeed = 0;
-    this.yspeed = 0;
+    this.x = w / 2;
+    this.y = h / 2;
+    this.angle = 0;
     this.update = function() {
+        /* This is to start translating the screen */
+        push();
+        /* translate the x y plane to be around the rect */
+        translate(this.x, this.y);
+        // console.log(height);
+        /* finding the angle of a vector of the mouseX and mouse Y */
+        this.angle = atan2(mouseY - this.y, mouseX - this.x);
+        this.angle += PI/2
+        rotate(this.angle);
+        /* setting up what we want to be shared to everything */
+        // console.log(this.angle);
         var data = {
             x: this.x,
-            y: this.y
+            y: this.y,
+            ang: this.angle
         }
-        socket.emit('update',data);
-        this.x = this.x + this.xspeed;
-        this.y = this.y + this.yspeed;
-        fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
-        rect(this.x, this.y, 50, 50);
+        /* SEND IT */
+        socket.emit('update', data);
 
-    }
-    this.dir = function(x, y) {
-        this.xspeed = x;
-        this.yspeed = y;
+        fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
+        rect(0, 0, 50, 70);
+        /* to reset the translated screen to the old value that push() saved */
+        pop();
     }
 }
 
@@ -78,13 +100,20 @@ function GeoTank() {
  * If it a key is pressed it can change the direction of the rect moving
  */
 function keyPressed() {
-    if (keyCode === LEFT_ARROW) {
-        tank.dir(-1 * speed, 0);
-    } else if (keyCode === RIGHT_ARROW) {
-        tank.dir(speed, 0);
-    } else if (keyCode === UP_ARROW) {
-        tank.dir(0, -1 * speed);
-    } else if (keyCode === DOWN_ARROW) {
-        tank.dir(0, speed);
+    if (keyIsDown(68)) {
+        // console.log("HERE");
+        tank.x += speed;
+    }
+    if (keyIsDown(65)) {
+        // console.log("HERE");
+        tank.x -= speed;
+    }
+    if (keyIsDown(87)) {
+        // console.log("HERE");
+        tank.y -= speed;
+    }
+    if (keyIsDown(83)) {
+        // console.log("HERE");
+        tank.y += speed;
     }
 }
