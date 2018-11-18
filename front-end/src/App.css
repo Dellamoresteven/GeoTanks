@@ -39,3 +39,24 @@
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
+
+.Href {
+  padding: 10px 15px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #00e6e6;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px #999;
+}
+
+.Href:hover {background-color: #00cccc}
+
+.Href:active {
+  background-color: #00cccc;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+}
