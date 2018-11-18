@@ -17,7 +17,9 @@ io.on('connection', socket => {
 	 * @param 'data' will be the data being send
 	 */
 	socket.on('update', (data) => {
+		// console.log(data);
 		socket.broadcast.emit('data', data); //sends to everyone not including self
+		// console.log
 		//io.sockets.emit('data', update); This sends to everyone include itsself
 		// console.log('updating! ' + data.x);
 	})
