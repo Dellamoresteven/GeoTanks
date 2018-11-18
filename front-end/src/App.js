@@ -17,7 +17,7 @@ class App extends Component {
   	console.log("I WANT TO JOIN GAME!!");
   	const socket = socketIOClient(this.state.endpoint)
   	socket.emit('joinGame', this.state.session)
-  	socket.on('joinGameResponse', (data) => {
+  	socket.on('joinGameRsponse', (data) => {
   		console.log("I GOT TO JOIN!" + data)
   		// need to trigger a rerender with new data
   		this.setState({data: data})
