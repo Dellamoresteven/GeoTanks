@@ -24,7 +24,8 @@ function setup() {
     // angleMode(DEGREES);
     rectMode(CENTER);
 }
-/** @bug works perfectly with 2 tanks, but once u try to have 3
+/** 
+ * @fixed works perfectly with 2 tanks, but once u try to have 3
  * it does some wanky stuff.
  *
  * @params data holds the meta data of the other tanks. 
@@ -44,7 +45,10 @@ function newDraw(data) {
     }
 }
 
-
+/**
+ * This keeps printing people, because the server is not sending us anyhting if they
+ * are not moving, we have to save there position. 
+ */
 function updateCanvas() {
     for (var i = 0; i < player.length; i++) {
         push();
@@ -78,6 +82,8 @@ function GeoTank() {
     this.x = windowWidth / 2;
     this.y = windowHeight / 2;
     this.angle = 0;
+    /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
+    var bullets = [[],[]];
     this.update = function() {
         /* This is to start translating the screen */
         push();
@@ -118,8 +124,16 @@ function GeoTank() {
         /* to reset the translated screen to the old value that push() saved */
         pop();
     }
+    this.shoot = function() {
+        ellipse(this.x, this.y, 20, 20);
+    }
 }
 
+
+/* mouse clicked */
+function mouseClicked() {
+    tank.shoot();
+}
 
 /**
  * Checks to see if a key is pressed. Function name is important in p5. 
@@ -144,7 +158,9 @@ function keyPressed() {
     }
 }
 
-
+/**
+ * Rezises the window when they change the size. P5 shit.
+ */
 function windowResized() {
     resizeCanvas(windowWidth, windowHeight);
 }

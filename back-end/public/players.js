@@ -5,7 +5,6 @@ class Players {
         this.y = y;
         this.ang = ang;
     }
-
     get SocketID() {
         return this.socketID;
     }
@@ -13,8 +12,6 @@ class Players {
     get Cords() {
         return createVector(this.x, this.y);
     }
-    /* for some reason a set can accept a vector or some random shit */
-    //set Cords(cords)
     setCords(cords) {
         this.x = cords.x;
         this.y = cords.y;
