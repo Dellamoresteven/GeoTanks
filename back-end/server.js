@@ -31,7 +31,13 @@ io.on('connect', (socket) => {
 
 	socket.on('update', (data) => {
 		// console.log(data);
-		socket.broadcast.emit('data', data); //sends to everyone not including self
+		const newData = {
+			x: data.x,
+			y: data.y,
+			ang: data.ang,
+			socketID: socket.id
+		}
+		socket.broadcast.emit('data', newData); //sends to everyone not including self
 		// console.log
 		//io.sockets.emit('data', update); This sends to everyone include itsself
 		// console.log('updating! ' + data.x);

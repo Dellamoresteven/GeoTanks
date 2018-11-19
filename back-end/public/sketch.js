@@ -3,10 +3,11 @@
 var socket;
 var w = 500;
 var h = 500;
-var speed;
+var speed = 10;
 var tank;
-let oldData;
-let oldAngle;
+var GeoTankLength = 70;
+var GoeTankWidth = 50;
+var player = [];
 
 /**
  * This function is the first thing that is called when setting up the program. 
@@ -15,13 +16,10 @@ let oldAngle;
 
 
 function setup() {
-    oldData = createVector(0, 0);
-    oldAngle = 0.0;
+    // oldData = createVector(0, 0);
     socket = io.connect('http://localhost:4001');
     socket.on('data', newDraw);
-    createCanvas(w, h);
-    background(0);
-    speed = 3; //change to go faster!
+    createCanvas(windowWidth, windowHeight);
     tank = new GeoTank();
     // angleMode(DEGREES);
     rectMode(CENTER);
@@ -32,18 +30,31 @@ function setup() {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
-    push();
-    if(data.ang != undefined){
-        oldAngle = data.ang
+    // console.log(player.length);
+    let newPlayer = true;
+    for (var i = 0; i < player.length; i++) {
+        if (player[i].SocketID == data.socketID) {
+            player[i].setCords(createVector(data.x, data.y));
+            player[i].setAngle(data.ang);
+            newPlayer = false;
+        }
     }
-    translate(data.x, data.y);
-    /* rotate other tanks */
-    rotate(oldAngle);
-    fill(0, 180, 150, 255); //fills the rect with RGBA 255,20,40,255
+    if (newPlayer) {
+        player.push(new Players(data.socketID, data.x, data.y, data.ang));
+    }
+}
 
-    rect(0, 0, 50, 70);
-    oldData = createVector(data.x, data.y);
-    pop();
+
+function updateCanvas() {
+    for (var i = 0; i < player.length; i++) {
+        push();
+        translate(player[i].Cords.x, player[i].Cords.y);
+        rotate(player[i].Angle);
+        fill(0, 180, 150, 255);
+        rect(0, 0, GoeTankWidth, GeoTankLength)
+        // player[i]
+        pop();
+    }
 }
 
 /**
@@ -53,7 +64,7 @@ function newDraw(data) {
 function draw() {
     background(0); //repaints the background to black
     tank.update(); //calls update in GeoTank
-    newDraw(oldData); //*****
+    updateCanvas();
     keyPressed();
 }
 
@@ -64,18 +75,33 @@ function draw() {
  */
 function GeoTank() {
     /* Position */
-    this.x = w / 2;
-    this.y = h / 2;
+    this.x = windowWidth / 2;
+    this.y = windowHeight / 2;
     this.angle = 0;
     this.update = function() {
         /* This is to start translating the screen */
         push();
+        /* check to make sure they cant go off the screen */
+        if ((this.x > windowWidth - GoeTankWidth + 10)) {
+            this.x = windowWidth - GoeTankWidth + 10;
+        }
+        if ((this.x < 0 + GoeTankWidth - 10)) {
+            this.x = GoeTankWidth - 10;
+        }
+        if ((this.y > windowHeight - GeoTankLength + 25)) {
+
+            this.y = windowHeight - GeoTankLength + 25;
+        }
+        if ((this.y < 0 + GoeTankWidth)) {
+
+            this.y = 0 + GoeTankWidth - 10;
+        }
         /* translate the x y plane to be around the rect */
         translate(this.x, this.y);
         // console.log(height);
         /* finding the angle of a vector of the mouseX and mouse Y */
         this.angle = atan2(mouseY - this.y, mouseX - this.x);
-        this.angle += PI/2
+        this.angle += PI / 2
         rotate(this.angle);
         /* setting up what we want to be shared to everything */
         // console.log(this.angle);
@@ -88,7 +114,7 @@ function GeoTank() {
         socket.emit('update', data);
 
         fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
-        rect(0, 0, 50, 70);
+        rect(0, 0, GoeTankWidth, GeoTankLength);
         /* to reset the translated screen to the old value that push() saved */
         pop();
     }
@@ -116,4 +142,9 @@ function keyPressed() {
         // console.log("HERE");
         tank.y += speed;
     }
+}
+
+
+function windowResized() {
+    resizeCanvas(windowWidth, windowHeight);
 }
