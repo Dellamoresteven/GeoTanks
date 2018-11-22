@@ -21,26 +21,40 @@ app.get("/index.html", (req, res) => {
 })
 
 server.listen(port, () => console.log(`I'm listening ${port}`))
-
+setInterval(newDrop, 1 * 1000);
 io.on('connect', (socket) => {
-	console.log("I AM CONNECTED!!!!YAYAYAY! " + socket.id);
+	
+	console.log("Connectioned " + socket.id);
 
 	/** updates each socket, 'socket' will be the user sending the update 
 	 * @param 'data' will be the data being send
 	 */
 
 	socket.on('update', (data) => {
-		// console.log(data);
+		// console.log(data.bullets);
 		const newData = {
 			x: data.x,
 			y: data.y,
 			ang: data.ang,
-			socketID: socket.id
+			socketID: socket.id,
+			bullet: data.bullets
 		}
 		socket.broadcast.emit('data', newData); //sends to everyone not including self
 		// console.log
 		//io.sockets.emit('data', update); This sends to everyone include itsself
 		// console.log('updating! ' + data.x);
+	})
+
+	socket.on('newBullet', (data) => {
+		const newData = {
+			x: data.x,
+			y: data.y,
+			bulletType: data.bulletType,
+			socketID: socket.id,
+			mouseX: data.mouseX,
+			mouseY: data.mouseY
+		}
+		socket.broadcast.emit('bulletUpdate', newData);
 	})
 
 	socket.on('joinGame', (data) => {
@@ -56,9 +70,30 @@ io.on('connect', (socket) => {
 		}
 	})
 
-	// socket.on('disconnect', () => {
-	// 	console.log("User Disconnected");
-	// })
+	socket.on('disconnect', () => {
+		console.log("DISCONNECTING");
+		const newData = {
+			socketID: socket.id
+		}
+		socket.broadcast.emit('disconnects', newData);
+	})
+
+
 })
+
+function newDrop() {
+	let type = ["Armor", "Attack", "Defence"];
+	let rare = ["Common", "Rare", "Legendary"];
+	const newData = {
+		type: Math.floor(Math.random() * Math.floor(3)),
+		rare: Math.floor(Math.random() * Math.floor(3)),
+		locationX: Math.floor(Math.random() * Math.floor(1440)),
+		locationY: Math.floor(Math.random() * Math.floor(520))
+	}
+	io.sockets.emit('Drop', newData);
+}
+
+
+
 
 
