@@ -9,7 +9,7 @@ const server = http.createServer(app);
 const io = socketIO(server);
 
 let numPlayers = 0;
-
+let numSurvivors = 0;
 
 // setup for database
 var MongoClient = require('mongodb').MongoClient;
@@ -79,7 +79,12 @@ io.on('connect', (socket) => {
 		updatePlayerInfo(newData);
 
 		socket.broadcast.emit('data', newData); //sends to everyone not including self
-		// console.log
+		
+		// numSurvivors = 1;
+		if (numSurvivors == 1) {
+			console.log("last survivor");
+			io.emit('gameOver');
+		}
 		//io.sockets.emit('data', update); This sends to everyone include itsself
 		// console.log('updating! ' + data.x);
 	})
@@ -101,6 +106,9 @@ io.on('connect', (socket) => {
 		numPlayers++;
 		console.log("Num players is " + numPlayers)
 		if (numPlayers <= 4) {
+			if (numPlayers > 1) {
+				numSurvivors = numPlayers;
+			}
 			// return url for game
 			socket.emit('joinGameResponse', numPlayers);
 		} else {
@@ -119,7 +127,7 @@ io.on('connect', (socket) => {
 
 	socket.on('end', () => {
 		closeDB();
-	})	
+	})
 })
 
 function newDrop() {

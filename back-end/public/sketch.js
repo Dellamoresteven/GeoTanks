@@ -23,6 +23,10 @@ function setup() {
     socket.on('bulletUpdate', addNewBullet);
     socket.on('Drop', addNewDrop);
     socket.on('disconnects', disconnectUser);
+    socket.on('gameOver', () => {
+        console.log("THE GAME ENDED!");
+        
+    })
     createCanvas(windowWidth, windowHeight);
     tank = new GeoTank();
     // angleMode(DEGREES);
