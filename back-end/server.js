@@ -115,6 +115,9 @@ io.on('connect', (socket) => {
 			socketID: socket.id
 		}
 		socket.broadcast.emit('disconnects', newData);
+	})
+
+	socket.on('end', () => {
 		closeDB();
 	})	
 })
