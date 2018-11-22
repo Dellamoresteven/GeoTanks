@@ -32,6 +32,7 @@ const updatePlayerInfo = (newData) => {
 		x: newData.x,
 		y: newData.y,
 		ang: newData.ang,
+		bullet: newData.bullet,
 	};
 	if (myDBO) {
 		myDBO.collection("players").updateOne(socketIDObj, {$set: coordinates}, {upsert:true}).catch(() =>
@@ -109,18 +110,13 @@ io.on('connect', (socket) => {
 	})
 
 	socket.on('disconnect', () => {
-		console.log("User Disconnected");
-		closeDB();
-	})
-})
 		console.log("DISCONNECTING");
 		const newData = {
 			socketID: socket.id
 		}
 		socket.broadcast.emit('disconnects', newData);
-	})
-
-
+		closeDB();
+	})	
 })
 
 function newDrop() {
