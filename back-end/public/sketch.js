@@ -1,13 +1,14 @@
 /* Globel Varibles */
 // var socket = io();
 var socket;
-var w = 500;
-var h = 500;
+// var w = windowWidth;
+// var h = windowHeight;
 var speed = 10;
 var tank;
 var GeoTankLength = 70;
 var GoeTankWidth = 50;
 var player = [];
+var drops = [];
 
 /**
  * This function is the first thing that is called when setting up the program. 
@@ -19,6 +20,9 @@ function setup() {
     // oldData = createVector(0, 0);
     socket = io.connect('http://localhost:4001');
     socket.on('data', newDraw);
+    socket.on('bulletUpdate', addNewBullet);
+    socket.on('Drop', addNewDrop);
+    socket.on('disconnects', disconnectUser);
     createCanvas(windowWidth, windowHeight);
     tank = new GeoTank();
     // angleMode(DEGREES);
@@ -31,7 +35,7 @@ function setup() {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
-    // console.log(player.length);
+    // console.log(data.bullet);
     let newPlayer = true;
     for (var i = 0; i < player.length; i++) {
         if (player[i].SocketID == data.socketID) {
@@ -43,6 +47,23 @@ function newDraw(data) {
     if (newPlayer) {
         player.push(new Players(data.socketID, data.x, data.y, data.ang));
     }
+}
+
+/* Adds someone elses bullet to the canvas */
+function addNewBullet(data) {
+    for (var i = 0; i < player.length; i++) {
+        if (player[i].SocketID == data.socketID) {
+            player[i].addNewBullet(data);
+        }
+    }
+}
+/**
+ * Adds a new drop to a random place in the canvas, this is coded in the server
+ * since we want everyone to get the same one at the same time. 
+ */ 
+function addNewDrop(data){
+    drops.push(new Drop(data));
+    console.log(data);
 }
 
 /**
@@ -58,6 +79,18 @@ function updateCanvas() {
         rect(0, 0, GoeTankWidth, GeoTankLength)
         // player[i]
         pop();
+        player[i].bullets;
+    }
+}
+
+/**
+ * Disconnects a user by splcing them from the player array.
+ */
+function disconnectUser(data) {
+    for (var i = 0; i < player.length; i++) {
+        if (player[i].SocketID == data.socketID) {
+            player.splice(i,1);
+        }
     }
 }
 
@@ -83,8 +116,11 @@ function GeoTank() {
     this.y = windowHeight / 2;
     this.angle = 0;
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
-    var bullets = [[],[]];
+    this.bullets = [];
+    this.health = 100;
+    this.armor = 0;
     this.update = function() {
+        this.displayHealth();
         /* This is to start translating the screen */
         push();
         /* check to make sure they cant go off the screen */
@@ -104,13 +140,11 @@ function GeoTank() {
         }
         /* translate the x y plane to be around the rect */
         translate(this.x, this.y);
-        // console.log(height);
         /* finding the angle of a vector of the mouseX and mouse Y */
         this.angle = atan2(mouseY - this.y, mouseX - this.x);
         this.angle += PI / 2
         rotate(this.angle);
         /* setting up what we want to be shared to everything */
-        // console.log(this.angle);
         var data = {
             x: this.x,
             y: this.y,
@@ -121,18 +155,38 @@ function GeoTank() {
 
         fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
         rect(0, 0, GoeTankWidth, GeoTankLength);
+
         /* to reset the translated screen to the old value that push() saved */
         pop();
+        for (var i = 0; i < this.bullets.length; i++) {
+            this.bullets[i].nextPoint;
+        }
     }
-    this.shoot = function() {
-        ellipse(this.x, this.y, 20, 20);
+    this.shoot = function(bulletType) {
+        /* maybe when we render the bullets we translate the whole screen to a x-y axis type thing */
+        this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, bulletType));
+        let bulletData = {
+            mouseX: mouseX,
+            mouseY: mouseY,
+            x: this.x,
+            y: this.y,
+            bulletType: bulletType
+        }
+        socket.emit('newBullet', bulletData);
+    }
+
+    this.displayHealth = function(){
+        fill(255, 20, 40, 255);
+        rect(0,0, this.health * 5, 30);
+        fill(0, 255, 255, 255);
+        rect(0,23, this.armor * 5, 15);
     }
 }
 
 
 /* mouse clicked */
 function mouseClicked() {
-    tank.shoot();
+    tank.shoot("basic");
 }
 
 /**
@@ -141,19 +195,15 @@ function mouseClicked() {
  */
 function keyPressed() {
     if (keyIsDown(68)) {
-        // console.log("HERE");
         tank.x += speed;
     }
     if (keyIsDown(65)) {
-        // console.log("HERE");
         tank.x -= speed;
     }
     if (keyIsDown(87)) {
-        // console.log("HERE");
         tank.y -= speed;
     }
     if (keyIsDown(83)) {
-        // console.log("HERE");
         tank.y += speed;
     }
 }
