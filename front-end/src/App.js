@@ -9,9 +9,10 @@ class App extends Component {
   	super();
   	this.state = {
   		// the endpoint want to connect to for the server
-  		endpoint: "http://192.168.1.119:4001/",
+  		endpoint: "localhost:4001/",
   		data: "",
       gotoGame: false,
+      endGame: false,
   	}
   }
 
@@ -38,6 +39,18 @@ class App extends Component {
 
   render() {
   	console.log("MUST RERENDER" + this.state.data);
+    if (this.state.endGame === true) {
+      return (
+          <div className = "App">
+            SCORES - need to put in scores here
+            Make db call
+            Highest score:
+            <table>
+
+            </table>
+          </div>
+      );
+    }
     if (this.state.gotoGame === true) {
       return (
         <div> 
