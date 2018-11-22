@@ -83,6 +83,7 @@ io.on('connect', (socket) => {
 		// numSurvivors = 1;
 		if (numSurvivors == 1) {
 			console.log("last survivor");
+			numSurvivors = 0;
 			io.emit('gameOver');
 		}
 		//io.sockets.emit('data', update); This sends to everyone include itsself
