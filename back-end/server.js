@@ -1,4 +1,3 @@
-
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
@@ -11,14 +10,48 @@ const io = socketIO(server);
 
 let numPlayers = 0;
 
+
+// setup for database
+var MongoClient = require('mongodb').MongoClient;
+const url = "mongodb+srv://myGamePlayer:need2play@geo-r2rxk.mongodb.net/test?retryWrites=true";
+var myDBO;
+
+// connect to database
+MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
+  if (err) throw err;
+  console.log("Database opened!");
+  myDBO = db.db("Geo");
+  console.log("Database obj is " + myDBO);
+});
+
+const updatePlayerInfo = (newData) => {
+	const socketIDObj = {
+		socketID: newData.socketID,
+	};
+	const coordinates = {
+		x: newData.x,
+		y: newData.y,
+		ang: newData.ang,
+	};
+	if (myDBO) {
+		myDBO.collection("players").updateOne(socketIDObj, {$set: coordinates}, {upsert:true}).catch(() =>
+		{
+			// catch the error
+			console.log(err);
+		}).then(() => 
+		{
+			console.log(newData);
+		});
+	}
+}
+
+const closeDB = () => {
+	myDBO.close();
+}
+
+
 // middlewares
 app.use(express.static('public'));
-
-// routes
-app.get("/index.html", (req, res) => {
-	console.log("WANT INDEX HTML");
-	res.redirect("http://192.168.0.10:4001/index.html");
-})
 
 server.listen(port, () => console.log(`I'm listening ${port}`))
 
@@ -32,11 +65,15 @@ io.on('connect', (socket) => {
 	socket.on('update', (data) => {
 		// console.log(data);
 		const newData = {
+			socketID: socket.id,
 			x: data.x,
 			y: data.y,
 			ang: data.ang,
-			socketID: socket.id
 		}
+
+		// socketID is UNIQUE FOR EVERY PLAYER
+		updatePlayerInfo(newData);
+
 		socket.broadcast.emit('data', newData); //sends to everyone not including self
 		// console.log
 		//io.sockets.emit('data', update); This sends to everyone include itsself
@@ -56,9 +93,8 @@ io.on('connect', (socket) => {
 		}
 	})
 
-	// socket.on('disconnect', () => {
-	// 	console.log("User Disconnected");
-	// })
+	socket.on('disconnect', () => {
+		console.log("User Disconnected");
+		closeDB();
+	})
 })
-
-
