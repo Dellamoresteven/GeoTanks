@@ -82,12 +82,12 @@ io.on('connect', (socket) => {
 
 		socket.broadcast.emit('data', newData); //sends to everyone not including self
 		
-		numSurvivors = 1;
-		if (numSurvivors == 1) {
-			console.log("last survivor");
-			numSurvivors = 0;
-			io.emit('gameOver');
-		}
+		// numSurvivors = 1;
+		// if (numSurvivors == 1) {
+		// 	console.log("last survivor");
+		// 	numSurvivors = 0;
+		// 	io.emit('gameOver');
+		// }
 		//io.sockets.emit('data', update); This sends to everyone include itsself
 		// console.log('updating! ' + data.x);
 	})
