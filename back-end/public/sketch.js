@@ -17,6 +17,7 @@ var drops = [];
 
 
 function setup() {
+    cursor(CROSS);
     // oldData = createVector(0, 0);
     socket = io.connect('http://localhost:4001');
     socket.on('data', newDraw);

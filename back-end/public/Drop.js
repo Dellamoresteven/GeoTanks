@@ -5,6 +5,7 @@ class Drop{
 		this.rare = data.rare;
 		this.x = data.locationX;
 		this.y = data.locationY;
+		this.img = loadImage("jpgs/MG_Basic_Icon_resized.jpg");
 	}
 
 	displayDrop(x ,y){
@@ -20,10 +21,7 @@ class Drop{
 			fill(255);
 	  		text("U", this.x, this.y);
 		}else if(this.type == 2){
-			fill(255,0,0,255);
-			rect(this.x, this.y, 30,45);
-			fill(255);
-	  		text("A", this.x, this.y);
+			image(this.img, this.x, this.y, 30,45);
 		}
 		pop();
 	}
