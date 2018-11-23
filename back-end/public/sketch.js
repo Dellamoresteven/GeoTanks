@@ -40,6 +40,10 @@ function setup() {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
+    // console.log(data.drop);
+    if(data.drop != -1){
+        drops.splice(data.drop, 1);
+    }
     // console.log(data.bullet);
     let newPlayer = true;
     for (var i = 0; i < player.length; i++) {
@@ -103,7 +107,7 @@ function disconnectUser(data) {
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
-    background(0); //repaints the background to black
+    background(200,255,150,255); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
     keyPressed();
@@ -121,6 +125,8 @@ function GeoTank() {
     this.angle = 0;
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
+    this.weps = [];
+    this.utility = [];
     this.health = 100;
     this.armor = 0;
     this.update = function() {
@@ -128,7 +134,16 @@ function GeoTank() {
         this.displayHealth();
         /* displays all the drops on the map */
         for (var i = 0; i < drops.length; i++) {
-            drops[i].displayDrop(this.x, this.y);
+            drops[i].displayDrop();
+        }
+        let ch = -1;
+        for (var i = 0; i < drops.length; i++) {
+            ch = drops[i].checkDrops(this.x, this.y);
+            if(ch != -1){
+                drops.splice(i, 1);
+                ch = i;
+                break;
+            }
         }
         /* This is to start translating the screen */
         push();
@@ -157,7 +172,8 @@ function GeoTank() {
         var data = {
             x: this.x,
             y: this.y,
-            ang: this.angle
+            ang: this.angle,
+            drop: ch
         }
         /* SEND IT */
         socket.emit('update', data);

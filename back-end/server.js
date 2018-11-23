@@ -54,7 +54,7 @@ const closeDB = () => {
 app.use(express.static('public'));
 
 server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 5 * 1000);
+setInterval(newDrop, 1 * 1000);
 io.on('connect', (socket) => {
 	
 	console.log("Connectioned " + socket.id);
@@ -74,8 +74,10 @@ io.on('connect', (socket) => {
 			y: data.y,
 			ang: data.ang,
 			socketID: socket.id,
-			bullet: data.bullets
+			bullet: data.bullets,
+			drop: data.drop
 		}
+		// console.log(newData);
 
 		// socketID is UNIQUE FOR EVERY PLAYER
 		updatePlayerInfo(newData);
@@ -137,7 +139,7 @@ function newDrop() {
 	let type = ["Armor", "Attack", "Defence"];
 	let rare = ["Common", "Rare", "Legendary"];
 	const newData = {
-		type: Math.floor(Math.random() * Math.floor(3)),
+		type: Math.floor(Math.random() * Math.floor(6)),
 		rare: Math.floor(Math.random() * Math.floor(3)),
 		locationX: Math.floor(Math.random() * Math.floor(1440)),
 		locationY: Math.floor(Math.random() * Math.floor(520))
