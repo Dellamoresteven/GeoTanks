@@ -41,7 +41,7 @@ const updatePlayerInfo = (newData) => {
 			console.log(err);
 		}).then(() => 
 		{
-			console.log(newData);
+			// console.log(newData);
 		});
 	}
 }
@@ -51,11 +51,10 @@ const closeDB = () => {
 }
 
 
-// middlewares
 app.use(express.static('public'));
 
 server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 1 * 1000);
+setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {
 	
 	console.log("Connectioned " + socket.id);

@@ -23,12 +23,12 @@ class Players {
     setAngle(ang) {
         this.ang = ang;
     }
-    addNewBullet(bulle){
+    addNewBullet(bulle) {
         this.bulletss.push(new bullet(bulle.mouseX, bulle.mouseY, bulle.x, bulle.y, bulle.bulletType));
     }
-    get bullets(){
+    bullets(x, y) {
         for (var i = 0; i < this.bulletss.length; i++) {
-            this.bulletss[i].nextPoint;
+            this.bulletss[i].nextPoint(x, y, 1);
         }
     }
 }

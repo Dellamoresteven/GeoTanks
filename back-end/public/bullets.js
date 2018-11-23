@@ -1,11 +1,6 @@
 var speed = 10;
 
 class bullet {
-
-    // let slope = 
-    /* y - mouseY = slope(x-mouseX) */
-    /* y = slope(x-mouseX) + mouseY */
-    /* x = (y-mouseY)/slope + mouseX */
     constructor(mouseX, mouseY, x, y, bulletType) {
         this.moX = mouseX;
         this.moY = mouseY;
@@ -14,15 +9,11 @@ class bullet {
         this.xx = 0;
         this.yy = 0;
         this.bulletType = bulletType;
-        // console.log(pow(this.y - this.moY, 2));
-        // console.log(pow(this.x - this.moX, 2));
-        // console.log(pow(this.y - this.moY, 2) + pow(this.x - this.moX, 2));
         this.H = sqrt(pow(this.y - this.moY, 2) + pow(this.x - this.moX, 2));
-        // console.log(this.H);
         this.intervalX = (this.y - this.moY) / this.H;
         this.intervalY = (this.x - this.moX) / this.H;
     }
-    get nextPoint() {
+    nextPoint(x, y, check) {
         push();
         fill(255);
         translate(this.x, this.y);
@@ -30,6 +21,13 @@ class bullet {
         ellipse(this.xx, this.yy, 20, 20);
         this.xx -= this.intervalY * speed;
         this.yy -= this.intervalX * speed;
+        let d = dist(this.xx,this.yy,x-this.x,y-this.y);
+        // console.log(d);
+        if(d < 20 && check){
+            console.log("HIT");
+            this.xx = -1000;
+            this.yy = -1000;
+        }
         pop();
     }
 }

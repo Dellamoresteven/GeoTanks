@@ -5,8 +5,8 @@ var socket;
 // var h = windowHeight;
 var speed = 10;
 var tank;
-var GeoTankLength = 70;
-var GoeTankWidth = 50;
+var GeoTankLength = 40;
+var GoeTankWidth = 30;
 var player = [];
 var drops = [];
 
@@ -25,7 +25,7 @@ function setup() {
     socket.on('disconnects', disconnectUser);
     socket.on('gameOver', () => {
         console.log("THE GAME ENDED!");
-        window.location.href="http://localhost:3000";
+        window.location.href = "http://localhost:3000";
     })
     createCanvas(windowWidth, windowHeight);
     tank = new GeoTank();
@@ -64,10 +64,9 @@ function addNewBullet(data) {
 /**
  * Adds a new drop to a random place in the canvas, this is coded in the server
  * since we want everyone to get the same one at the same time. 
- */ 
-function addNewDrop(data){
+ */
+function addNewDrop(data) {
     drops.push(new Drop(data));
-    console.log(data);
 }
 
 /**
@@ -83,7 +82,7 @@ function updateCanvas() {
         rect(0, 0, GoeTankWidth, GeoTankLength)
         // player[i]
         pop();
-        player[i].bullets;
+        player[i].bullets(tank.x, tank.y);
     }
 }
 
@@ -93,7 +92,7 @@ function updateCanvas() {
 function disconnectUser(data) {
     for (var i = 0; i < player.length; i++) {
         if (player[i].SocketID == data.socketID) {
-            player.splice(i,1);
+            player.splice(i, 1);
         }
     }
 }
@@ -124,7 +123,12 @@ function GeoTank() {
     this.health = 100;
     this.armor = 0;
     this.update = function() {
+        /* displays the current health and armor */
         this.displayHealth();
+        /* displays all the drops on the map */
+        for (var i = 0; i < drops.length; i++) {
+            drops[i].displayDrop(this.x, this.y);
+        }
         /* This is to start translating the screen */
         push();
         /* check to make sure they cant go off the screen */
@@ -163,7 +167,7 @@ function GeoTank() {
         /* to reset the translated screen to the old value that push() saved */
         pop();
         for (var i = 0; i < this.bullets.length; i++) {
-            this.bullets[i].nextPoint;
+            this.bullets[i].nextPoint(this.x, this.y, 0);
         }
     }
     this.shoot = function(bulletType) {
@@ -179,11 +183,11 @@ function GeoTank() {
         socket.emit('newBullet', bulletData);
     }
 
-    this.displayHealth = function(){
+    this.displayHealth = function() {
         fill(255, 20, 40, 255);
-        rect(0,0, this.health * 5, 30);
+        rect(0, 0, this.health * 5, 30);
         fill(0, 255, 255, 255);
-        rect(0,23, this.armor * 5, 15);
+        rect(0, 23, this.armor * 5, 15);
     }
 }
 
