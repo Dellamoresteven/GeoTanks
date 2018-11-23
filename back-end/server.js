@@ -62,8 +62,29 @@ io.on('connect', (socket) => {
 	/** updates each socket, 'socket' will be the user sending the update 
 	 * @param 'data' will be the data being send
 	 */
-	 socket.on('getScores', () => {
-	 	
+	 socket.on('getResults', () => {
+	 	// need to call database
+	 	let stubResults = [
+	 		{
+	 			Bob: {
+	 				score: 20,
+	 				otherData: 5,
+				}
+			},
+			{
+				Nick: {
+					score: 30,
+					otherData: 3,
+				}
+			},
+			{
+				Mary: {
+					score: 40,
+					otherData: 4,
+				}
+			}
+	 	];
+	 	io.emit('results', stubResults);
 	 });
 
 	socket.on('update', (data) => {
@@ -82,12 +103,12 @@ io.on('connect', (socket) => {
 
 		socket.broadcast.emit('data', newData); //sends to everyone not including self
 		
-		numSurvivors = 1;
-		if (numSurvivors == 1) {
-			console.log("last survivor");
-			numSurvivors = 0;
-			io.emit('gameOver');
-		}
+		// numSurvivors = 1;
+		// if (numSurvivors == 1) {
+		// 	console.log("last survivor");
+		// 	numSurvivors = 0;
+		// 	io.emit('gameOver');
+		// }
 		//io.sockets.emit('data', update); This sends to everyone include itsself
 		// console.log('updating! ' + data.x);
 	})
