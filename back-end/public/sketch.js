@@ -26,7 +26,7 @@ function setup() {
     socket.on('disconnects', disconnectUser);
     socket.on('gameOver', () => {
         console.log("THE GAME ENDED!");
-        window.location.href = "http://localhost:3000/scores";
+        window.location.href = "http://localhost:3000/results";
     })
     createCanvas(windowWidth, windowHeight);
     tank = new GeoTank();

@@ -62,8 +62,29 @@ io.on('connect', (socket) => {
 	/** updates each socket, 'socket' will be the user sending the update 
 	 * @param 'data' will be the data being send
 	 */
-	 socket.on('getScores', () => {
-	 	
+	 socket.on('getResults', () => {
+	 	// need to call database
+	 	let stubResults = [
+	 		{
+	 			Bob: {
+	 				score: 20,
+	 				otherData: 5,
+				}
+			},
+			{
+				Nick: {
+					score: 30,
+					otherData: 3,
+				}
+			},
+			{
+				Mary: {
+					score: 40,
+					otherData: 4,
+				}
+			}
+	 	];
+	 	io.emit('results', stubResults);
 	 });
 
 	socket.on('update', (data) => {
