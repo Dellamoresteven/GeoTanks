@@ -62,6 +62,9 @@ io.on('connect', (socket) => {
 	/** updates each socket, 'socket' will be the user sending the update 
 	 * @param 'data' will be the data being send
 	 */
+	 socket.on('getScores', () => {
+	 	
+	 });
 
 	socket.on('update', (data) => {
 		// console.log(data.bullets);
@@ -79,7 +82,7 @@ io.on('connect', (socket) => {
 
 		socket.broadcast.emit('data', newData); //sends to everyone not including self
 		
-		// numSurvivors = 1;
+		numSurvivors = 1;
 		if (numSurvivors == 1) {
 			console.log("last survivor");
 			numSurvivors = 0;

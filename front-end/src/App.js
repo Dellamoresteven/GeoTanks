@@ -1,18 +1,16 @@
 import React, { Component } from 'react';
 import './App.css';
 import socketIOClient from 'socket.io-client'
-import { Redirect, Router, Route, Switch } from 'react-router-dom'
-import { BrowserRouter } from 'react-router-dom';
 
+// display game beginning page
 class App extends Component {
   constructor() {
   	super();
   	this.state = {
   		// the endpoint want to connect to for the server
-  		endpoint: "localhost:4001/",
+  		endpoint: "http://localhost:4001/",
   		data: "",
       gotoGame: false,
-      endGame: false,
   	}
   }
 
@@ -39,18 +37,9 @@ class App extends Component {
 
   render() {
   	console.log("MUST RERENDER" + this.state.data);
-    if (this.state.endGame === true) {
-      return (
-          <div className = "App">
-            SCORES - need to put in scores here
-            Make db call
-            Highest score:
-            <table>
+    console.log("STATE");
+    console.log(this.state);
 
-            </table>
-          </div>
-      );
-    }
     if (this.state.gotoGame === true) {
       return (
         <div> 
