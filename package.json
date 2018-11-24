@@ -1,5 +1,6 @@
 {
   "name": "GeoTanks",
   "version": "0.1.0",
-  "private": true
+  "private": true,
+  "main": "back-end/server.js"
 }
