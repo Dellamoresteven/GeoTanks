@@ -5,6 +5,9 @@ class Players {
         this.y = y;
         this.ang = ang;
         this.bulletss = [];
+        this.TankAng = 0;
+        this.moX = 0;
+        this.moY = 0;
     }
     get SocketID() {
         return this.socketID;
@@ -22,6 +25,13 @@ class Players {
     }
     setAngle(ang) {
         this.ang = ang;
+    }
+
+    setTankAngle(ang) {
+        this.TankAng = ang;
+    }
+    get TankAngle(){
+        return this.TankAng;
     }
     addNewBullet(bulle) {
         this.bulletss.push(new bullet(bulle.mouseX, bulle.mouseY, bulle.x, bulle.y, bulle.bulletType));

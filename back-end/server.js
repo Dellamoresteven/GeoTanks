@@ -96,7 +96,8 @@ io.on('connect', (socket) => {
 			ang: data.ang,
 			socketID: socket.id,
 			bullet: data.bullets,
-			drop: data.drop
+			drop: data.drop,
+			tankAngle: data.tankAngle
 		}
 		// console.log(newData);
 

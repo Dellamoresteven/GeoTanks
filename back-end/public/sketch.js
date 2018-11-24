@@ -9,6 +9,9 @@ var GeoTankLength = 40;
 var GoeTankWidth = 30;
 var player = [];
 var drops = [];
+var BodyOfTank;
+var HeadOfTank;
+
 
 /**
  * This function is the first thing that is called when setting up the program. 
@@ -32,6 +35,9 @@ function setup() {
     tank = new GeoTank();
     // angleMode(DEGREES);
     rectMode(CENTER);
+    imageMode(CENTER);
+    BodyOfTank = loadImage("jpgs/Tank_body.png");
+    HeadOfTank = loadImage("jpgs/Tank_head.png");
 }
 /** 
  * @fixed works perfectly with 2 tanks, but once u try to have 3
@@ -50,6 +56,8 @@ function newDraw(data) {
         if (player[i].SocketID == data.socketID) {
             player[i].setCords(createVector(data.x, data.y));
             player[i].setAngle(data.ang);
+            player[i].setTankAngle(data.tankAngle);
+            // player[i].setMousePos(data.mosX, data.mosY);
             newPlayer = false;
         }
     }
@@ -82,10 +90,11 @@ function updateCanvas() {
     for (var i = 0; i < player.length; i++) {
         push();
         translate(player[i].Cords.x, player[i].Cords.y);
-        rotate(player[i].Angle);
         fill(0, 180, 150, 255);
-        rect(0, 0, GoeTankWidth, GeoTankLength)
-        // player[i]
+        rotate(player[i].TankAngle);
+        image(BodyOfTank, 0,0, BodyOfTank.width/10, BodyOfTank.height/10);
+        rotate(player[i].Angle - player[i].TankAngle);
+        image(HeadOfTank, 0,0, HeadOfTank.width/10, HeadOfTank.height/10);
         pop();
         player[i].bullets(tank.x, tank.y);
     }
@@ -129,6 +138,9 @@ function GeoTank() {
     this.utility = [];
     this.health = 100;
     this.armor = 0;
+    this.TankBody = loadImage("jpgs/Tank_body.png");
+    this.TankTop = loadImage("jpgs/Tank_head.png");
+    this.TankAngle = 0;
     this.update = function() {
         /* displays the current health and armor */
         this.displayHealth();
@@ -166,20 +178,25 @@ function GeoTank() {
         translate(this.x, this.y);
         /* finding the angle of a vector of the mouseX and mouse Y */
         this.angle = atan2(mouseY - this.y, mouseX - this.x);
-        this.angle += PI / 2
-        rotate(this.angle);
+        this.angle += PI / 2;
+        
         /* setting up what we want to be shared to everything */
         var data = {
             x: this.x,
             y: this.y,
             ang: this.angle,
-            drop: ch
+            drop: ch,
+            tankAngle: this.TankAngle
         }
         /* SEND IT */
         socket.emit('update', data);
 
         fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
-        rect(0, 0, GoeTankWidth, GeoTankLength);
+        rotate(this.TankAngle);
+        image(this.TankBody, 0,0, this.TankBody.width/10, this.TankBody.height/10);
+        rotate(this.angle - this.TankAngle);
+        image(this.TankTop, 0,0, this.TankTop.width/10, this.TankTop.height/10);
+        // rect(0, 0, GoeTankWidth, GeoTankLength);
 
         /* to reset the translated screen to the old value that push() saved */
         pop();
@@ -221,14 +238,18 @@ function mouseClicked() {
 function keyPressed() {
     if (keyIsDown(68)) {
         tank.x += speed;
+        tank.TankAngle = 80;
     }
     if (keyIsDown(65)) {
+        tank.TankAngle = 80;
         tank.x -= speed;
     }
     if (keyIsDown(87)) {
+        tank.TankAngle = 0;
         tank.y -= speed;
     }
     if (keyIsDown(83)) {
+        tank.TankAngle = 0;
         tank.y += speed;
     }
 }
