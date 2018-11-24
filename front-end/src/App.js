@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
+import socketIOClient from 'socket.io-client';
 import './App.css';
-import socketIOClient from 'socket.io-client'
+import Preferences from './Preferences';
 
 // display game beginning page
 class App extends Component {
@@ -29,8 +30,7 @@ class App extends Component {
   renderRedirect = () => {
     return (
       <div className="App">
-      <h1> You have joined! </h1>
-      <a href = "http://localhost:4001" className = "Href" > START! </a>
+        <Preferences className='Preferences'/>
       </div>
     );
   }
