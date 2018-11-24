@@ -30,7 +30,7 @@ class App extends Component {
   renderRedirect = () => {
     return (
       <div className="App">
-        <Preferences className='Preferences'/>
+        <Preferences className='Preferences' clicked={{'00':1}}/>
       </div>
     );
   }
