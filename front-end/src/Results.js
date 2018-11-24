@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import socketIOClient from 'socket.io-client'
-// import './App.css';	
+import './Results.css'
 
 // display game over page
 class Results extends Component {
@@ -9,28 +9,43 @@ class Results extends Component {
 		this.state = {
   		// the endpoint want to connect to for the server
   			endpoint: "http://localhost:4001/",
+  			hasTable: false,
+  			table: undefined,
   		}
 	}
 
 	createTable = (results) => {
-		console.log("I WAS CALLED!");
 		let table = [];
 
+		table.push(<tr className = 'resultsRow'>
+			<th className = 'resultsHeader'> Name </th>
+			<th className = 'resultsHeader'> Score </th>
+			<th className = 'resultsHeader'> Other </th>
+		</tr>
+		);
 		// creating parent
 		for (let i = 0; i < results.length; i++) {
 			let children = [];
 
-			// inner loop for children
-			for (let j = 0; j < Object.keys(results).length; j++) {
-				children.push(<td>{results[i].score}</td>);	
+			let playerName;
+			let it;
+			for (it in results[i]) {
+				playerName = it;
 			}
 
-			table.push(<tr>{children}</tr>);
+			// inner loop for children
+			let playerInfo = results[i][Object.keys(results[i])[0]];
+			children.push(<td> {playerName} </td>);
+			let playerProp;
+
+			for (playerProp in playerInfo) {
+				children.push(<td> {playerInfo[playerProp]} </td>);
+			}
+
+			table.push(<tr className = 'resultsRow'>{children}</tr>);
 
 		}
-		console.log(table);
-		console.log("HERE");
-		return <div> <h1> AHH </h1> </div>
+		return table;
 	}
 
 	getResults = () => {
@@ -40,17 +55,30 @@ class Results extends Component {
 		let table;
 		socket.on('results', results => {
 			recievedResults = results;
-			this.createTable(recievedResults);
+			table = this.createTable(recievedResults);
+			this.setState({table, hasTable: true})
 		});
 	}
 
 	render() {
-		console.log("reached results");
-		return (
-			<div>
-				{this.getResults()}
-			</div>
-		);	
+		if (this.state.hasTable === true) {
+			return (
+				<div>
+					<table className="resultsTable">
+						<tbody>
+							{this.state.table}
+						</tbody>
+					</table>
+				</div>
+			);	
+		} else {
+			this.getResults();	
+			return (
+				<div> 
+				</div>
+			);
+		}
+
 	}
 }
 

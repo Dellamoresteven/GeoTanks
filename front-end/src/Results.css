@@ -1,0 +1,39 @@
+.title {
+  color: white;
+  font-size: 50px;
+}
+
+.resultsTable {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.resultsData {
+	border: 1px solid #ddd;
+    padding: 8px;
+}
+
+.resultsRow {
+	background-color: #f2f2f2;
+}
+
+.resultsHeader {
+	padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: center;
+    background-color: lightblue;
+    color: black;
+}
+
+body {
+  text-align: center;
+  background-color: darkblue;
+  background-size: cover;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding-top: 15%;
+}
