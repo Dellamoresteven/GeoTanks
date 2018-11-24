@@ -11,6 +11,7 @@ var player = [];
 var drops = [];
 var BodyOfTank;
 var HeadOfTank;
+var socketID;
 
 
 /**
@@ -27,6 +28,8 @@ function setup() {
     socket.on('bulletUpdate', addNewBullet);
     socket.on('Drop', addNewDrop);
     socket.on('disconnects', disconnectUser);
+    socket.on('init', init);
+    socket.on('bulletHits', BulletHit);
     socket.on('gameOver', () => {
         console.log("THE GAME ENDED!");
         window.location.href = "http://localhost:3000/results";
@@ -38,7 +41,17 @@ function setup() {
     imageMode(CENTER);
     BodyOfTank = loadImage("jpgs/Tank_body.png");
     HeadOfTank = loadImage("jpgs/Tank_head.png");
+    // console.log(socket.id);
+    socket.emit('inilizeGame');
 }
+/**
+ * init all the varibles we need to init 
+ */
+function init(data) {
+    socketID = data.socketID;
+    console.log("IDDD: " + socketID);
+}
+
 /** 
  * @fixed works perfectly with 2 tanks, but once u try to have 3
  * it does some wanky stuff.
@@ -47,7 +60,7 @@ function setup() {
  */
 function newDraw(data) {
     // console.log(data.drop);
-    if(data.drop != -1){
+    if (data.drop != -1) {
         drops.splice(data.drop, 1);
     }
     // console.log(data.bullet);
@@ -92,9 +105,9 @@ function updateCanvas() {
         translate(player[i].Cords.x, player[i].Cords.y);
         fill(0, 180, 150, 255);
         rotate(player[i].TankAngle);
-        image(BodyOfTank, 0,0, BodyOfTank.width/10, BodyOfTank.height/10);
+        image(BodyOfTank, 0, 0, BodyOfTank.width / 10, BodyOfTank.height / 10);
         rotate(player[i].Angle - player[i].TankAngle);
-        image(HeadOfTank, 0,0, HeadOfTank.width/10, HeadOfTank.height/10);
+        image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
         pop();
         player[i].bullets(tank.x, tank.y);
     }
@@ -112,11 +125,30 @@ function disconnectUser(data) {
 }
 
 /**
+ * Will clear bullets that hit the other person. I did it this way so there
+ * is no quiestion if a bullet it. If dmg was delt to to the other person
+ * bullet is deleted no matter what. 
+ */
+function BulletHit(data) {
+    if (data.socketID == socketID) {
+        // console.log("HERE");
+        tank.bullets.splice(i,1);
+    } else {
+        for (var i = 0; i < player.length; i++) {
+            if (player[i].SocketID == data.socketID) {
+                // console.log("HERE");
+                player[i].bulletss.splice(i, 1);
+            }
+        }
+    }
+}
+
+/**
  * This is called at 60 FPS, u can change the framerate with frameRate(int) in setup()
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
-    background(200,255,150,255); //repaints the background to black
+    background(200, 255, 150, 255); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
     keyPressed();
@@ -151,7 +183,7 @@ function GeoTank() {
         let ch = -1;
         for (var i = 0; i < drops.length; i++) {
             ch = drops[i].checkDrops(this.x, this.y);
-            if(ch != -1){
+            if (ch != -1) {
                 drops.splice(i, 1);
                 ch = i;
                 break;
@@ -179,7 +211,7 @@ function GeoTank() {
         /* finding the angle of a vector of the mouseX and mouse Y */
         this.angle = atan2(mouseY - this.y, mouseX - this.x);
         this.angle += PI / 2;
-        
+
         /* setting up what we want to be shared to everything */
         var data = {
             x: this.x,
@@ -193,20 +225,20 @@ function GeoTank() {
 
         fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
         rotate(this.TankAngle);
-        image(this.TankBody, 0,0, this.TankBody.width/10, this.TankBody.height/10);
+        image(this.TankBody, 0, 0, this.TankBody.width / 10, this.TankBody.height / 10);
         rotate(this.angle - this.TankAngle);
-        image(this.TankTop, 0,0, this.TankTop.width/10, this.TankTop.height/10);
+        image(this.TankTop, 0, 0, this.TankTop.width / 10, this.TankTop.height / 10);
         // rect(0, 0, GoeTankWidth, GeoTankLength);
 
         /* to reset the translated screen to the old value that push() saved */
         pop();
         for (var i = 0; i < this.bullets.length; i++) {
-            this.bullets[i].nextPoint(this.x, this.y, 0);
+            this.bullets[i].nextPoint(this.x, this.y, 0, i, this.bullets, socketID);
         }
     }
     this.shoot = function(bulletType) {
         /* maybe when we render the bullets we translate the whole screen to a x-y axis type thing */
-        this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, bulletType));
+        this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, bulletType, socketID));
         let bulletData = {
             mouseX: mouseX,
             mouseY: mouseY,

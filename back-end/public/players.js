@@ -34,11 +34,11 @@ class Players {
         return this.TankAng;
     }
     addNewBullet(bulle) {
-        this.bulletss.push(new bullet(bulle.mouseX, bulle.mouseY, bulle.x, bulle.y, bulle.bulletType));
+        this.bulletss.push(new bullet(bulle.mouseX, bulle.mouseY, bulle.x, bulle.y, bulle.bulletType, this.socketID));
     }
     bullets(x, y) {
         for (var i = 0; i < this.bulletss.length; i++) {
-            this.bulletss[i].nextPoint(x, y, 1);
+            this.bulletss[i].nextPoint(x, y, 1, i, this.bulletss, this.socketID);
         }
     }
 }
