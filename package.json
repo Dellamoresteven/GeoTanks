@@ -2,5 +2,9 @@
   "name": "GeoTanks",
   "version": "0.1.0",
   "private": true,
-  "main": "back-end/server.js"
+  "main": "back-end/server.js",
+  "scripts": {
+    "start": "node back-end/server.js"
+  },
+  "license": "MIT"
 }
