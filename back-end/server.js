@@ -50,7 +50,7 @@ const closeDB = () => {
 
 
 app.use(express.static('public'));
-server.listen(port, () => console.log(`I'm listening ${port}`))
+server.listen(process.env.PORT || port, () => console.log(`I'm listening ${rocess.env.PORT}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
 setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {
