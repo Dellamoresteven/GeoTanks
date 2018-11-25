@@ -4,7 +4,7 @@
   "private": true,
   "main": "back-end/server.js",
   "scripts": {
-    "start": "node back-end/server.js",
+    "start": "PORT=process.env.PORT npm start --prefix front-end/ & node back-end/server.js",
     "postinstall": "npm install --prefix front-end/ & npm install --prefix back-end/"
   },
   "license": "MIT",
@@ -12,6 +12,3 @@
     "back-end": "file:back-end"
   }
 }
-
-
-
