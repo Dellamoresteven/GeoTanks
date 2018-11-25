@@ -56,7 +56,7 @@ app.use(express.static('front-end/public'));
 // console.log("FEAWFWE: " + staticPath);
 // app.use(express.static(staticPath));
 
-server.listen(process.env.PORT || port, () => console.log(`I'm listening HERE ${process.env.PORT}`))
+server.listen(port, () => console.log(`I'm listening HERE ${process.env.PORT}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
 setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {

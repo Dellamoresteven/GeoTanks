@@ -4,8 +4,8 @@
   "private": true,
   "main": "back-end/server.js",
   "scripts": {
-    "start": "node back-end/server.js",
-    "postinstall": "npm install --prefix front-end/ && npm install --prefix back-end/ && npm start --prefix front-end"
+    "start": "cd front-end/ && npm start build",
+    "postinstall": "cd front-end/ && npm install && cd ../ && cd back-end/ && npm install && node server.js && cd .."
   },
   "license": "MIT",
   "dependencies": {
