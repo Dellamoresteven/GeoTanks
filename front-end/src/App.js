@@ -9,7 +9,7 @@ class App extends Component {
   	super();
   	this.state = {
   		// the endpoint want to connect to for the server
-  		endpoint: "http://localhost:5001/",
+  		endpoint: "http://localhost:4001/",
   		data: "",
       gotoGame: false,
   	}
