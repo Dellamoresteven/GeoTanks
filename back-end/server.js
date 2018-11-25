@@ -50,13 +50,13 @@ const closeDB = () => {
 }
 
 
-// app.use(express.static('back-end/public'));
-app.use(express.static('front-end/public'));
+app.use(express.static('public/'));
+// app.use(express.static('front-end/public'));
 // var staticPath = path.join(__dirname, '..' ,'front-end', 'public/');
 // console.log("FEAWFWE: " + staticPath);
 // app.use(express.static(staticPath));
 
-server.listen(process.env.PORT || port, () => console.log(`I'm listening HERE ${process.env.PORT}`))
+server.listen(process.env.PORT || port, () => console.log(`I'm listening HERE ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
 setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {

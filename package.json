@@ -5,7 +5,7 @@
   "main": "back-end/server.js",
   "scripts": {
     "start": "cd back-end/ && node server.js",
-    "postinstall": "cd front-end/ && npm install && cd ../ && cd back-end/ && npm install && cd .. && cd front-end/ && npm run build"
+    "postinstall": "cd front-end/ && npm install && cd ../ && cd back-end/ && npm install && cd .. && cd front-end/ && npm run build && cd ../"
   },
   "license": "MIT",
   "dependencies": {
