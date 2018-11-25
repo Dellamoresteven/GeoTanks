@@ -50,8 +50,10 @@ const closeDB = () => {
 }
 
 
-// app.use(express.static('back-end/public'));
-app.use(express.static('front-end/public'));
+if (numPlayers < 2) {
+    console.log("few players");
+    app.use(express.static('front-end/public'));
+}
 // var staticPath = path.join(__dirname, '..' ,'front-end', 'public/');
 // console.log("FEAWFWE: " + staticPath);
 // app.use(express.static(staticPath));
@@ -149,6 +151,10 @@ io.on('connect', (socket) => {
         // if the number of players is less than 4, allow to join
         numPlayers++;
         console.log("Num players is " + numPlayers)
+        if (numPlayers > 1) {
+            console.log("More")
+            app.use(express.static('back-end/public'));
+        }
         if (numPlayers <= 4) {
             if (numPlayers > 1) {
                 numSurvivors = numPlayers;
