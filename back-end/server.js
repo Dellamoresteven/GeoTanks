@@ -2,7 +2,7 @@ const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
 
-const port = 8080;
+const port = 5001;
 const app = express();
 
 const server = http.createServer(app);
@@ -50,7 +50,7 @@ const closeDB = () => {
 
 
 app.use(express.static('public'));
-server.listen(process.env.PORT || 8080, () => console.log(`I'm listening ${port}`))
+server.listen(port, () => console.log(`I'm listening ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
 setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {
