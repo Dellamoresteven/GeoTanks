@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const socketIO = require('socket.io');
+var path = require('path');
 
 const port = 4001;
 const app = express();
@@ -49,8 +50,13 @@ const closeDB = () => {
 }
 
 
-app.use(express.static('public'));
-server.listen(process.env.PORT || port, () => console.log(`I'm listenin ${process.env.PORT}`))
+app.use(express.static('back-end/public'));
+// app.use(express.static('front-end/public'));
+// var staticPath = path.join(__dirname, '..' ,'front-end', 'public/');
+// console.log("FEAWFWE: " + staticPath);
+// app.use(express.static(staticPath));
+
+server.listen(process.env.PORT || port, () => console.log(`I'm listening HERE ${process.env.PORT}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
 setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {
@@ -105,9 +111,9 @@ io.on('connect', (socket) => {
 
         // numSurvivors = 1;
         // if (numSurvivors == 1) {
-        // 	console.log("last survivor");
-        // 	numSurvivors = 0;
-        // 	io.emit('gameOver');
+        //  console.log("last survivor");
+        //  numSurvivors = 0;
+        //  io.emit('gameOver');
         // }
         //io.sockets.emit('data', update); This sends to everyone include itsself
         // console.log('updating! ' + data.x);
@@ -126,13 +132,13 @@ io.on('connect', (socket) => {
     })
 
     socket.on('bulletHit', (data) => {
-    	// console.log(data.i);
+        // console.log(data.i);
         socket.broadcast.emit('bulletHits', data);
     })
     /* PUT STUFF IN HERE IDNDODODO */
     socket.on('inilizeGame', () => {
-    	// console.log(socket.id);
-    	// console.log(data.i);
+        // console.log(socket.id);
+        // console.log(data.i);
         const newData = {
             socketID: socket.id
         }
