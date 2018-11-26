@@ -8,6 +8,7 @@ class App extends Component {
   constructor() {
   	super();
     const port = (process.env.PORT || 4001);
+    console.log("before: " + process.env.PORT);
     console.log("AEWGEAWGEAWGEAWGEWAG: " + port);
   	this.state = {
   		// the endpoint want to connect to for the server
