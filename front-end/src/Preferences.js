@@ -10,7 +10,7 @@ class Preferences extends Component {
 		
 		super(props);
 		this.state = {
-			endpoint: port,
+			endpoint: port + "gamer",
 			powers: [
 				'Attack',
 				'Defense',

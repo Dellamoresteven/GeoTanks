@@ -19,7 +19,6 @@ var socketID;
  * I put a super simple program to help you get started. 
  */
 
-
 function setup() {
     cursor(CROSS);
     // oldData = createVector(0, 0);

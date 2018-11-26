@@ -50,10 +50,24 @@ const closeDB = () => {
 }
 
 
-// app.use(express.static('public/'));
+// app.use(express.static('public/')); 
 // app.use(express.static('front-end/public'));
-var staticPath = path.join(__dirname, '..' ,'front-end', 'build');
-app.use(express.static(staticPath));
+var staticPath = path.join(__dirname, '..', 'front-end', 'build');
+app.use("/", express.static(staticPath));
+app.use("/gamer", express.static(__dirname + "/public/index.html"));
+app.use("/p5.min.js", express.static(__dirname + "/public/p5.min.js"));
+app.use("/addons/p5.dom.min.js", express.static(__dirname + "/public/addons/p5.dom.min.js"));
+app.use("/addons/p5.sound.min.js", express.static(__dirname + "/public/addons/p5.sound.min.js"));
+app.use("/sketch.js", express.static(__dirname + "/public/sketch.js"));
+app.use("/players.js", express.static(__dirname + "/public/players.js"));
+app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
+app.use("/bullets.js", express.static(__dirname + "/public/bullets.js"));
+app.use("/jpgs/*", function(req, res) {
+    console.log("HERE: ")
+    // console.log(req.params[0]);
+    console.log(__dirname + '/jpgs/' + req.params[0]);
+    res.sendFile(path.join(__dirname + '/public/jpgs/' + req.params[0]));
+})
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
@@ -148,11 +162,6 @@ io.on('connect', (socket) => {
         // if the number of players is less than 4, allow to join
         numPlayers++;
         console.log("Num players is " + numPlayers)
-        if (numPlayers > 1) {
-            console.log("MOREEEEEEEEEEE\n")
-            app.delete(express.static(staticPath));
-            app.use(express.static('back-end/public'));
-        }
         if (numPlayers <= 4) {
             if (numPlayers > 1) {
                 numSurvivors = numPlayers;
@@ -177,6 +186,18 @@ io.on('connect', (socket) => {
         closeDB();
     })
 })
+
+// app.get('/gamer', function(req, res) {
+//     // res.sendFile(path.join(__dirname + '/html/accountRecover.html'));
+//     // path.join(__dirname + '/html/accountRecover.html')
+//     console.log(path.join(__dirname +  '/public/index.html'));
+//     res.sendFile(path.join(__dirname +  '/public/index.html'));
+//     // res.sendFile('index', { title: 'Hey', message: 'Hello there!' })
+//     console.log("/game route called");
+//     // res.sendFile(path.join(__dirname + '/public/index.html'));
+//     // res.render(path.join(__dirname + '/public/index.html'));
+//     // console.log(res.body);
+// });
 
 function newDrop() {
     let type = ["Armor", "Attack", "Defence"];
