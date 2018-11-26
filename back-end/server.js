@@ -137,7 +137,7 @@ io.on('connect', (socket) => {
         // if the number of players is less than 4, allow to join
         numPlayers++;
         console.log("Num players is " + numPlayers)
-        if (numPlayers <= 4) {
+        if (numPlayers <= 3) {
             if (numPlayers > 1) {
                 numSurvivors = numPlayers;
             }
