@@ -50,11 +50,12 @@ const closeDB = () => {
 }
 
 
-app.use(express.static('public/'));
+// app.use(express.static('public/'));
 // app.use(express.static('front-end/public'));
-// var staticPath = path.join(__dirname, '..' ,'front-end', 'public/');
-// console.log("FEAWFWE: " + staticPath);
-// app.use(express.static(staticPath));
+var staticPath = path.join(__dirname, '..' ,'front-end', 'build');
+// app.use(express.static(path.join(__dirname, '../front-end/public')));
+console.log("FEAWFWE: " + staticPath);
+app.use(express.static(staticPath));
 
 server.listen(process.env.PORT || port, () => console.log(`I'm listening HERE ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
