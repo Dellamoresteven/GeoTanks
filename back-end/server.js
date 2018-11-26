@@ -149,7 +149,8 @@ io.on('connect', (socket) => {
         numPlayers++;
         console.log("Num players is " + numPlayers)
         if (numPlayers > 1) {
-            console.log("More")
+            console.log("MOREEEEEEEEEEE\n")
+            app.delete(express.static(staticPath));
             app.use(express.static('back-end/public'));
         }
         if (numPlayers <= 4) {
