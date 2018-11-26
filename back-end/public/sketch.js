@@ -29,6 +29,7 @@ function setup() {
     socket.on('disconnects', disconnectUser);
     socket.on('init', init);
     socket.on('bulletHits', BulletHit);
+    socket.on('Tankkilled', tankKilled);
     socket.on('gameOver', () => {
         console.log("THE GAME ENDED!");
         window.location.href = "http://localhost:3000/results";
@@ -94,6 +95,16 @@ function addNewDrop(data) {
     drops.push(new Drop(data));
 }
 
+
+function tankKilled(data) {
+    // console.log(data);
+    for (var i = 0; i < player.length; i++) {
+        if (player[i].SocketID == data.socketID) {
+            // console.log("EAF");
+            player.splice(i,1);
+        }
+    }
+}
 /**
  * This keeps printing people, because the server is not sending us anyhting if they
  * are not moving, we have to save there position. 
@@ -131,7 +142,7 @@ function disconnectUser(data) {
 function BulletHit(data) {
     if (data.socketID == socketID) {
         // console.log("HERE");
-        tank.bullets.splice(i,1);
+        tank.bullets.splice(i, 1);
     } else {
         for (var i = 0; i < player.length; i++) {
             if (player[i].SocketID == data.socketID) {
@@ -168,71 +179,76 @@ function GeoTank() {
     this.weps = [];
     this.utility = [];
     this.health = 100;
-    this.armor = 0;
+    this.armor = 50;
     this.TankBody = loadImage("jpgs/Tank_body.png");
     this.TankTop = loadImage("jpgs/Tank_head.png");
     this.TankAngle = 0;
+    this.TankStatus = true;
     this.update = function() {
-        /* displays the current health and armor */
-        this.displayHealth();
-        /* displays all the drops on the map */
-        for (var i = 0; i < drops.length; i++) {
-            drops[i].displayDrop();
-        }
-        let ch = -1;
-        for (var i = 0; i < drops.length; i++) {
-            ch = drops[i].checkDrops(this.x, this.y);
-            if (ch != -1) {
-                drops.splice(i, 1);
-                ch = i;
-                break;
+        if (this.TankStatus) {
+
+
+            /* displays the current health and armor */
+            this.displayHealth();
+            /* displays all the drops on the map */
+            for (var i = 0; i < drops.length; i++) {
+                drops[i].displayDrop();
             }
-        }
-        /* This is to start translating the screen */
-        push();
-        /* check to make sure they cant go off the screen */
-        if ((this.x > windowWidth - GoeTankWidth + 10)) {
-            this.x = windowWidth - GoeTankWidth + 10;
-        }
-        if ((this.x < 0 + GoeTankWidth - 10)) {
-            this.x = GoeTankWidth - 10;
-        }
-        if ((this.y > windowHeight - GeoTankLength + 25)) {
+            let ch = -1;
+            for (var i = 0; i < drops.length; i++) {
+                ch = drops[i].checkDrops(this.x, this.y);
+                if (ch != -1) {
+                    drops.splice(i, 1);
+                    ch = i;
+                    break;
+                }
+            }
+            /* This is to start translating the screen */
+            push();
+            /* check to make sure they cant go off the screen */
+            if ((this.x > windowWidth - GoeTankWidth + 10)) {
+                this.x = windowWidth - GoeTankWidth + 10;
+            }
+            if ((this.x < 0 + GoeTankWidth - 10)) {
+                this.x = GoeTankWidth - 10;
+            }
+            if ((this.y > windowHeight - GeoTankLength + 25)) {
 
-            this.y = windowHeight - GeoTankLength + 25;
-        }
-        if ((this.y < 0 + GoeTankWidth)) {
+                this.y = windowHeight - GeoTankLength + 25;
+            }
+            if ((this.y < 0 + GoeTankWidth)) {
 
-            this.y = 0 + GoeTankWidth - 10;
-        }
-        /* translate the x y plane to be around the rect */
-        translate(this.x, this.y);
-        /* finding the angle of a vector of the mouseX and mouse Y */
-        this.angle = atan2(mouseY - this.y, mouseX - this.x);
-        this.angle += PI / 2;
+                this.y = 0 + GoeTankWidth - 10;
+            }
+            /* translate the x y plane to be around the rect */
+            translate(this.x, this.y);
+            /* finding the angle of a vector of the mouseX and mouse Y */
+            this.angle = atan2(mouseY - this.y, mouseX - this.x);
+            this.angle += PI / 2;
 
-        /* setting up what we want to be shared to everything */
-        var data = {
-            x: this.x,
-            y: this.y,
-            ang: this.angle,
-            drop: ch,
-            tankAngle: this.TankAngle
-        }
-        /* SEND IT */
-        socket.emit('update', data);
+            /* setting up what we want to be shared to everything */
+            var data = {
+                x: this.x,
+                y: this.y,
+                ang: this.angle,
+                drop: ch,
+                tankAngle: this.TankAngle
+            }
+            /* SEND IT */
+            socket.emit('update', data);
 
-        fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
-        rotate(this.TankAngle);
-        image(this.TankBody, 0, 0, this.TankBody.width / 10, this.TankBody.height / 10);
-        rotate(this.angle - this.TankAngle);
-        image(this.TankTop, 0, 0, this.TankTop.width / 10, this.TankTop.height / 10);
-        // rect(0, 0, GoeTankWidth, GeoTankLength);
+            fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
+            rotate(this.TankAngle);
+            image(this.TankBody, 0, 0, this.TankBody.width / 10, this.TankBody.height / 10);
+            rotate(this.angle - this.TankAngle);
+            image(this.TankTop, 0, 0, this.TankTop.width / 10, this.TankTop.height / 10);
+            // rect(0, 0, GoeTankWidth, GeoTankLength);
 
-        /* to reset the translated screen to the old value that push() saved */
-        pop();
-        for (var i = 0; i < this.bullets.length; i++) {
-            this.bullets[i].nextPoint(this.x, this.y, 0, i, this.bullets, socketID);
+            /* to reset the translated screen to the old value that push() saved */
+            pop();
+            for (var i = 0; i < this.bullets.length; i++) {
+                this.bullets[i].nextPoint(this.x, this.y, 0, i, this.bullets, socketID);
+            }
         }
     }
     this.shoot = function(bulletType) {
@@ -250,16 +266,29 @@ function GeoTank() {
 
     this.displayHealth = function() {
         fill(255, 20, 40, 255);
-        rect(0, 0, this.health * 5, 30);
+        // rect(0, 0, this.health * 5, 30);
+        let Hbars = this.health / 5;
+        let Abars = this.armor / 5;
+        let placement = 15;
+        for (var i = 0; i < Hbars; i++) {
+            rect(placement, 15, 20, 20);
+            placement += 23;
+        }
         fill(0, 255, 255, 255);
-        rect(0, 23, this.armor * 5, 15);
+        placement = 15;
+        for (var i = 0; i < Abars; i++) {
+            rect(placement, 15, 20, 20);
+            placement += 23;
+        }
     }
 }
 
 
 /* mouse clicked */
 function mouseClicked() {
-    tank.shoot("basic");
+    if (tank.TankStatus) {
+        tank.shoot("basic");
+    }
 }
 
 /**
@@ -267,21 +296,23 @@ function mouseClicked() {
  * If it a key is pressed it can change the direction of the rect moving
  */
 function keyPressed() {
-    if (keyIsDown(68)) {
-        tank.x += speed;
-        tank.TankAngle = 80;
-    }
-    if (keyIsDown(65)) {
-        tank.TankAngle = 80;
-        tank.x -= speed;
-    }
-    if (keyIsDown(87)) {
-        tank.TankAngle = 0;
-        tank.y -= speed;
-    }
-    if (keyIsDown(83)) {
-        tank.TankAngle = 0;
-        tank.y += speed;
+    if (tank.TankStatus) {
+        if (keyIsDown(68)) {
+            tank.x += speed;
+            tank.TankAngle = 80;
+        }
+        if (keyIsDown(65)) {
+            tank.TankAngle = 80;
+            tank.x -= speed;
+        }
+        if (keyIsDown(87)) {
+            tank.TankAngle = 0;
+            tank.y -= speed;
+        }
+        if (keyIsDown(83)) {
+            tank.TankAngle = 0;
+            tank.y += speed;
+        }
     }
 }
 

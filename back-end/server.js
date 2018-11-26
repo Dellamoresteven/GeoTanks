@@ -71,9 +71,9 @@ app.use("/players.js", express.static(__dirname + "/public/players.js"));
 app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
 app.use("/bullets.js", express.static(__dirname + "/public/bullets.js"));
 app.use("/jpgs/*", function(req, res) {
-    console.log("HERE: ")
+    // console.log("HERE: ")
     // console.log(req.params[0]);
-    console.log(__dirname + '/jpgs/' + req.params[0]);
+    // console.log(__dirname + '/jpgs/' + req.params[0]);
     res.sendFile(path.join(__dirname + '/public/jpgs/' + req.params[0]));
 })
 
@@ -156,6 +156,11 @@ io.on('connect', (socket) => {
     socket.on('bulletHit', (data) => {
         // console.log(data.i);
         socket.broadcast.emit('bulletHits', data);
+    })
+    socket.on('tankKilled', (data) => {
+        // console.log(data);
+        // console.log(data.i);
+        socket.broadcast.emit('Tankkilled', data);
     })
     /* PUT STUFF IN HERE IDNDODODO */
     socket.on('inilizeGame', () => {

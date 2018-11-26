@@ -3,6 +3,7 @@ var speed = 10;
 class bullet {
     constructor(mouseX, mouseY, x, y, bulletType, socketID) {
         // console.log(socketID);
+        this.dmg = 0;
         this.moX = mouseX;
         this.moY = mouseY;
         this.x = x;
@@ -17,6 +18,9 @@ class bullet {
         this.angle = atan2(mouseY - this.yy, mouseX - this.xx);
         this.angle += PI / 2;
         this.socketIDE = socketID;
+        if (this.bulletType == "basic") {
+            this.dmg = 10;
+        }
     }
     nextPoint(x, y, check, i, arr, socketIDD) {
         // console.log(this.socketIDE);
@@ -43,6 +47,21 @@ class bullet {
             /* SEND IT */
             // socket.emit('bulletHit', data);
             // console.log("HERE");
+            if (tank.armor >= this.dmg) {
+                tank.armor -= this.dmg;
+            } else {
+                let x = this.dmg - tank.armor;
+                if (tank.health > x) {
+                    tank.health -= x;
+                } else {
+                    var data = {
+                        socketID: socketID
+                    }
+                    /* SEND IT */
+                    socket.emit('tankKilled', data);
+                    tank.TankStatus = false;
+                }
+            }
             arr.splice(i, 1);
         } else {
             for (var i = 0; i < player.length; i++) {
