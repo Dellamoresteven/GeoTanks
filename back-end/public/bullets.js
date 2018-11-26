@@ -1,4 +1,4 @@
-var speed = 10;
+var speed = 20;
 
 class bullet {
     constructor(mouseX, mouseY, x, y, bulletType, socketID) {
@@ -37,51 +37,29 @@ class bullet {
         if (abs(this.xx) + abs(this.yy) > 1500) {
             arr.splice(i, 1);
         }
-        let d = dist(this.xx, this.yy, x - this.x, y - this.y);
-        // console.log(d);
-        if (d < 45 && check) {
-            var data = {
-                i: i,
-                socketID: socketID
-            }
-            /* SEND IT */
-            // socket.emit('bulletHit', data);
-            // console.log("HERE");
-            if (tank.armor >= this.dmg) {
-                tank.armor -= this.dmg;
-            } else {
-                let x = this.dmg - tank.armor;
-                if (tank.health > x) {
-                    tank.health -= x;
-                } else {
+        for (var i = 0; i < player.length; i++) {
+            if (player[i].TankStatus) {
+                let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
+                // console.log(d);
+                if (d < 45) {
                     var data = {
-                        socketID: socketID
+                        socketID: player[i].socketID,
+                        dmg: this.dmg
                     }
                     /* SEND IT */
-                    socket.emit('tankKilled', data);
-                    tank.TankStatus = false;
+                    socket.emit('hitSomeone', data);
+                    arr.splice(i, 1);
                 }
-            }
-            arr.splice(i, 1);
-        } else {
-            for (var i = 0; i < player.length; i++) {
-                let cords = player[i].Cords;
-                // console.log(cords.x + ":" + cords.y);
-                // console
-                // console.log(() + ":" + (this.y+this.yy));
-                d = dist(this.x + this.xx, this.y + this.yy, cords.x, cords.y);
-                // console.log(d);
-                if (player[i].SocketID != this.socketIDE) {
-                    if (d < 45) {
-                        arr.splice(i, 1);
-                    }
-                }
-
             }
         }
-        // for (var i = 0; i < player.length; i++) {
-        //     player[i]
-        // }
         pop();
+    }
+    display(data) {
+        push();
+        translate(data.x, data.y);
+        if (data.bulletType == "basic") {
+            ellipse(data.xx, data.yy, 10, 10);
+        }
+        pop()
     }
 }

@@ -1,44 +1,70 @@
+/*
+{ x: 720,
+  y: 259.5,
+  angle: 3.988891283425406,
+  bullets: [],
+  weps: [],
+  utility: [],
+  health: 100,
+  armor: 50,
+  TankBody: 
+   { width: 758,
+     height: 758,
+     canvas: {},
+     drawingContext: {},
+     _pixelDensity: 1,
+     _modified: false,
+     _pixelsDirty: true,
+     pixels: [],
+     modified: true },
+  TankTop: 
+   { width: 266,
+     height: 536,
+     canvas: {},
+     drawingContext: {},
+     _pixelDensity: 1,
+     _modified: false,
+     _pixelsDirty: true,
+     pixels: [],
+     modified: true },
+  TankAngle: 0,
+  TankStatus: true }
+*/
 class Players {
-    constructor(socketID, x, y, ang) {
-        this.socketID = socketID;
-        this.x = x;
-        this.y = y;
-        this.ang = ang;
-        this.bulletss = [];
-        this.TankAng = 0;
-        this.moX = 0;
-        this.moY = 0;
-    }
-    get SocketID() {
-        return this.socketID;
-    }
-
-    get Cords() {
-        return createVector(this.x, this.y);
-    }
-    setCords(cords) {
-        this.x = cords.x;
-        this.y = cords.y;
-    }
-    get Angle() {
-        return this.ang;
-    }
-    setAngle(ang) {
-        this.ang = ang;
-    }
-
-    setTankAngle(ang) {
-        this.TankAng = ang;
-    }
-    get TankAngle(){
-        return this.TankAng;
-    }
-    addNewBullet(bulle) {
-        this.bulletss.push(new bullet(bulle.mouseX, bulle.mouseY, bulle.x, bulle.y, bulle.bulletType, this.socketID));
-    }
-    bullets(x, y) {
-        for (var i = 0; i < this.bulletss.length; i++) {
-            this.bulletss[i].nextPoint(x, y, 1, i, this.bulletss, this.socketID);
+    constructor(data) {
+        this.socketID = data.socketID;
+        this.x = data.tank.x;
+        this.y = data.tank.y;
+        this.ang = data.tank.angle;
+        if(data.tank.bullets != undefined){
+            this.bulletss = data.tank.bullets;
         }
+        this.TankAng = data.tank.TankAngle;
+        this.moX = data.tank.moX;
+        this.moY = data.tank.moY;
+        this.health = data.tank.health;
+        this.armor = data.tank.armor;
+        this.weps = data.tank.weps;
+        this.utility = data.tank.utility;
+        this.TankStatus = data.tank.TankStatus;
+        this.ang += PI / 2;
+    }
+    settank(data){
+        this.socketID = data.socketID;
+        this.x = data.tank.x;
+        this.y = data.tank.y;
+        this.ang = data.tank.angle;
+        if(data.tank.bullets != undefined){
+            this.bulletss = data.tank.bullets;
+        }
+        this.TankAng = data.tank.TankAngle;
+        this.moX = data.tank.moX;
+        this.moY = data.tank.moY;
+        this.health = data.tank.health;
+        this.armor = data.tank.armor;
+        this.weps = data.tank.weps;
+        this.utility = data.tank.utility;
+        this.TankStatus = data.tank.TankStatus;
+        this.angle += PI / 2;
     }
 }

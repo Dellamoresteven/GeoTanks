@@ -1,4 +1,41 @@
 /* Globel Varibles */
+
+
+
+/*
+{ x: 720,
+  y: 259.5,
+  angle: 3.988891283425406,
+  bullets: [],
+  weps: [],
+  utility: [],
+  health: 100,
+  armor: 50,
+  TankBody: 
+   { width: 758,
+     height: 758,
+     canvas: {},
+     drawingContext: {},
+     _pixelDensity: 1,
+     _modified: false,
+     _pixelsDirty: true,
+     pixels: [],
+     modified: true },
+  TankTop: 
+   { width: 266,
+     height: 536,
+     canvas: {},
+     drawingContext: {},
+     _pixelDensity: 1,
+     _modified: false,
+     _pixelsDirty: true,
+     pixels: [],
+     modified: true },
+  TankAngle: 0,
+  TankStatus: true }
+
+
+*/
 // var socket = io();
 var socket;
 // var w = windowWidth;
@@ -24,12 +61,14 @@ function setup() {
 
     socket = io.connect(window.location.host);
     socket.on('data', newDraw);
-    socket.on('bulletUpdate', addNewBullet);
+    // socket.on('bulletUpdate', addNewBullet);
     socket.on('Drop', addNewDrop);
     socket.on('disconnects', disconnectUser);
     socket.on('init', init);
-    socket.on('bulletHits', BulletHit);
-    socket.on('Tankkilled', tankKilled);
+    minusHealth
+    socket.on('hit', minusHealth);
+    // socket.on('bulletHits', BulletHit);
+    // socket.on('Tankkilled', tankKilled);
     socket.on('gameOver', () => {
         console.log("THE GAME ENDED!");
         window.location.href = "http://localhost:3000/results";
@@ -59,34 +98,20 @@ function init(data) {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
-    // console.log(data.drop);
-    if (data.drop != -1) {
-        drops.splice(data.drop, 1);
-    }
-    // console.log(data.bullet);
-    let newPlayer = true;
-    for (var i = 0; i < player.length; i++) {
-        if (player[i].SocketID == data.socketID) {
-            player[i].setCords(createVector(data.x, data.y));
-            player[i].setAngle(data.ang);
-            player[i].setTankAngle(data.tankAngle);
-            // player[i].setMousePos(data.mosX, data.mosY);
-            newPlayer = false;
+    if (data.socketID != undefined) {
+        let newPlayer = true;
+        for (var i = 0; i < player.length; i++) {
+            if (player[i].socketID == data.socketID) {
+                player[i].settank(data);
+                newPlayer = false;
+            }
         }
-    }
-    if (newPlayer) {
-        player.push(new Players(data.socketID, data.x, data.y, data.ang));
+        if (newPlayer) {
+            player.push(new Players(data));
+        }
     }
 }
 
-/* Adds someone elses bullet to the canvas */
-function addNewBullet(data) {
-    for (var i = 0; i < player.length; i++) {
-        if (player[i].SocketID == data.socketID) {
-            player[i].addNewBullet(data);
-        }
-    }
-}
 /**
  * Adds a new drop to a random place in the canvas, this is coded in the server
  * since we want everyone to get the same one at the same time. 
@@ -95,31 +120,44 @@ function addNewDrop(data) {
     drops.push(new Drop(data));
 }
 
-
-function tankKilled(data) {
-    // console.log(data);
-    for (var i = 0; i < player.length; i++) {
-        if (player[i].SocketID == data.socketID) {
-            // console.log("EAF");
-            player.splice(i,1);
+function minusHealth(data) {
+    console.log(data);
+    if (data.socketID == socketID) {
+        if (tank.armor < data.dmg) {
+            data.dmg -= tank.armor;
+            tank.armor = 0;
+            if (tank.health <= data.dmg) {
+                tank.TankStatus = false;
+            } else {
+                tank.health -= data.dmg;
+            }
+        } else {
+            tank.armor -= data.dmg;
         }
     }
 }
+
 /**
  * This keeps printing people, because the server is not sending us anyhting if they
  * are not moving, we have to save there position. 
  */
 function updateCanvas() {
     for (var i = 0; i < player.length; i++) {
-        push();
-        translate(player[i].Cords.x, player[i].Cords.y);
-        fill(0, 180, 150, 255);
-        rotate(player[i].TankAngle);
-        image(BodyOfTank, 0, 0, BodyOfTank.width / 10, BodyOfTank.height / 10);
-        rotate(player[i].Angle - player[i].TankAngle);
-        image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
-        pop();
-        player[i].bullets(tank.x, tank.y);
+        console.log(player[i].TankStatus);
+        if (player[i].TankStatus) {
+            push();
+            // console.log(player[i].bulletss.length);
+            translate(player[i].x, player[i].y);
+            rotate(player[i].TankAng);
+            image(BodyOfTank, 0, 0, BodyOfTank.width / 10, BodyOfTank.height / 10);
+            rotate(player[i].ang - player[i].TankAng);
+            image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
+            pop();
+            for (var j = 0; j < player[i].bulletss.length; j++) {
+                let x = new bullet(0, 0, 0, 0, 0);
+                x.display(player[i].bulletss[j]);
+            }
+        }
     }
 }
 
@@ -128,30 +166,12 @@ function updateCanvas() {
  */
 function disconnectUser(data) {
     for (var i = 0; i < player.length; i++) {
-        if (player[i].SocketID == data.socketID) {
+        if (player[i].socketID == data.socketID) {
             player.splice(i, 1);
         }
     }
 }
 
-/**
- * Will clear bullets that hit the other person. I did it this way so there
- * is no quiestion if a bullet it. If dmg was delt to to the other person
- * bullet is deleted no matter what. 
- */
-function BulletHit(data) {
-    if (data.socketID == socketID) {
-        // console.log("HERE");
-        tank.bullets.splice(i, 1);
-    } else {
-        for (var i = 0; i < player.length; i++) {
-            if (player[i].SocketID == data.socketID) {
-                // console.log("HERE");
-                player[i].bulletss.splice(i, 1);
-            }
-        }
-    }
-}
 
 /**
  * This is called at 60 FPS, u can change the framerate with frameRate(int) in setup()
@@ -184,10 +204,12 @@ function GeoTank() {
     this.TankTop = loadImage("jpgs/Tank_head.png");
     this.TankAngle = 0;
     this.TankStatus = true;
+    this.moX = mouseX;
+    this.moY = mouseY;
     this.update = function() {
+        this.moX = mouseX;
+        this.moY = mouseY;
         if (this.TankStatus) {
-
-
             /* displays the current health and armor */
             this.displayHealth();
             /* displays all the drops on the map */
@@ -227,15 +249,6 @@ function GeoTank() {
             this.angle += PI / 2;
 
             /* setting up what we want to be shared to everything */
-            var data = {
-                x: this.x,
-                y: this.y,
-                ang: this.angle,
-                drop: ch,
-                tankAngle: this.TankAngle
-            }
-            /* SEND IT */
-            socket.emit('update', data);
 
             fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
             rotate(this.TankAngle);
@@ -249,21 +262,19 @@ function GeoTank() {
             for (var i = 0; i < this.bullets.length; i++) {
                 this.bullets[i].nextPoint(this.x, this.y, 0, i, this.bullets, socketID);
             }
+
         }
+        var data = {
+            tank: tank,
+            socketID: socketID
+        }
+        /* SEND IT */
+        socket.emit('update', data);
     }
     this.shoot = function(bulletType) {
         /* maybe when we render the bullets we translate the whole screen to a x-y axis type thing */
         this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, bulletType, socketID));
-        let bulletData = {
-            mouseX: mouseX,
-            mouseY: mouseY,
-            x: this.x,
-            y: this.y,
-            bulletType: bulletType
-        }
-        socket.emit('newBullet', bulletData);
     }
-
     this.displayHealth = function() {
         fill(255, 20, 40, 255);
         // rect(0, 0, this.health * 5, 30);

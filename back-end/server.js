@@ -113,55 +113,16 @@ io.on('connect', (socket) => {
     });
 
     socket.on('update', (data) => {
-        // console.log(data.bullets);
-        const newData = {
-            socketID: socket.id,
-            x: data.x,
-            y: data.y,
-            ang: data.ang,
-            socketID: socket.id,
-            bullet: data.bullets,
-            drop: data.drop,
-            tankAngle: data.tankAngle
-        }
-        // console.log(newData);
-
-        // socketID is UNIQUE FOR EVERY PLAYER
-        updatePlayerInfo(newData);
-
-        socket.broadcast.emit('data', newData); //sends to everyone not including self
-
-        // numSurvivors = 1;
-        // if (numSurvivors == 1) {
-        //  console.log("last survivor");
-        //  numSurvivors = 0;
-        //  io.emit('gameOver');
-        // }
-        //io.sockets.emit('data', update); This sends to everyone include itsself
-        // console.log('updating! ' + data.x);
+        socket.broadcast.emit('data', data); //sends to everyone not including self
     })
 
-    socket.on('newBullet', (data) => {
-        const newData = {
-            x: data.x,
-            y: data.y,
-            bulletType: data.bulletType,
-            socketID: socket.id,
-            mouseX: data.mouseX,
-            mouseY: data.mouseY
-        }
-        socket.broadcast.emit('bulletUpdate', newData);
+    socket.on('hitSomeone', (data) => {
+        // console.log("GOT HERE: " + data);
+        // socket.broadcast.to(data.socketID).emit('hit', data);
+        socket.broadcast.emit('hit', data); //sends to everyone not including self
     })
 
-    socket.on('bulletHit', (data) => {
-        // console.log(data.i);
-        socket.broadcast.emit('bulletHits', data);
-    })
-    socket.on('tankKilled', (data) => {
-        // console.log(data);
-        // console.log(data.i);
-        socket.broadcast.emit('Tankkilled', data);
-    })
+
     /* PUT STUFF IN HERE IDNDODODO */
     socket.on('inilizeGame', () => {
         // console.log(socket.id);
