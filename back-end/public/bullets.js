@@ -2,7 +2,7 @@ var speed = 10;
 
 class bullet {
     constructor(mouseX, mouseY, x, y, bulletType, socketID) {
-        console.log(socketID);
+        // console.log(socketID);
         this.moX = mouseX;
         this.moY = mouseY;
         this.x = x;

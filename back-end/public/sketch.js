@@ -21,8 +21,8 @@ var socketID;
 
 function setup() {
     cursor(CROSS);
-    // oldData = createVector(0, 0);
-    socket = io.connect('http://localhost:4001');
+
+    socket = io.connect(window.location.host);
     socket.on('data', newDraw);
     socket.on('bulletUpdate', addNewBullet);
     socket.on('Drop', addNewDrop);
