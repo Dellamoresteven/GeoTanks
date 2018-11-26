@@ -83,6 +83,7 @@ setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {
 
     console.log("Connectioned " + socket.id);
+    console.log("Port" + socket);
 
     /** updates each socket, 'socket' will be the user sending the update 
      * @param 'data' will be the data being send
