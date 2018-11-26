@@ -1,5 +1,3 @@
-var speed = 20;
-
 class bullet {
     constructor(mouseX, mouseY, x, y, bulletType, socketID) {
         // console.log(socketID);
@@ -20,6 +18,7 @@ class bullet {
         this.socketIDE = socketID;
         if (this.bulletType == "basic") {
             this.dmg = 10;
+            this.speed = 20;
         }
     }
     nextPoint(x, y, check, i, arr, socketIDD) {
@@ -32,8 +31,8 @@ class bullet {
         ellipse(this.xx, this.yy, 10, 10);
 
         // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
-        this.xx -= this.intervalY * speed;
-        this.yy -= this.intervalX * speed;
+        this.xx -= this.intervalY * this.speed;
+        this.yy -= this.intervalX * this.speed;
         if (abs(this.xx) + abs(this.yy) > 1500) {
             arr.splice(i, 1);
         }

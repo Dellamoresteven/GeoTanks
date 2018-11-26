@@ -41,7 +41,6 @@
 var socket;
 // var w = windowWidth;
 // var h = windowHeight;
-var speed = 10;
 var tank;
 var GeoTankLength = 40;
 var GoeTankWidth = 30;
