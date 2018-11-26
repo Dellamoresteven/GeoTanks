@@ -143,7 +143,6 @@ function minusHealth(data) {
  */
 function updateCanvas() {
     for (var i = 0; i < player.length; i++) {
-        console.log(player[i].TankStatus);
         if (player[i].TankStatus) {
             push();
             // console.log(player[i].bulletss.length);
@@ -309,20 +308,20 @@ function mouseClicked() {
 function keyPressed() {
     if (tank.TankStatus) {
         if (keyIsDown(68)) {
-            tank.x += speed;
+            tank.x += 6;
             tank.TankAngle = 80;
         }
         if (keyIsDown(65)) {
             tank.TankAngle = 80;
-            tank.x -= speed;
+            tank.x -= 6;
         }
         if (keyIsDown(87)) {
             tank.TankAngle = 0;
-            tank.y -= speed;
+            tank.y -= 6;
         }
         if (keyIsDown(83)) {
             tank.TankAngle = 0;
-            tank.y += speed;
+            tank.y += 6;
         }
     }
 }
