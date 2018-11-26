@@ -113,7 +113,18 @@ io.on('connect', (socket) => {
     });
 
     socket.on('update', (data) => {
-        socket.broadcast.emit('data', data); //sends to everyone not including self
+        // console.log(data);
+        const newData = {
+            x: data.tank.x,
+            y: data.tank.y,
+            angle: data.tank.angle,
+            TankAngle: data.tank.TankAngle,
+            TankStatus: data.tank.TankStatus,
+            socketID: data.socketID,
+            bullets: data.tank.bullets
+        }
+        // console.log(newData);
+        socket.broadcast.emit('data', newData); //sends to everyone not including self
     })
 
     socket.on('hitSomeone', (data) => {

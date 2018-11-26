@@ -33,38 +33,35 @@
 class Players {
     constructor(data) {
         this.socketID = data.socketID;
-        this.x = data.tank.x;
-        this.y = data.tank.y;
-        this.ang = data.tank.angle;
-        if(data.tank.bullets != undefined){
-            this.bulletss = data.tank.bullets;
-        }
-        this.TankAng = data.tank.TankAngle;
-        this.moX = data.tank.moX;
-        this.moY = data.tank.moY;
-        this.health = data.tank.health;
-        this.armor = data.tank.armor;
-        this.weps = data.tank.weps;
-        this.utility = data.tank.utility;
-        this.TankStatus = data.tank.TankStatus;
+        this.x = data.x;
+        this.y = data.y;
+        this.ang = data.angle;
+        this.bulletss = data.bullets;
+        
+        this.TankAng = data.TankAngle;
+        // this.moX = data.tank.moX;
+        // this.moY = data.tank.moY;
+        // this.health = data.tank.health;
+        // this.armor = data.tank.armor;
+        // this.weps = data.tank.weps;
+        // this.utility = data.tank.utility;
+        this.TankStatus = data.TankStatus;
         this.ang += PI / 2;
     }
     settank(data){
         this.socketID = data.socketID;
-        this.x = data.tank.x;
-        this.y = data.tank.y;
-        this.ang = data.tank.angle;
-        if(data.tank.bullets != undefined){
-            this.bulletss = data.tank.bullets;
-        }
-        this.TankAng = data.tank.TankAngle;
-        this.moX = data.tank.moX;
-        this.moY = data.tank.moY;
-        this.health = data.tank.health;
-        this.armor = data.tank.armor;
-        this.weps = data.tank.weps;
-        this.utility = data.tank.utility;
-        this.TankStatus = data.tank.TankStatus;
+        this.x = data.x;
+        this.y = data.y;
+        this.ang = data.angle;
+        this.bulletss = data.bullets;
+        this.TankAng = data.TankAngle;
+        // this.moX = data.tank.moX;
+        // this.moY = data.tank.moY;
+        // this.health = data.tank.health;
+        // this.armor = data.tank.armor;
+        // this.weps = data.tank.weps;
+        // this.utility = data.tank.utility;
+        this.TankStatus = data.TankStatus;
         this.angle += PI / 2;
     }
 }

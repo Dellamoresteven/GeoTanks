@@ -6,12 +6,13 @@
 { x: 720,
   y: 259.5,
   angle: 3.988891283425406,
+
   bullets: [],
-  weps: [],
-  utility: [],
-  health: 100,
-  armor: 50,
-  TankBody: 
+  //weps: [],
+  //utility: [],
+  //health: 100,
+  //armor: 50,
+  //TankBody: 
    { width: 758,
      height: 758,
      canvas: {},
@@ -21,7 +22,7 @@
      _pixelsDirty: true,
      pixels: [],
      modified: true },
-  TankTop: 
+  //TankTop: 
    { width: 266,
      height: 536,
      canvas: {},
@@ -98,6 +99,7 @@ function init(data) {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
+    console.log(data);
     if (data.socketID != undefined) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
