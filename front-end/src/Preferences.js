@@ -76,7 +76,7 @@ class Preferences extends Component {
 				<h4> The Utility tiles give your tank bonus effects </h4>
 				<h4> NOTE: You will not be allowed to join the game until you have chosen all tiles </h4>
 				{this.getPowerTable()}
-				<a href = "https://geotank.herokuapp.com" className = "Href" > START! </a>
+				<a href = {this.state.endpoint} className = "Href" > START! </a>
 			</div>
 		);
 	}
