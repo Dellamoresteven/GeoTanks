@@ -3,11 +3,14 @@ import socketIOClient from 'socket.io-client';
 import List from 'react-list-select';
 import './Preferences.css';
 
+var port = window.location.href;
+
 class Preferences extends Component {
 	constructor(props) {
+		
 		super(props);
 		this.state = {
-			endpoint: "http://localhost:4001/",
+			endpoint: port,
 			powers: [
 				'Attack',
 				'Defense',
@@ -73,7 +76,7 @@ class Preferences extends Component {
 				<h4> The Utility tiles give your tank bonus effects </h4>
 				<h4> NOTE: You will not be allowed to join the game until you have chosen all tiles </h4>
 				{this.getPowerTable()}
-				<a href = "http://localhost:4001" className = "Href" > START! </a>
+				<a href = "https://geotank.herokuapp.com" className = "Href" > START! </a>
 			</div>
 		);
 	}
