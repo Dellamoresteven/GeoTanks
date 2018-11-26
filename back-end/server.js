@@ -3,7 +3,7 @@ const http = require('http');
 const socketIO = require('socket.io');
 var path = require('path');
 
-const port = 4001;
+const port = (process.env.PORT || 4001);
 const app = express();
 
 const server = http.createServer(app);
@@ -50,15 +50,12 @@ const closeDB = () => {
 }
 
 
-if (numPlayers < 2) {
-    console.log("few players");
-    app.use(express.static('front-end/public'));
-}
-// var staticPath = path.join(__dirname, '..' ,'front-end', 'public/');
-// console.log("FEAWFWE: " + staticPath);
-// app.use(express.static(staticPath));
+// app.use(express.static('public/'));
+// app.use(express.static('front-end/public'));
+var staticPath = path.join(__dirname, '..' ,'front-end', 'build');
+app.use(express.static(staticPath));
 
-server.listen(process.env.PORT || port, () => console.log(`I'm listening HERE ${process.env.PORT}`))
+server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
 setInterval(newDrop, 5 * 1000);
 io.on('connect', (socket) => {
