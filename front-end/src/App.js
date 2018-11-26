@@ -7,10 +7,12 @@ import Preferences from './Preferences';
 class App extends Component {
   constructor() {
   	super();
-    var x = (process.env.PORT || 4001);
+    const port = (process.env.PORT || 4001);
+    console.log("AEWGEAWGEAWGEAWGEWAG: " + port);
   	this.state = {
   		// the endpoint want to connect to for the server
-  		endpoint: "http://localhost:"+ x +"/",
+  		endpoint: "http://localhost:" + port + "/",
+
   		data: "",
       gotoGame: false,
   	}
