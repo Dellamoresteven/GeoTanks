@@ -22,8 +22,11 @@ class App extends Component {
   	socket.emit('joinGame', this.state.session)
   	socket.on('joinGameResponse', (data) => {
   		console.log("I GOT TO JOIN!" + data)
-  		// need to trigger a rerender with new data
-  		this.setState({data: data, gotoGame: true})
+      // allowed to save the data
+      if (data != "same") {
+        // need to trigger a rerender with new data
+        this.setState({data: data, gotoGame: true})
+      }
   	})
   }
 
