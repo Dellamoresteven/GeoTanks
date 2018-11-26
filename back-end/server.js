@@ -1,13 +1,21 @@
-const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
+// const express = require('express');
+// const http = require('http');
+// const socketIO = require('socket.io');
+// var path = require('path');
+
+// const port = (process.env.PORT || 4001);
+// const app = express();
+
+// const server = http.createServer(app);
+// const io = socketIO(server);
+
 var path = require('path');
-
-const port = (process.env.PORT || 4001);
-const app = express();
-
-const server = http.createServer(app);
-const io = socketIO(server);
+var express = require('express'),
+    app = express(),
+    server = require('http').createServer(app),
+    io = require('socket.io').listen(server);
+    const port = (process.env.PORT || 4001);
+    server.listen(port);
 
 let numPlayers = 0;
 let numSurvivors = 0;
