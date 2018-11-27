@@ -13,7 +13,7 @@ class bullet {
         this.H = sqrt(pow(this.y - this.moY, 2) + pow(this.x - this.moX, 2));
         this.intervalX = (this.y - this.moY) / this.H;
         this.intervalY = (this.x - this.moX) / this.H;
-        this.angle = atan2(mouseY - this.yy, mouseX - this.xx);
+        this.angle = atan2(mouseY - this.y, mouseX - this.x);
         this.angle += PI / 2;
         this.socketIDE = socketID;
 
