@@ -34,20 +34,20 @@ class bullet {
         // console.log(this.socketIDE);
 
         // console.log(mou)
-        fill(this.bulletColor);
-        if (this.bulletType == 6) {
-            push();
-            console.log((this.xx + this.x), (this.yy + this.x));
-            translate(this.xx + this.x, this.yy + this.x);
-            // rotate(this.angle + PI/2);
-            rect(0,0, this.bulletSize / 1.5, this.bulletSize / 4);
-            pop();
-        }
         push();
         // rotate(this.angle);
         translate(this.x, this.y);
+        fill(this.bulletColor);
+        if (this.bulletType == 6) {
+            push();
+            //console.log((this.xx + this.x), (this.yy + this.x));
+            translate(this.xx, this.yy);
+            rotate(this.angle - PI / 2);
+            rect(0,0, this.bulletSize / 1.5, this.bulletSize / 4);
+            pop();
+        }
 
-        // ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+        //ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
 
 
         // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
@@ -138,7 +138,7 @@ class bullet {
             case 6:
                 this.dmg = 40;
                 this.speed = 5;
-                this.travelDist = 2000;
+                this.travelDist = 1500;
                 this.attackSpeed = -1;
                 this.automatic = false;
                 this.bulletColor = "#cc0000";
