@@ -33,22 +33,48 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     console.log("Database obj is " + myDBO);
 });
 
-const updatePlayerInfo = (newData) => {
+const updatePlayerInfo = (newData, socketId) => {
     const socketIDObj = {
-        socketID: newData.socketID,
+        socketID: socketId,
     };
-    const coordinates = {
-        x: newData.x,
-        y: newData.y,
-        ang: newData.ang,
-        bullet: newData.bullet,
+    console.log("UPDATING DATA TO " + socketId);
+    console.log(newData);
+    const preferences = {
+        00: newData['00'],
+        01: newData['01'],
+        02: newData['02'],
+        10: newData['00'],
+        11: newData['01'],
+        12: newData['02'],
+        20: newData['00'],
+        21: newData['01'],
+        22: newData['02'],
     };
     if (myDBO) {
-        myDBO.collection("players").updateOne(socketIDObj, { $set: coordinates }, { upsert: true }).catch(() => {
+        myDBO.collection("players").updateOne(socketIDObj, { $set: preferences }, { upsert: true }).catch(() => {
             // catch the error
             console.log(err);
         }).then(() => {
             // console.log(newData);
+        });
+    }
+}
+
+const createNewPlayer = (socketID, playerName) => {
+    const socketIDObj = {
+        socketID: socketID,
+    };
+
+    const playerInfo = {
+        name: playerName,
+    };
+
+    if (myDBO) {
+        myDBO.collection("players").updateOne(socketIDObj, { $set: playerInfo }, { upsert: true }).catch(() => {
+            // catch the error
+            console.log(err);
+        }).then(() => {
+            // console.log(playerInfo);
         });
     }
 }
@@ -133,18 +159,27 @@ io.on('connect', (socket) => {
         socket.emit('init', newData);
     })
 
+    socket.on('putPreferences', (data) => {
+        // if (data != NULL) {
+        //     console.log("Everything" + data);
+        // } 
+        console.log("data from preferences");
+        console.log(data);
+        updatePlayerInfo(data, socket.id);
+    })
+
     socket.on('joinGame', (data) => {
-        // if the number of players is less than 4, allow to join
+        // if the number of players is less than 3, allow to join
+        console.log("JOINING GAME WITH NAME" + data);
         numPlayers++;
         console.log("Num players is " + numPlayers)
         if (numPlayers <= 3) {
-            if (numPlayers > 1) {
-                numSurvivors = numPlayers;
-            }
             // return url for game
+            // data contains the name of the player
+            createNewPlayer(socket.id, data);
             socket.emit('joinGameResponse', numPlayers);
         } else {
-            // return same url for react page
+            // return same url for react page and say to render the same page again
             socket.emit('joinGameResponse', "same");
         }
     })
