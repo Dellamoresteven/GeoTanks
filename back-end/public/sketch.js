@@ -49,6 +49,7 @@ var drops = [];
 var BodyOfTank;
 var HeadOfTank;
 var socketID;
+var mouseDownID = -1;
 
 
 /**
@@ -182,6 +183,16 @@ function draw() {
     tank.update(); //calls update in GeoTank
     updateCanvas();
     keyPressed();
+
+    if (mouseIsPressed && (mouseDownID == -1) && tank.currentBullet.automatic) {
+        console.log("HERE");
+        mouseDownID = setInterval(AutoMaticShoot, tank.currentBullet.attackSpeed);
+    }
+    if ((mouseDownID != -1) && !mouseIsPressed) {
+        console.log("done");
+        clearInterval(mouseDownID);
+        mouseDownID = -1;
+    }
 }
 
 
@@ -197,7 +208,8 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
-    this.wepUsing = -1;
+    this.wepUsing = 1;
+    this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
     this.utility = [];
     this.health = 100;
     this.armor = 50;
@@ -208,10 +220,11 @@ function GeoTank() {
     this.moX = mouseX;
     this.moY = mouseY;
     this.update = function() {
-        if(this.weps.length != 0){
-            this.wepUsing = this.weps[this.weps.length-1];
+        if (this.weps.length != 0) {
+            this.wepUsing = this.weps[this.weps.length - 1];
+            this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
         }
-        console.log(this.wepUsing);
+        // console.log(this.wepUsing);
         this.moX = mouseX;
         this.moY = mouseY;
         if (this.TankStatus) {
@@ -302,9 +315,20 @@ function GeoTank() {
 
 /* mouse clicked */
 function mouseClicked() {
-    if (tank.TankStatus) {
+    let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
+    // console.log(typ.automatic);
+    if (tank.TankStatus && mouseIsPressed && typ.automatic) {
+        tank.shoot(tank.wepUsing);
+        return;
+    }
+    if (tank.TankStatus && !mouseIsPressed) {
         tank.shoot(tank.wepUsing);
     }
+}
+
+function AutoMaticShoot() {
+    let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
+    tank.shoot(tank.wepUsing);
 }
 
 /**

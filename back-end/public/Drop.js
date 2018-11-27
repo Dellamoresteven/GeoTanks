@@ -51,7 +51,7 @@ class Drop {
             } else if (this.type == 1) {
                 tank.weps.push(1);
             } else if (this.type == 2) {
-                
+                tank.weps.push(2);
             } else if (this.type == 3) {
                 tank.weps.push(3);
             } else if (this.type == 4) {

@@ -79,7 +79,7 @@ app.use("/jpgs/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 5 * 10);
+setInterval(newDrop, 1 * 1000);
 io.on('connect', (socket) => {
 
     console.log("Connectioned " + socket.id);
