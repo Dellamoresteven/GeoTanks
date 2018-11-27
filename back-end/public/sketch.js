@@ -98,7 +98,7 @@ function init(data) {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
-    console.log(data);
+    //console.log(data);
     if (data.socketID != undefined) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
