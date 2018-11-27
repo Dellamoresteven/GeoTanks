@@ -153,8 +153,8 @@ function updateCanvas() {
             rotate(player[i].ang - player[i].TankAng);
             image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
             pop();
+            let x = new bullet(0, 0, 0, 0, 0);
             for (var j = 0; j < player[i].bulletss.length; j++) {
-                let x = new bullet(0, 0, 0, 0, 0);
                 x.display(player[i].bulletss[j]);
             }
         }
@@ -197,6 +197,7 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
+    this.wepUsing = -1;
     this.utility = [];
     this.health = 100;
     this.armor = 50;
@@ -207,6 +208,10 @@ function GeoTank() {
     this.moX = mouseX;
     this.moY = mouseY;
     this.update = function() {
+        if(this.weps.length != 0){
+            this.wepUsing = this.weps[this.weps.length-1];
+        }
+        console.log(this.wepUsing);
         this.moX = mouseX;
         this.moY = mouseY;
         if (this.TankStatus) {
@@ -298,7 +303,7 @@ function GeoTank() {
 /* mouse clicked */
 function mouseClicked() {
     if (tank.TankStatus) {
-        tank.shoot("basic");
+        tank.shoot(tank.wepUsing);
     }
 }
 

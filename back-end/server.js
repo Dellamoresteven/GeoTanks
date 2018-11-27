@@ -79,7 +79,7 @@ app.use("/jpgs/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 5 * 1000);
+setInterval(newDrop, 5 * 10);
 io.on('connect', (socket) => {
 
     console.log("Connectioned " + socket.id);
@@ -189,7 +189,7 @@ function newDrop() {
     let type = ["Armor", "Attack", "Defence"];
     let rare = ["Common", "Rare", "Legendary"];
     const newData = {
-        type: Math.floor(Math.random() * Math.floor(6)),
+        type: Math.floor(Math.random() * Math.floor(7)),
         rare: Math.floor(Math.random() * Math.floor(3)),
         locationX: Math.floor(Math.random() * Math.floor(1440)),
         locationY: Math.floor(Math.random() * Math.floor(800))

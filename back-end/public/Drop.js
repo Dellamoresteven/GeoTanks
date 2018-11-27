@@ -5,6 +5,7 @@
  * 3 - Heavy MG
  * 4 - Armor level 2
  * 5 - armor level 3
+ * 6 - RL
  */
 
 class Drop {
@@ -20,6 +21,7 @@ class Drop {
         this.imgDDD = loadImage("jpgs/Armor_Level_3.png");
         this.imgAA = loadImage("jpgs/LightMachineGun.png");
         this.imgAAA = loadImage("jpgs/Heavy_MG.png");
+        this.RL = loadImage("jpgs/RocketLauncher.png");
     }
 
     displayDrop() {
@@ -36,6 +38,8 @@ class Drop {
             image(this.imgDD, this.x, this.y, this.imgDD.width / 5, this.imgDD.height / 5);
         } else if (this.type == 5) {
             image(this.imgDDD, this.x, this.y, this.imgDDD.width / 3, this.imgDDD.height / 3);
+        } else if (this.type == 6) {
+            image(this.RL, this.x, this.y, this.RL.width / 3, this.RL.height / 3);
         }
         pop();
     }
@@ -45,15 +49,17 @@ class Drop {
             if (this.type == 0) {
             	tank.armor += 50;
             } else if (this.type == 1) {
-
+                tank.weps.push(1);
             } else if (this.type == 2) {
-
+                
             } else if (this.type == 3) {
-
+                tank.weps.push(3);
             } else if (this.type == 4) {
             	tank.armor += 75;
             } else if (this.type == 5) {
             	tank.armor += 100;
+            }else if (this.type == 6) {
+                tank.weps.push(6);
             }
             return this.type;
         } else {
