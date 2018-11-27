@@ -208,7 +208,7 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
-    this.wepUsing = 1;
+    this.wepUsing = 6;
     this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
     this.utility = [];
     this.health = 100;

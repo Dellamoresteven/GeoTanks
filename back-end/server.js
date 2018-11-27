@@ -114,6 +114,7 @@ io.on('connect', (socket) => {
 
     socket.on('update', (data) => {
         // console.log(data);
+
         const newData = {
             x: data.tank.x,
             y: data.tank.y,
@@ -122,6 +123,9 @@ io.on('connect', (socket) => {
             TankStatus: data.tank.TankStatus,
             socketID: data.socketID,
             bullets: data.tank.bullets
+        }
+        if(!(data.tank.TankStatus)){
+            numPlayers--;
         }
         // console.log(newData);
         socket.broadcast.emit('data', newData); //sends to everyone not including self
@@ -165,6 +169,7 @@ io.on('connect', (socket) => {
         const newData = {
             socketID: socket.id
         }
+        numPlayers--;
         socket.broadcast.emit('disconnects', newData);
     })
 

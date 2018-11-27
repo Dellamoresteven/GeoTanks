@@ -1,6 +1,7 @@
 class bullet {
     constructor(mouseX, mouseY, x, y, bulletType, socketID) {
         // console.log(socketID);
+        imageMode(CENTER);
         this.dmg = 0;
         this.moX = mouseX;
         this.moY = mouseY;
@@ -29,6 +30,7 @@ class bullet {
         this.setBullet(this.bulletType);
     }
     nextPoint(x, y, check, i, arr, socketIDD) {
+        angleMode(RADIANS);
         // console.log(this.socketIDE);
         push();
         // rotate(this.angle);
@@ -36,7 +38,15 @@ class bullet {
         // console.log(mou)
         fill(this.bulletColor);
         if (this.bulletType == 6) {
-            this.polygon(this.xx, this.yy, this.bulletSize, 10);
+            push();
+            // translate(this.xx, this.yy);
+            rotate(this.angle);
+
+            // rotate(PI);
+            // console.log(this.angle - PI/2);
+            image(this.bulletIcon, this.xx, this.yy, this.bulletIcon.width / 50, this.bulletIcon.height / 50);
+            pop();
+            // pop();
         } else {
             ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
         }
@@ -71,7 +81,11 @@ class bullet {
         this.setBullet(data.bulletType);
         fill(this.bulletColor);
         if (this.bulletType == 6) {
-            this.polygon(data.xx, data.yy, this.bulletSize, 10);
+            push();
+            // rotate(PI);
+            // image(this.bulletIcon, data.xx, data.yy, this.bulletIcon.width / 50, this.bulletIcon.height / 50);
+
+            pop();
         } else {
             ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
         }
@@ -111,7 +125,7 @@ class bullet {
                 this.bulletHitBox = 2 * this.bulletSize;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
-            case 3: 
+            case 3:
                 this.dmg = 3;
                 this.speed = 40;
                 this.travelDist = 500;
@@ -122,7 +136,7 @@ class bullet {
                 this.bulletHitBox = 2 * this.bulletSize;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
-            case 6: 
+            case 6:
                 this.dmg = 40;
                 this.speed = 5;
                 this.travelDist = 2000;
@@ -131,18 +145,18 @@ class bullet {
                 this.bulletColor = "#EF0BD3";
                 this.bulletSize = 50;
                 this.bulletHitBox = 50;
-                //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
+                this.bulletIcon = loadImage("jpgs/rocket.png")
                 break;
         }
     }
     polygon(x, y, radius, npoints) {
-      var angle = TWO_PI / npoints;
-      beginShape();
-      for (var a = 0; a < TWO_PI; a += angle) {
-        var sx = x + cos(a) * radius;
-        var sy = y + sin(a) * radius;
-        vertex(sx, sy);
-      }
-      endShape(CLOSE);
+        var angle = TWO_PI / npoints;
+        beginShape();
+        for (var a = 0; a < TWO_PI; a += angle) {
+            var sx = x + cos(a) * radius;
+            var sy = y + sin(a) * radius;
+            vertex(sx, sy);
+        }
+        endShape(CLOSE);
     }
 }
