@@ -44,10 +44,19 @@ class bullet {
             translate(this.xx, this.yy);
             rotate(this.angle - PI / 2);
             rect(0,0, this.bulletSize / 1.5, this.bulletSize / 4);
+            fill(255);
+            triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
+            // line(0,0, 1000, 1000);
+            stroke(0);
+            strokeWeight(4);
+            line(3, this.bulletSize/10, 3, -this.bulletSize/10)
+            line(-9, this.bulletSize/10, -9, -this.bulletSize/10)
             pop();
+        }else{
+            ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
         }
 
-        //ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+        
 
 
         // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
@@ -79,16 +88,23 @@ class bullet {
         translate(data.x, data.y);
         this.setBullet(data.bulletType);
         fill(this.bulletColor);
-        if (this.bulletType == 6) {
+        if (data.bulletType == 6) {
             push();
-            // rotate(PI);
-            // image(this.bulletIcon, data.xx, data.yy, this.bulletIcon.width / 50, this.bulletIcon.height / 50);
-
+            //console.log((this.xx + this.x), (this.yy + this.x));
+            translate(data.xx, data.yy);
+            rotate(data.angle - PI / 2);
+            rect(0,0, this.bulletSize / 1.5, this.bulletSize / 4);
+            fill(255);
+            triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
+            // line(0,0, 1000, 1000);
+            stroke(0);
+            strokeWeight(4);
+            line(3, this.bulletSize/10, 3, -this.bulletSize/10)
+            line(-9, this.bulletSize/10, -9, -this.bulletSize/10)
             pop();
-        } else {
+        }else{
             ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
         }
-
         pop()
     }
     setBullet(type) {
@@ -101,12 +117,13 @@ class bullet {
              * 4 - Armor level 2
              * 5 - armor level 3
              * 6 - Rocket Launcher
+             * 7 - STARTING WEP
              */
             case 1:
                 this.dmg = 10;
                 this.speed = 20;
                 this.travelDist = 1500;
-                this.attackSpeed = -1;
+                this.attackSpeed = 1;
                 this.automatic = false;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 this.bulletColor = "#EF330B";
@@ -120,7 +137,7 @@ class bullet {
                 this.attackSpeed = 100;
                 this.automatic = true;
                 this.bulletColor = "#C0C0C0";
-                this.bulletSize = 15;
+                this.bulletSize = 10;
                 this.bulletHitBox = 2 * this.bulletSize;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
@@ -131,20 +148,31 @@ class bullet {
                 this.attackSpeed = 100;
                 this.automatic = true;
                 this.bulletColor = "#0BDAEF";
-                this.bulletSize = 10;
+                this.bulletSize = 15;
                 this.bulletHitBox = 2 * this.bulletSize;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
             case 6:
                 this.dmg = 40;
-                this.speed = 5;
+                this.speed = 10;
                 this.travelDist = 1500;
-                this.attackSpeed = -1;
+                this.attackSpeed = 1500;
                 this.automatic = false;
                 this.bulletColor = "#cc0000";
                 this.bulletSize = 50;
                 this.bulletHitBox = 50;
-                this.bulletIcon = loadImage("jpgs/rocket.png")
+                // this.bulletIcon = loadImage("jpgs/rocket.png")
+                break;
+            case 7:
+                this.dmg = 5;
+                this.speed = 10;
+                this.travelDist = 2000;
+                this.attackSpeed = 500;
+                this.automatic = false;
+                this.bulletColor = "#000000";
+                this.bulletSize = 10;
+                this.bulletHitBox = 50;
+                // this.bulletIcon = loadImage("jpgs/rocket.png")
                 break;
         }
     }

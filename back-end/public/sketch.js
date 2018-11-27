@@ -1,42 +1,4 @@
-/* Globel Varibles */
 
-
-
-/*
-{ x: 720,
-  y: 259.5,
-  angle: 3.988891283425406,
-
-  bullets: [],
-  //weps: [],
-  //utility: [],
-  //health: 100,
-  //armor: 50,
-  //TankBody: 
-   { width: 758,
-     height: 758,
-     canvas: {},
-     drawingContext: {},
-     _pixelDensity: 1,
-     _modified: false,
-     _pixelsDirty: true,
-     pixels: [],
-     modified: true },
-  //TankTop: 
-   { width: 266,
-     height: 536,
-     canvas: {},
-     drawingContext: {},
-     _pixelDensity: 1,
-     _modified: false,
-     _pixelsDirty: true,
-     pixels: [],
-     modified: true },
-  TankAngle: 0,
-  TankStatus: true }
-
-
-*/
 // var socket = io();
 var socket;
 // var w = windowWidth;
@@ -50,6 +12,7 @@ var BodyOfTank;
 var HeadOfTank;
 var socketID;
 var mouseDownID = -1;
+var CoolDown = 0;
 
 
 /**
@@ -81,6 +44,7 @@ function setup() {
     imageMode(CENTER);
     BodyOfTank = loadImage("jpgs/Tank_body.png");
     HeadOfTank = loadImage("jpgs/Tank_head.png");
+
     // console.log(socket.id);
     socket.emit('inilizeGame');
 }
@@ -88,8 +52,11 @@ function setup() {
  * init all the varibles we need to init 
  */
 function init(data) {
+    for (var i = 0; i < data.drop.length; i++) {
+        addNewDrop(data.drop[i]);
+    }
     socketID = data.socketID;
-    console.log("IDDD: " + socketID);
+    // console.log(drops);
 }
 
 /** 
@@ -100,6 +67,10 @@ function init(data) {
  */
 function newDraw(data) {
     //console.log(data);
+    if (data.drop != -1) {
+        console.log(data.drop);
+        drops.splice(data.drop, 1);
+    }
     if (data.socketID != undefined) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
@@ -179,7 +150,8 @@ function disconnectUser(data) {
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
-    background(200, 255, 150, 255); //repaints the background to black
+    noStroke();
+    background("#009933"); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
     keyPressed();
@@ -208,33 +180,39 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
-    this.wepUsing = 6;
+    this.wepUsing = 7;
     this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
+    this.wepinUse = -1;
     this.utility = [];
     this.health = 100;
     this.armor = 50;
     this.TankBody = loadImage("jpgs/Tank_body.png");
     this.TankTop = loadImage("jpgs/Tank_head.png");
+    this.basicMgImage = loadImage("jpgs/LightMachineGun.png");
+    // this.abilityBar = loadImage("jpgs/Tank_head.png");
     this.TankAngle = 0;
     this.TankStatus = true;
     this.moX = mouseX;
     this.moY = mouseY;
     this.update = function() {
+        // console.log(wep)
         if (this.weps.length != 0) {
-            this.wepUsing = this.weps[this.weps.length - 1];
+            // this.wepUsing = this.weps[this.weps.length - 1];
             this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
         }
         // console.log(this.wepUsing);
         this.moX = mouseX;
         this.moY = mouseY;
+        let ch = -1;
         if (this.TankStatus) {
             /* displays the current health and armor */
             this.displayHealth();
+            this.displayWep();
             /* displays all the drops on the map */
-            for (var i = 0; i < drops.length; i++) {
+            for (var i = 0; i < drops.length - 1; i++) {
                 drops[i].displayDrop();
             }
-            let ch = -1;
+
             for (var i = 0; i < drops.length; i++) {
                 ch = drops[i].checkDrops(this.x, this.y);
                 if (ch != -1) {
@@ -253,12 +231,10 @@ function GeoTank() {
                 this.x = GoeTankWidth - 10;
             }
             if ((this.y > windowHeight - GeoTankLength + 25)) {
-
                 this.y = windowHeight - GeoTankLength + 25;
             }
             if ((this.y < 0 + GoeTankWidth)) {
-
-                this.y = 0 + GoeTankWidth - 10;
+                this.y = 0 + GoeTankWidth - 5;
             }
             /* translate the x y plane to be around the rect */
             translate(this.x, this.y);
@@ -284,16 +260,20 @@ function GeoTank() {
         }
         var data = {
             tank: tank,
-            socketID: socketID
+            socketID: socketID,
+            drop: ch
         }
         /* SEND IT */
         socket.emit('update', data);
     }
-    this.shoot = function(bulletType) {
+    this.shoot = function() {
         /* maybe when we render the bullets we translate the whole screen to a x-y axis type thing */
-        this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, bulletType, socketID));
+        this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, this.wepUsing, socketID));
     }
     this.displayHealth = function() {
+        if (this.armor > 100) {
+            this.armor = 100;
+        }
         fill(255, 20, 40, 255);
         // rect(0, 0, this.health * 5, 30);
         let Hbars = this.health / 5;
@@ -306,8 +286,35 @@ function GeoTank() {
         fill(0, 255, 255, 255);
         placement = 15;
         for (var i = 0; i < Abars; i++) {
-            rect(placement, 15, 20, 20);
+            rect(placement, 40, 20, 20);
             placement += 23;
+        }
+    }
+    this.displayWep = function() {
+        textSize(25);
+        let rectSpace = 320;
+        let textSpace = 310;
+        for (var i = 0; i < 4; i++) {
+            if (this.wepinUse == i) {
+                fill(0, 0, 0, 150);
+                rect(windowWidth - (windowWidth - 65), windowHeight - rectSpace, 120, 75, 10);
+                fill(255, 255, 255, 255);
+                text(i + 1, windowWidth - (windowWidth - 25), windowHeight - textSpace);
+                push();
+                translate(windowWidth - (windowWidth - 80), windowHeight - rectSpace);
+                rotate(PI/4);
+                image(this.basicMgImage, 0,0, this.basicMgImage.width / 6, this.basicMgImage.height / 6);
+                pop();
+            } else {
+
+                fill(0, 0, 0, 80);
+                rect(windowWidth - (windowWidth - 65), windowHeight - rectSpace, 120, 75, 10);
+                
+                fill(255, 255, 255, 150);
+                text(i + 1, windowWidth - (windowWidth - 25), windowHeight - textSpace);
+            }
+            rectSpace -= 80;
+            textSpace -= 80;
         }
     }
 }
@@ -315,20 +322,31 @@ function GeoTank() {
 
 /* mouse clicked */
 function mouseClicked() {
+    
     let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
     // console.log(typ.automatic);
     if (tank.TankStatus && mouseIsPressed && typ.automatic) {
-        tank.shoot(tank.wepUsing);
+        tank.shoot();
         return;
     }
-    if (tank.TankStatus && !mouseIsPressed) {
-        tank.shoot(tank.wepUsing);
+
+    if (tank.TankStatus && !mouseIsPressed && (CoolDown == 0)) {
+        CoolDown = setInterval(realeaseCD, tank.currentBullet.attackSpeed);
+        tank.shoot();
     }
 }
 
+
+function realeaseCD() {
+    // console.log("CLEAR");
+    clearInterval(CoolDown);
+    CoolDown = 0;
+}
+
+
 function AutoMaticShoot() {
-    let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
-    tank.shoot(tank.wepUsing);
+    // let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
+    tank.shoot();
 }
 
 /**
@@ -352,6 +370,47 @@ function keyPressed() {
         if (keyIsDown(83)) {
             tank.TankAngle = 0;
             tank.y += 6;
+        }
+        if (keyIsDown(49)) {
+            if (tank.weps.indexOf(1) != -1) {
+                tank.wepinUse = 0;
+                tank.wepUsing = 1;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            }
+        }
+        if (keyIsDown(50)) {
+            if (tank.weps.indexOf(2) != -1) {
+                tank.wepinUse = 1;
+                tank.wepUsing = 2;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            }
+        }
+
+        if (keyIsDown(51)) {
+            if (tank.weps.indexOf(3) != -1) {
+                tank.wepinUse = 2;
+                tank.wepUsing = 3;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            }
+        }
+
+        if (keyIsDown(52)) {
+            if (tank.weps.indexOf(6) != -1) {
+                tank.wepinUse = 3;
+                tank.wepUsing = 6;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            }
+        }
+        /* FOR TESTING -- press 0 to get all guns */
+        if (keyIsDown(48)) {
+            tank.weps.push(1);
+            tank.weps.push(2);
+            tank.weps.push(3);
+            tank.weps.push(6);
         }
     }
 }

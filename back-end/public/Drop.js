@@ -47,7 +47,7 @@ class Drop {
     checkDrops(x, y) {
         if (dist(x, y, this.x + 20, this.y + 20) < 40) {
             if (this.type == 0) {
-            	tank.armor += 50;
+            	tank.armor += 10;
             } else if (this.type == 1) {
                 tank.weps.push(1);
             } else if (this.type == 2) {
@@ -55,9 +55,9 @@ class Drop {
             } else if (this.type == 3) {
                 tank.weps.push(3);
             } else if (this.type == 4) {
-            	tank.armor += 75;
+            	tank.armor += 20;
             } else if (this.type == 5) {
-            	tank.armor += 100;
+            	tank.armor += 30;
             }else if (this.type == 6) {
                 tank.weps.push(6);
             }

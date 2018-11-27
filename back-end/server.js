@@ -19,6 +19,7 @@ const io = socketIO(server);
 
 let numPlayers = 0;
 let numSurvivors = 0;
+let drop = [];
 
 // setup for database
 var MongoClient = require('mongodb').MongoClient;
@@ -105,8 +106,21 @@ app.use("/jpgs/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 1 * 1000);
+setInterval(newDrop, 1 * 10000);
 io.on('connect', (socket) => {
+
+    /* PUT STUFF IN HERE IDNDODODO */
+    socket.on('inilizeGame', () => {
+        // console.log(socket.id);
+        // console.log(data.i);
+        // console.log(drop);
+        const newData = {
+            socketID: socket.id,
+            drop: drop
+        }
+        console.log(newData);
+        socket.emit('init', newData);
+    })
 
     console.log("Connectioned " + socket.id);
     console.log("Port" + socket);
@@ -139,6 +153,10 @@ io.on('connect', (socket) => {
     });
 
     socket.on('update', (data) => {
+        // console.log(drop.length);
+        if (data.drop != -1) {
+            drop.splice(data.drop, 1);
+        }
         // console.log(data);
 
         const newData = {
@@ -148,11 +166,12 @@ io.on('connect', (socket) => {
             TankAngle: data.tank.TankAngle,
             TankStatus: data.tank.TankStatus,
             socketID: data.socketID,
-            bullets: data.tank.bullets
+            bullets: data.tank.bullets,
+            drop: data.drop
         }
-        if(!(data.tank.TankStatus)){
+        if (!(data.tank.TankStatus)) {
             numSurvivors--;
-            if((numPlayers - numSurvivors) == 1){
+            if ((numPlayers - numSurvivors) == 1) {
                 console.log("GAME ENDING");
             }
         }
@@ -166,16 +185,6 @@ io.on('connect', (socket) => {
         socket.broadcast.emit('hit', data); //sends to everyone not including self
     })
 
-
-    /* PUT STUFF IN HERE IDNDODODO */
-    socket.on('inilizeGame', () => {
-        // console.log(socket.id);
-        // console.log(data.i);
-        const newData = {
-            socketID: socket.id
-        }
-        socket.emit('init', newData);
-    })
 
     socket.on('putPreferences', (data) => {
         // if (data != NULL) {
@@ -229,13 +238,16 @@ io.on('connect', (socket) => {
 // });
 
 function newDrop() {
-    let type = ["Armor", "Attack", "Defence"];
-    let rare = ["Common", "Rare", "Legendary"];
-    const newData = {
-        type: Math.floor(Math.random() * Math.floor(7)),
-        rare: Math.floor(Math.random() * Math.floor(3)),
-        locationX: Math.floor(Math.random() * Math.floor(1440)),
-        locationY: Math.floor(Math.random() * Math.floor(800))
+    if (drop.length <= 10) {
+        let type = ["Armor", "Attack", "Defence"];
+        let rare = ["Common", "Rare", "Legendary"];
+        const newData = {
+            type: Math.floor(Math.random() * Math.floor(7)),
+            rare: Math.floor(Math.random() * Math.floor(3)),
+            locationX: Math.floor(Math.random() * Math.floor(1440)),
+            locationY: Math.floor(Math.random() * Math.floor(800))
+        }
+        drop.push(newData);
+        io.sockets.emit('Drop', newData);
     }
-    io.sockets.emit('Drop', newData);
 }
