@@ -12,35 +12,42 @@ class bullet {
         this.H = sqrt(pow(this.y - this.moY, 2) + pow(this.x - this.moX, 2));
         this.intervalX = (this.y - this.moY) / this.H;
         this.intervalY = (this.x - this.moX) / this.H;
-        this.BasicBulletIcon = loadImage("jpgs/Tank_Bullet.png");
         this.angle = atan2(mouseY - this.yy, mouseX - this.xx);
         this.angle += PI / 2;
         this.socketIDE = socketID;
-        if (this.bulletType == "basic") {
-            this.dmg = 10;
-            this.speed = 20;
-        }
+
+        //Bullet Damage and Icon
+        this.dmg = -1;
+        this.bulletHitBox = -1;
+        this.speed = -1;
+        this.bulletIcon = -1;
+        this.travelDist = -1;
+        this.attackSpeed = -1;
+        this.automatic = -1;
+        this.bulletColor = -1;
+        this.bulletSize = -1;
+        this.setBullet(this.bulletType);
     }
     nextPoint(x, y, check, i, arr, socketIDD) {
         // console.log(this.socketIDE);
         push();
-        fill(0);
         // rotate(this.angle);
         translate(this.x, this.y);
         // console.log(mou)
-        ellipse(this.xx, this.yy, 10, 10);
+        fill(this.bulletColor);
+        ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
 
         // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
         this.xx -= this.intervalY * this.speed;
         this.yy -= this.intervalX * this.speed;
-        if (abs(this.xx) + abs(this.yy) > 1500) {
+        if (abs(this.xx) + abs(this.yy) > this.travelDist) {
             arr.splice(i, 1);
         }
         for (var i = 0; i < player.length; i++) {
             if (player[i].TankStatus) {
                 let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
                 // console.log(d);
-                if (d < 45) {
+                if (d < this.bulletHitBox) {
                     var data = {
                         socketID: player[i].socketID,
                         dmg: this.dmg
@@ -55,10 +62,49 @@ class bullet {
     }
     display(data) {
         push();
+
         translate(data.x, data.y);
-        if (data.bulletType == "basic") {
-            ellipse(data.xx, data.yy, 10, 10);
-        }
+        this.setBullet(data.bulletType);
+        fill(this.bulletColor);
+        ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
+
         pop()
+    }
+    setBullet(type) {
+        switch (type) {
+            case 1:
+                this.dmg = 10;
+                this.speed = 20;
+                this.travelDist = 1500;
+                this.attackSpeed = -1;
+                this.automatic = false;
+                //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
+                this.bulletColor = "#EF330B";
+                this.bulletSize = 10;
+                this.bulletHitBox = 2 * this.bulletSize;
+                break;
+            case 2:
+                this.dmg = 2;
+                this.speed = 25;
+                this.travelDist = 1000;
+                this.attackSpeed = 100;
+                this.automatic = true;
+                this.bulletColor = "#C0C0C0";
+                this.bulletSize = 5;
+                this.bulletHitBox = 2 * this.bulletSize;
+                //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
+                break;
+            case 3:
+                this.dmg = 3;
+                this.speed = 40;
+                this.travelDist = 500;
+                this.attackSpeed = 100;
+                this.automatic = true;
+                this.bulletColor = "#0BDAEF";
+                this.bulletSize = 10;
+                this.bulletHitBox = 2 * this.bulletSize;
+                //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
+                break;
+        }
     }
 }
