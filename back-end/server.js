@@ -105,7 +105,7 @@ app.use("/jpgs/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 5 * 1000);
+setInterval(newDrop, 1 * 1000);
 io.on('connect', (socket) => {
 
     console.log("Connectioned " + socket.id);
@@ -139,7 +139,18 @@ io.on('connect', (socket) => {
     });
 
     socket.on('update', (data) => {
-        socket.broadcast.emit('data', data); //sends to everyone not including self
+        // console.log(data);
+        const newData = {
+            x: data.tank.x,
+            y: data.tank.y,
+            angle: data.tank.angle,
+            TankAngle: data.tank.TankAngle,
+            TankStatus: data.tank.TankStatus,
+            socketID: data.socketID,
+            bullets: data.tank.bullets
+        }
+        // console.log(newData);
+        socket.broadcast.emit('data', newData); //sends to everyone not including self
     })
 
     socket.on('hitSomeone', (data) => {
@@ -213,7 +224,7 @@ function newDrop() {
     let type = ["Armor", "Attack", "Defence"];
     let rare = ["Common", "Rare", "Legendary"];
     const newData = {
-        type: Math.floor(Math.random() * Math.floor(6)),
+        type: Math.floor(Math.random() * Math.floor(7)),
         rare: Math.floor(Math.random() * Math.floor(3)),
         locationX: Math.floor(Math.random() * Math.floor(1440)),
         locationY: Math.floor(Math.random() * Math.floor(800))

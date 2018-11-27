@@ -6,12 +6,13 @@
 { x: 720,
   y: 259.5,
   angle: 3.988891283425406,
+
   bullets: [],
-  weps: [],
-  utility: [],
-  health: 100,
-  armor: 50,
-  TankBody: 
+  //weps: [],
+  //utility: [],
+  //health: 100,
+  //armor: 50,
+  //TankBody: 
    { width: 758,
      height: 758,
      canvas: {},
@@ -21,7 +22,7 @@
      _pixelsDirty: true,
      pixels: [],
      modified: true },
-  TankTop: 
+  //TankTop: 
    { width: 266,
      height: 536,
      canvas: {},
@@ -40,7 +41,6 @@
 var socket;
 // var w = windowWidth;
 // var h = windowHeight;
-var speed = 10;
 var tank;
 var GeoTankLength = 40;
 var GoeTankWidth = 30;
@@ -49,6 +49,7 @@ var drops = [];
 var BodyOfTank;
 var HeadOfTank;
 var socketID;
+var mouseDownID = -1;
 
 
 /**
@@ -98,6 +99,7 @@ function init(data) {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
+    //console.log(data);
     if (data.socketID != undefined) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
@@ -152,8 +154,8 @@ function updateCanvas() {
             rotate(player[i].ang - player[i].TankAng);
             image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
             pop();
+            let x = new bullet(0, 0, 0, 0, 0);
             for (var j = 0; j < player[i].bulletss.length; j++) {
-                let x = new bullet(0, 0, 0, 0, 0);
                 x.display(player[i].bulletss[j]);
             }
         }
@@ -181,6 +183,16 @@ function draw() {
     tank.update(); //calls update in GeoTank
     updateCanvas();
     keyPressed();
+
+    if (mouseIsPressed && (mouseDownID == -1) && tank.currentBullet.automatic) {
+        console.log("HERE");
+        mouseDownID = setInterval(AutoMaticShoot, tank.currentBullet.attackSpeed);
+    }
+    if ((mouseDownID != -1) && !mouseIsPressed) {
+        console.log("done");
+        clearInterval(mouseDownID);
+        mouseDownID = -1;
+    }
 }
 
 
@@ -196,6 +208,8 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
+    this.wepUsing = 1;
+    this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
     this.utility = [];
     this.health = 100;
     this.armor = 50;
@@ -206,6 +220,11 @@ function GeoTank() {
     this.moX = mouseX;
     this.moY = mouseY;
     this.update = function() {
+        if (this.weps.length != 0) {
+            this.wepUsing = this.weps[this.weps.length - 1];
+            this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
+        }
+        // console.log(this.wepUsing);
         this.moX = mouseX;
         this.moY = mouseY;
         if (this.TankStatus) {
@@ -296,9 +315,20 @@ function GeoTank() {
 
 /* mouse clicked */
 function mouseClicked() {
-    if (tank.TankStatus) {
-        tank.shoot("basic");
+    let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
+    // console.log(typ.automatic);
+    if (tank.TankStatus && mouseIsPressed && typ.automatic) {
+        tank.shoot(tank.wepUsing);
+        return;
     }
+    if (tank.TankStatus && !mouseIsPressed) {
+        tank.shoot(tank.wepUsing);
+    }
+}
+
+function AutoMaticShoot() {
+    let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
+    tank.shoot(tank.wepUsing);
 }
 
 /**
