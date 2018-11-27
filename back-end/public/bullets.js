@@ -70,7 +70,11 @@ class bullet {
         translate(data.x, data.y);
         this.setBullet(data.bulletType);
         fill(this.bulletColor);
-        ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
+        if (this.bulletType == 6) {
+            this.polygon(this.xx, this.yy, this.bulletSize, 10);
+        } else {
+            ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+        }
 
         pop()
     }
@@ -103,7 +107,7 @@ class bullet {
                 this.attackSpeed = 100;
                 this.automatic = true;
                 this.bulletColor = "#C0C0C0";
-                this.bulletSize = 5;
+                this.bulletSize = 15;
                 this.bulletHitBox = 2 * this.bulletSize;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
