@@ -71,9 +71,9 @@ class bullet {
         this.setBullet(data.bulletType);
         fill(this.bulletColor);
         if (this.bulletType == 6) {
-            this.polygon(this.xx, this.yy, this.bulletSize, 10);
+            this.polygon(data.xx, data.yy, this.bulletSize, 10);
         } else {
-            ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+            ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
         }
 
         pop()
