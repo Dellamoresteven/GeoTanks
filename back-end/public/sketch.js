@@ -185,11 +185,11 @@ function draw() {
     keyPressed();
 
     if (mouseIsPressed && (mouseDownID == -1) && tank.currentBullet.automatic) {
-        console.log("HERE");
+        // console.log("HERE");
         mouseDownID = setInterval(AutoMaticShoot, tank.currentBullet.attackSpeed);
     }
     if ((mouseDownID != -1) && !mouseIsPressed) {
-        console.log("done");
+        // console.log("done");
         clearInterval(mouseDownID);
         mouseDownID = -1;
     }

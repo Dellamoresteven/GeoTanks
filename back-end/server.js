@@ -151,7 +151,10 @@ io.on('connect', (socket) => {
             bullets: data.tank.bullets
         }
         if(!(data.tank.TankStatus)){
-            numPlayers--;
+            numSurvivors--;
+            if((numPlayers - numSurvivors) == 1){
+                console.log("GAME ENDING");
+            }
         }
         // console.log(newData);
         socket.broadcast.emit('data', newData); //sends to everyone not including self
@@ -204,7 +207,7 @@ io.on('connect', (socket) => {
         const newData = {
             socketID: socket.id
         }
-        numPlayers--;
+        numSurvivors--;
         socket.broadcast.emit('disconnects', newData);
     })
 

@@ -32,24 +32,23 @@ class bullet {
     nextPoint(x, y, check, i, arr, socketIDD) {
         angleMode(RADIANS);
         // console.log(this.socketIDE);
-        push();
-        // rotate(this.angle);
-        translate(this.x, this.y);
+
         // console.log(mou)
         fill(this.bulletColor);
         if (this.bulletType == 6) {
             push();
-            // translate(this.xx, this.yy);
-            rotate(this.angle);
-
-            // rotate(PI);
-            // console.log(this.angle - PI/2);
-            image(this.bulletIcon, this.xx, this.yy, this.bulletIcon.width / 50, this.bulletIcon.height / 50);
+            console.log((this.xx + this.x), (this.yy + this.x));
+            translate(this.xx + this.x, this.yy + this.x);
+            // rotate(this.angle + PI/2);
+            rect(0,0, this.bulletSize / 1.5, this.bulletSize / 4);
             pop();
-            // pop();
-        } else {
-            ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
         }
+        push();
+        // rotate(this.angle);
+        translate(this.x, this.y);
+
+        // ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+
 
         // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
         this.xx -= this.intervalY * this.speed;
@@ -142,7 +141,7 @@ class bullet {
                 this.travelDist = 2000;
                 this.attackSpeed = -1;
                 this.automatic = false;
-                this.bulletColor = "#EF0BD3";
+                this.bulletColor = "#cc0000";
                 this.bulletSize = 50;
                 this.bulletHitBox = 50;
                 this.bulletIcon = loadImage("jpgs/rocket.png")
