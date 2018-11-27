@@ -4,7 +4,6 @@ import List from 'react-list-select';
 import './Preferences.css';
 
 var port = window.location.href;
-
 class Preferences extends Component {
 	constructor(props) {
 		
@@ -16,16 +15,21 @@ class Preferences extends Component {
 				'Defense',
 				'Utility',
 			],
+			// readyToJoin: false,
 		}
 	}
 
 	handleChange = (selected, tileIndex) => {
 		this.props.clicked[tileIndex] = selected;
 		console.log(this.props.clicked);
+		// number of things that are clicked
 		if (Object.keys(this.props.clicked).length == 9) {
-			const socket = socketIOClient(this.state.endpoint);
-			socket.emit('putPreferences', this.props.clicked);
+			const socket = socketIOClient(port);
+			socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
+			// this.setState({readyToJoin: 'true'});
 		}
+		// const socket = socketIOClient(port);
+		// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
 	}
 
 	getPowerList(tileIndex) {
@@ -68,16 +72,18 @@ class Preferences extends Component {
 	}
 
 	render() {
+		console.log("READY TO JOIN IS " + this.state.readyToJoin)
 		return (
-			<div> 
-				<h1> Choose your tiles respective to positions on the car! </h1>
-				<h4> Choosing Attack tiles will allow you to hold more weapons </h4>
-				<h4> The Defense tiles help you defend yourself when getting hit by other GeoTanks </h4>
-				<h4> The Utility tiles give your tank bonus effects </h4>
-				<h4> NOTE: You will not be allowed to join the game until you have chosen all tiles </h4>
-				{this.getPowerTable()}
-				<a href = {this.state.endpoint} className = "Href" > START! </a>
-			</div>
+		<div> 
+			<h1> Hey {this.props.playerName} </h1>
+			<h1> Choose your tiles respective to positions on the car! </h1>
+			<h4> Choosing Attack tiles will allow you to hold more weapons </h4>
+			<h4> The Defense tiles help you defend yourself when getting hit by other GeoTanks </h4>
+			<h4> The Utility tiles give your tank bonus effects </h4>
+			<h4> NOTE: If you do not choose a tile, it will default to an utility tile </h4>
+			{this.getPowerTable()}
+			<a href = {this.state.endpoint} className = "Href" > START! </a>
+		</div>
 		);
 	}
 }
