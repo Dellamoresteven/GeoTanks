@@ -35,7 +35,11 @@ class bullet {
         translate(this.x, this.y);
         // console.log(mou)
         fill(this.bulletColor);
-        ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+        if (this.bulletType == 6) {
+            this.polygon(this.xx, this.yy, this.bulletSize, 10);
+        } else {
+            ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+        }
 
         // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
         this.xx -= this.intervalY * this.speed;
@@ -72,6 +76,15 @@ class bullet {
     }
     setBullet(type) {
         switch (type) {
+            /**
+             * 0 - Armour Basic
+             * 1 - Basic SMG
+             * 2 - MG
+             * 3 - Heavy MG
+             * 4 - Armor level 2
+             * 5 - armor level 3
+             * 6 - Rocket Launcher
+             */
             case 1:
                 this.dmg = 10;
                 this.speed = 20;
@@ -94,7 +107,7 @@ class bullet {
                 this.bulletHitBox = 2 * this.bulletSize;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
-            case 3:
+            case 3: 
                 this.dmg = 3;
                 this.speed = 40;
                 this.travelDist = 500;
@@ -105,6 +118,27 @@ class bullet {
                 this.bulletHitBox = 2 * this.bulletSize;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
+            case 6: 
+                this.dmg = 40;
+                this.speed = 5;
+                this.travelDist = 2000;
+                this.attackSpeed = -1;
+                this.automatic = false;
+                this.bulletColor = "#EF0BD3";
+                this.bulletSize = 50;
+                this.bulletHitBox = 50;
+                //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
+                break;
         }
+    }
+    polygon(x, y, radius, npoints) {
+      var angle = TWO_PI / npoints;
+      beginShape();
+      for (var a = 0; a < TWO_PI; a += angle) {
+        var sx = x + cos(a) * radius;
+        var sy = y + sin(a) * radius;
+        vertex(sx, sy);
+      }
+      endShape(CLOSE);
     }
 }
