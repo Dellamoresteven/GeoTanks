@@ -12,6 +12,8 @@ var HeadOfTank;
 var socketID;
 var mouseDownID = -1;
 var CoolDown = 0;
+var map;
+
 
 
 /**
@@ -20,8 +22,8 @@ var CoolDown = 0;
  */
 
 function setup() {
+    map = new MapObjects();
     cursor(CROSS);
-
     socket = io.connect(window.location.host);
     socket.on('data', newDraw);
     // socket.on('bulletUpdate', addNewBullet);
@@ -83,6 +85,7 @@ function newDraw(data) {
             player.push(new Players(data));
         }
     }
+
 }
 
 /**
@@ -158,14 +161,14 @@ function draw() {
     keyPressed();
 
     if (mouseIsPressed && (mouseDownID == -1) && tank.currentBullet.automatic) {
-        // console.log("HERE");
         mouseDownID = setInterval(AutoMaticShoot, tank.currentBullet.attackSpeed);
     }
     if ((mouseDownID != -1) && !mouseIsPressed) {
-        // console.log("done");
         clearInterval(mouseDownID);
         mouseDownID = -1;
     }
+    map.renderMap();
+
 }
 
 
@@ -270,7 +273,7 @@ function GeoTank() {
                 x: this.bullets[i].x,
                 y: this.bullets[i].y
             }
-            
+
             bulletData.push(bulletIndv);
         }
 

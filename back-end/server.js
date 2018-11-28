@@ -97,6 +97,7 @@ app.use("/sketch.js", express.static(__dirname + "/public/sketch.js"));
 app.use("/players.js", express.static(__dirname + "/public/players.js"));
 app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
 app.use("/bullets.js", express.static(__dirname + "/public/bullets.js"));
+app.use("/map.js", express.static(__dirname + "/public/map.js"));
 app.use("/jpgs/*", function(req, res) {
     // console.log("HERE: ")
     // console.log(req.params[0]);
@@ -239,7 +240,7 @@ io.on('connect', (socket) => {
 // });
 
 function newDrop() {
-    console.log(drop.length);
+    // console.log(drop.length);
     if (drop.length <= 10) {
         let type = ["Armor", "Attack", "Defence"];
         let rare = ["Common", "Rare", "Legendary"];
