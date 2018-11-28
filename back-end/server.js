@@ -106,7 +106,7 @@ app.use("/jpgs/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 1 * 10000);
+setInterval(newDrop, 1 * 5000);
 io.on('connect', (socket) => {
 
     /* PUT STUFF IN HERE IDNDODODO */

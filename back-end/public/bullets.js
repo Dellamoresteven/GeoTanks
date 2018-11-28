@@ -66,11 +66,11 @@ class bullet {
             this.yy -= this.intervalX * this.speed;
         }
         if (abs(this.xx) + abs(this.yy) > this.travelDist) {
-            this.explosionState++;
-            this.explode(this);
-            if (this.explosionState >= 5) {
-                arr.splice(i, 1);
-            }
+            // this.explosionState++;
+            // this.explode(this);
+            // if (this.explosionState >= 5) {
+            arr.splice(i, 1);
+            // }
         }
         for (var i = 0; i < player.length; i++) {
             if (player[i].TankStatus) {
