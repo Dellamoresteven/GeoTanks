@@ -217,7 +217,7 @@ io.on('connect', (socket) => {
         const newData = {
             socketID: socket.id
         }
-        numSurvivors--;
+        numPlayers--;
         socket.broadcast.emit('disconnects', newData);
     })
 
