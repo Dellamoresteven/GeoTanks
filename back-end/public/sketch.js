@@ -1,4 +1,3 @@
-
 // var socket = io();
 var socket;
 // var w = windowWidth;
@@ -66,9 +65,10 @@ function init(data) {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
+    // console.log(data.bullets);
     //console.log(data);
     if (data.drop != -1) {
-        console.log(data.drop);
+        // console.log(data.drop);
         drops.splice(data.drop, 1);
     }
     if (data.socketID != undefined) {
@@ -94,7 +94,8 @@ function addNewDrop(data) {
 }
 
 function minusHealth(data) {
-    console.log(data);
+    // console.log(data.dmg);
+    // console.log(data);
     if (data.socketID == socketID) {
         if (tank.armor < data.dmg) {
             data.dmg -= tank.armor;
@@ -186,8 +187,8 @@ function GeoTank() {
     this.utility = [];
     this.health = 100;
     this.armor = 50;
-    this.TankBody = loadImage("jpgs/Tank_body.png");
-    this.TankTop = loadImage("jpgs/Tank_head.png");
+    // this.TankBody = loadImage("jpgs/Tank_body.png");
+    // this.TankTop = loadImage("jpgs/Tank_head.png");
     this.basicMgImage = loadImage("jpgs/LightMachineGun.png");
     // this.abilityBar = loadImage("jpgs/Tank_head.png");
     this.TankAngle = 0;
@@ -246,9 +247,9 @@ function GeoTank() {
 
             fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
             rotate(this.TankAngle);
-            image(this.TankBody, 0, 0, this.TankBody.width / 10, this.TankBody.height / 10);
+            image(BodyOfTank, 0, 0, BodyOfTank.width / 10, BodyOfTank.height / 10);
             rotate(this.angle - this.TankAngle);
-            image(this.TankTop, 0, 0, this.TankTop.width / 10, this.TankTop.height / 10);
+            image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
             // rect(0, 0, GoeTankWidth, GeoTankLength);
 
             /* to reset the translated screen to the old value that push() saved */
@@ -258,11 +259,43 @@ function GeoTank() {
             }
 
         }
-        var data = {
-            tank: tank,
-            socketID: socketID,
-            drop: ch
+        let bulletData = [];
+        for (var i = 0; i < this.bullets.length; i++) {
+            let bulletIndv = {
+                xx: this.bullets[i].xx,
+                yy: this.bullets[i].yy,
+                angle: this.bullets[i].angle,
+                bulletType: this.bullets[i].bulletType,
+                explosionState: this.bullets[i].explosionState,
+                x: this.bullets[i].x,
+                y: this.bullets[i].y
+            }
+            
+            bulletData.push(bulletIndv);
         }
+
+        // console.log(bulletData);
+        let data = {
+            x: this.x,
+            y: this.y,
+            angle: this.angle,
+            TankAngle: this.TankAngle,
+            TankStatus: this.TankStatus,
+            socketID: socketID,
+            bullets: bulletData,
+            drop: drops
+        }
+        // console.log("\n\n\n\n\n\n");
+        // console.log(data.bullets);
+
+
+
+
+        // var data = {
+        //     tank: tank,
+        //     socketID: socketID,
+        //     drop: ch
+        // }
         /* SEND IT */
         socket.emit('update', data);
     }
@@ -302,14 +335,14 @@ function GeoTank() {
                 text(i + 1, windowWidth - (windowWidth - 25), windowHeight - textSpace);
                 push();
                 translate(windowWidth - (windowWidth - 80), windowHeight - rectSpace);
-                rotate(PI/4);
-                image(this.basicMgImage, 0,0, this.basicMgImage.width / 6, this.basicMgImage.height / 6);
+                rotate(PI / 4);
+                image(this.basicMgImage, 0, 0, this.basicMgImage.width / 6, this.basicMgImage.height / 6);
                 pop();
             } else {
 
                 fill(0, 0, 0, 80);
                 rect(windowWidth - (windowWidth - 65), windowHeight - rectSpace, 120, 75, 10);
-                
+
                 fill(255, 255, 255, 150);
                 text(i + 1, windowWidth - (windowWidth - 25), windowHeight - textSpace);
             }
@@ -322,7 +355,7 @@ function GeoTank() {
 
 /* mouse clicked */
 function mouseClicked() {
-    
+
     let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
     // console.log(typ.automatic);
     if (tank.TankStatus && mouseIsPressed && typ.automatic) {

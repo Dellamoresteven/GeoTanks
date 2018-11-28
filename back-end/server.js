@@ -118,7 +118,7 @@ io.on('connect', (socket) => {
             socketID: socket.id,
             drop: drop
         }
-        console.log(newData);
+        // console.log(newData);
         socket.emit('init', newData);
     })
 
@@ -153,30 +153,31 @@ io.on('connect', (socket) => {
     });
 
     socket.on('update', (data) => {
+        // console.log(data);
         // console.log(drop.length);
         if (data.drop != -1) {
             drop.splice(data.drop, 1);
         }
         // console.log(data);
 
-        const newData = {
-            x: data.tank.x,
-            y: data.tank.y,
-            angle: data.tank.angle,
-            TankAngle: data.tank.TankAngle,
-            TankStatus: data.tank.TankStatus,
-            socketID: data.socketID,
-            bullets: data.tank.bullets,
-            drop: data.drop
-        }
-        if (!(data.tank.TankStatus)) {
+        // const newData = {
+        //     x: data.tank.x,
+        //     y: data.tank.y,
+        //     angle: data.tank.angle,
+        //     TankAngle: data.tank.TankAngle,
+        //     TankStatus: data.tank.TankStatus,
+        //     socketID: data.socketID,
+        //     bullets: data.tank.bullets,
+        //     drop: data.drop
+        // }
+        if (!(data.TankStatus)) {
             numSurvivors--;
             if ((numPlayers - numSurvivors) == 1) {
                 console.log("GAME ENDING");
             }
         }
         // console.log(newData);
-        socket.broadcast.emit('data', newData); //sends to everyone not including self
+        socket.broadcast.emit('data', data); //sends to everyone not including self
     })
 
     socket.on('hitSomeone', (data) => {

@@ -27,9 +27,11 @@ class bullet {
         this.automatic = -1;
         this.bulletColor = -1;
         this.bulletSize = -1;
+        this.explosionState = 0;
         this.setBullet(this.bulletType);
     }
     nextPoint(x, y, check, i, arr, socketIDD) {
+        // console.log("F");
         angleMode(RADIANS);
         // console.log(this.socketIDE);
 
@@ -38,45 +40,57 @@ class bullet {
         // rotate(this.angle);
         translate(this.x, this.y);
         fill(this.bulletColor);
-        if (this.bulletType == 6) {
-            push();
-            //console.log((this.xx + this.x), (this.yy + this.x));
-            translate(this.xx, this.yy);
-            rotate(this.angle - PI / 2);
-            rect(0,0, this.bulletSize / 1.5, this.bulletSize / 4);
-            fill(255);
-            triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
-            // line(0,0, 1000, 1000);
-            stroke(0);
-            strokeWeight(4);
-            line(3, this.bulletSize/10, 3, -this.bulletSize/10)
-            line(-9, this.bulletSize/10, -9, -this.bulletSize/10)
-            pop();
-        }else{
-            ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+        if (this.explosionState == 0) {
+            if (this.bulletType == 6) {
+                push();
+                //console.log((this.xx + this.x), (this.yy + this.x));
+                translate(this.xx, this.yy);
+                rotate(this.angle - PI / 2);
+                rect(0, 0, this.bulletSize / 1.5, this.bulletSize / 4);
+                fill(255);
+                triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
+                // line(0,0, 1000, 1000);
+                stroke(0);
+                strokeWeight(4);
+                line(3, this.bulletSize / 10, 3, -this.bulletSize / 10)
+                line(-9, this.bulletSize / 10, -9, -this.bulletSize / 10)
+                pop();
+            } else {
+                ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+            }
+
+
+            // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
+
+            this.xx -= this.intervalY * this.speed;
+            this.yy -= this.intervalX * this.speed;
         }
-
-        
-
-
-        // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
-        this.xx -= this.intervalY * this.speed;
-        this.yy -= this.intervalX * this.speed;
         if (abs(this.xx) + abs(this.yy) > this.travelDist) {
-            arr.splice(i, 1);
+            this.explosionState++;
+            this.explode(this);
+            if (this.explosionState >= 5) {
+                arr.splice(i, 1);
+            }
         }
         for (var i = 0; i < player.length; i++) {
             if (player[i].TankStatus) {
                 let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
                 // console.log(d);
                 if (d < this.bulletHitBox) {
-                    var data = {
-                        socketID: player[i].socketID,
-                        dmg: this.dmg
+                    this.explosionState++;
+                    this.explode(this);
+
+                    // console.log("HERE");
+                    if (this.explosionState == 1) {
+                        var data = {
+                            socketID: player[i].socketID,
+                            dmg: this.dmg
+                        }
+                        /* SEND IT */
+                        socket.emit('hitSomeone', data);
+                        arr.splice(i, 1);
                     }
-                    /* SEND IT */
-                    socket.emit('hitSomeone', data);
-                    arr.splice(i, 1);
+
                 }
             }
         }
@@ -88,22 +102,27 @@ class bullet {
         translate(data.x, data.y);
         this.setBullet(data.bulletType);
         fill(this.bulletColor);
-        if (data.bulletType == 6) {
-            push();
-            //console.log((this.xx + this.x), (this.yy + this.x));
-            translate(data.xx, data.yy);
-            rotate(data.angle - PI / 2);
-            rect(0,0, this.bulletSize / 1.5, this.bulletSize / 4);
-            fill(255);
-            triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
-            // line(0,0, 1000, 1000);
-            stroke(0);
-            strokeWeight(4);
-            line(3, this.bulletSize/10, 3, -this.bulletSize/10)
-            line(-9, this.bulletSize/10, -9, -this.bulletSize/10)
-            pop();
-        }else{
-            ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
+        if (data.explosionState == 0) {
+            if (data.bulletType == 6) {
+                push();
+                //console.log((this.xx + this.x), (this.yy + this.x));
+                translate(data.xx, data.yy);
+                rotate(data.angle - PI / 2);
+
+                rect(0, 0, this.bulletSize / 1.5, this.bulletSize / 4);
+                fill(255);
+                triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
+                // line(0,0, 1000, 1000);
+                stroke(0);
+                strokeWeight(4);
+                line(3, this.bulletSize / 10, 3, -this.bulletSize / 10)
+                line(-9, this.bulletSize / 10, -9, -this.bulletSize / 10)
+                pop();
+            } else {
+                ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
+            }
+        } else {
+            this.explode(data);
         }
         pop()
     }
@@ -155,7 +174,7 @@ class bullet {
             case 6:
                 this.dmg = 40;
                 this.speed = 10;
-                this.travelDist = 1500;
+                this.travelDist = 1000;
                 this.attackSpeed = 1500;
                 this.automatic = false;
                 this.bulletColor = "#cc0000";
@@ -176,14 +195,30 @@ class bullet {
                 break;
         }
     }
-    polygon(x, y, radius, npoints) {
-        var angle = TWO_PI / npoints;
-        beginShape();
-        for (var a = 0; a < TWO_PI; a += angle) {
-            var sx = x + cos(a) * radius;
-            var sy = y + sin(a) * radius;
-            vertex(sx, sy);
+    // polygon(x, y, radius, npoints) {
+    //     var angle = TWO_PI / npoints;
+    //     beginShape();
+    //     for (var a = 0; a < TWO_PI; a += angle) {
+    //         var sx = x + cos(a) * radius;
+    //         var sy = y + sin(a) * radius;
+    //         vertex(sx, sy);
+    //     }
+    //     endShape(CLOSE);
+    // }
+
+    explode(data) {
+        // console.log(data);
+        // console.log("HERE");
+        if (data.explosionState != 0) {
+            if (data.bulletType == 6) {
+                push();
+                fill("#ffff00");
+                translate(data.xx, data.yy);
+                ellipse(0, 0, 50 + data.explosionState * 4, 50 + data.explosionState * 4);
+                /* Rocket explosion phase */
+                pop();
+            }
         }
-        endShape(CLOSE);
+
     }
 }
