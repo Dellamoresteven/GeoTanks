@@ -283,7 +283,7 @@ function GeoTank() {
             TankStatus: this.TankStatus,
             socketID: socketID,
             bullets: bulletData,
-            drop: drops
+            drop: ch
         }
         // console.log("\n\n\n\n\n\n");
         // console.log(data.bullets);

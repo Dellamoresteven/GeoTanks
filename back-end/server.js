@@ -239,6 +239,7 @@ io.on('connect', (socket) => {
 // });
 
 function newDrop() {
+    console.log(drop.length);
     if (drop.length <= 10) {
         let type = ["Armor", "Attack", "Defence"];
         let rare = ["Common", "Rare", "Legendary"];

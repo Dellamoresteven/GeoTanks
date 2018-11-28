@@ -66,11 +66,11 @@ class bullet {
             this.yy -= this.intervalX * this.speed;
         }
         if (abs(this.xx) + abs(this.yy) > this.travelDist) {
-            // this.explosionState++;
-            // this.explode(this);
-            // if (this.explosionState >= 5) {
-            arr.splice(i, 1);
-            // }
+            this.explosionState++;
+            this.explode(this);
+            if (this.explosionState >= 5) {
+                arr.splice(i, 1);
+            }
         }
         for (var i = 0; i < player.length; i++) {
             if (player[i].TankStatus) {
@@ -78,7 +78,7 @@ class bullet {
                 // console.log(d);
                 if (d < this.bulletHitBox) {
                     this.explosionState++;
-                    this.explode(this);
+                    // this.explode(this);
 
                     // console.log("HERE");
                     if (this.explosionState == 1) {
@@ -150,25 +150,25 @@ class bullet {
                 this.bulletHitBox = 2 * this.bulletSize;
                 break;
             case 2:
-                this.dmg = 2;
+                this.dmg = 5;
                 this.speed = 25;
                 this.travelDist = 1000;
                 this.attackSpeed = 100;
                 this.automatic = true;
                 this.bulletColor = "#C0C0C0";
                 this.bulletSize = 10;
-                this.bulletHitBox = 2 * this.bulletSize;
+                this.bulletHitBox = 50;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
             case 3:
-                this.dmg = 3;
+                this.dmg = 7;
                 this.speed = 40;
-                this.travelDist = 500;
+                this.travelDist = 700;
                 this.attackSpeed = 100;
                 this.automatic = true;
                 this.bulletColor = "#0BDAEF";
                 this.bulletSize = 15;
-                this.bulletHitBox = 2 * this.bulletSize;
+                this.bulletHitBox = 50;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
                 break;
             case 6:
