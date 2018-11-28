@@ -87,6 +87,7 @@ class bullet {
                             dmg: this.dmg
                         }
                         /* SEND IT */
+                        this.explosionState--;
                         socket.emit('hitSomeone', data);
                         arr.splice(i, 1);
                     }
