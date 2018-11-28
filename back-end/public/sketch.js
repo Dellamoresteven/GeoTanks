@@ -154,6 +154,10 @@ function disconnectUser(data) {
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
+    camera.on();
+    camera.zoom = tank.zoom;
+    camera.position.x = tank.x;
+    camera.position.y = tank.y;
     noStroke();
     background("#009933"); //repaints the background to black
     tank.update(); //calls update in GeoTank
@@ -198,6 +202,7 @@ function GeoTank() {
     this.TankStatus = true;
     this.moX = mouseX;
     this.moY = mouseY;
+    this.zoom = 2.5;
     this.update = function() {
         // console.log(wep)
         if (this.weps.length != 0) {
@@ -243,7 +248,7 @@ function GeoTank() {
             /* translate the x y plane to be around the rect */
             translate(this.x, this.y);
             /* finding the angle of a vector of the mouseX and mouse Y */
-            this.angle = atan2(mouseY - this.y, mouseX - this.x);
+            this.angle = atan2(mouseY - displayHeight/2, mouseX -displayWidth/2);
             this.angle += PI / 2;
 
             /* setting up what we want to be shared to everything */

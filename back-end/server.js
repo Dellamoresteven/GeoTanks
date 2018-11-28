@@ -93,6 +93,7 @@ app.use("/gamer", express.static(__dirname + "/public/index.html"));
 app.use("/p5.min.js", express.static(__dirname + "/public/p5.min.js"));
 app.use("/addons/p5.dom.min.js", express.static(__dirname + "/public/addons/p5.dom.min.js"));
 app.use("/addons/p5.sound.min.js", express.static(__dirname + "/public/addons/p5.sound.min.js"));
+app.use("/addons/p5.play.js", express.static(__dirname + "/public/addons/p5.play.js"));
 app.use("/sketch.js", express.static(__dirname + "/public/sketch.js"));
 app.use("/players.js", express.static(__dirname + "/public/players.js"));
 app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
