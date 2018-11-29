@@ -215,8 +215,8 @@ function GeoTank() {
         let ch = -1;
         if (this.TankStatus) {
             /* displays the current health and armor */
-            this.displayHealth();
-            this.displayWep();
+            // this.displayHealth();
+            // this.displayWep();
             /* displays all the drops on the map */
             for (var i = 0; i < drops.length - 1; i++) {
                 drops[i].displayDrop();
@@ -247,8 +247,11 @@ function GeoTank() {
             }
             /* translate the x y plane to be around the rect */
             translate(this.x, this.y);
+            angleMode(RADIANS);
             /* finding the angle of a vector of the mouseX and mouse Y */
-            this.angle = atan2(mouseY - displayHeight/2, mouseX -displayWidth/2);
+            this.angle = atan2(mouseY - displayHeight/2, mouseX - displayWidth/2);
+            console.log(displayHeight/2);
+            console.log(displayWidth/2);
             this.angle += PI / 2;
 
             /* setting up what we want to be shared to everything */
@@ -453,6 +456,14 @@ function keyPressed() {
             tank.weps.push(3);
             tank.weps.push(6);
         }
+        if (keyIsDown(189)) {
+            tank.zoom -= .01;
+        }
+        if (keyIsDown(187)) {
+            tank.zoom += .01;
+        }
+        //http://keycode.info
+
     }
 }
 

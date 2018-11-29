@@ -13,7 +13,7 @@ class bullet {
         this.H = sqrt(pow(this.y - this.moY, 2) + pow(this.x - this.moX, 2));
         this.intervalX = (this.y - this.moY) / this.H;
         this.intervalY = (this.x - this.moX) / this.H;
-        this.angle = atan2(mouseY - this.y, mouseX - this.x);
+        this.angle = atan2(mouseY - displayHeight / 2, mouseX - displayWidth / 2);
         this.angle += PI / 2;
         this.socketIDE = socketID;
 
@@ -97,36 +97,36 @@ class bullet {
         }
         pop();
     }
-    display(data) {
-        push();
+    // display(data) {
+    //     push();
 
-        translate(data.x, data.y);
-        this.setBullet(data.bulletType);
-        fill(this.bulletColor);
-        if (data.explosionState == 0) {
-            if (data.bulletType == 6) {
-                push();
-                //console.log((this.xx + this.x), (this.yy + this.x));
-                translate(data.xx, data.yy);
-                rotate(data.angle - PI / 2);
+    //     translate(data.x, data.y);
+    //     this.setBullet(data.bulletType);
+    //     fill(this.bulletColor);
+    //     if (data.explosionState == 0) {
+    //         if (data.bulletType == 6) {
+    //             push();
+    //             //console.log((this.xx + this.x), (this.yy + this.x));
+    //             translate(data.xx, data.yy);
+    //             rotate(data.angle - PI / 2);
 
-                rect(0, 0, this.bulletSize / 1.5, this.bulletSize / 4);
-                fill(255);
-                triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
-                // line(0,0, 1000, 1000);
-                stroke(0);
-                strokeWeight(4);
-                line(3, this.bulletSize / 10, 3, -this.bulletSize / 10)
-                line(-9, this.bulletSize / 10, -9, -this.bulletSize / 10)
-                pop();
-            } else {
-                ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
-            }
-        } else {
-            this.explode(data);
-        }
-        pop()
-    }
+    //             rect(0, 0, this.bulletSize / 1.5, this.bulletSize / 4);
+    //             fill(255);
+    //             triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
+    //             // line(0,0, 1000, 1000);
+    //             stroke(0);
+    //             strokeWeight(4);
+    //             line(3, this.bulletSize / 10, 3, -this.bulletSize / 10)
+    //             line(-9, this.bulletSize / 10, -9, -this.bulletSize / 10)
+    //             pop();
+    //         } else {
+    //             ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
+    //         }
+    //     } else {
+    //         this.explode(data);
+    //     }
+    //     pop()
+    // }
     setBullet(type) {
         switch (type) {
             /**
