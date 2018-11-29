@@ -249,9 +249,9 @@ function GeoTank() {
             translate(this.x, this.y);
             angleMode(RADIANS);
             /* finding the angle of a vector of the mouseX and mouse Y */
-            this.angle = atan2(mouseY - displayHeight/2, mouseX - displayWidth/2);
-            console.log(displayHeight/2);
-            console.log(displayWidth/2);
+            this.angle = atan2(mouseY - displayHeight / 2, mouseX - displayWidth / 2);
+            console.log(displayHeight / 2);
+            console.log(displayWidth / 2);
             this.angle += PI / 2;
 
             /* setting up what we want to be shared to everything */
@@ -463,7 +463,8 @@ function keyPressed() {
             tank.zoom += .01;
         }
         //http://keycode.info
-
+        camera.position.x = tank.x;
+        camera.position.y = tank.y;
     }
 }
 
