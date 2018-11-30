@@ -203,6 +203,9 @@ function GeoTank() {
     this.moY = mouseY;
     this.zoom = 1.7;
     this.update = function() {
+        if(this.health <= 0){
+            this.TankStatus = false;
+        }
         if (this.weps.length != 0) {
             this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
         }
@@ -264,6 +267,13 @@ function GeoTank() {
                 this.bullets[i].nextPoint(this.x, this.y, 0, i, this.bullets, socketID);
             }
 
+        }else{
+            this.zoom = 1;
+            push();
+            textSize(20);
+            textFont('Helvetica');
+            text("You are dead" , this.x- 60, this.y - 70);
+            pop();
         }
         let bulletData = [];
         for (var i = 0; i < this.bullets.length; i++) {
@@ -485,9 +495,33 @@ function keyPressed() {
             tank.health -= 10;
         }
         //http://keycode.info
-        camera.position.x = tank.x;
+
+    }else{
+        if (keyIsDown(68)) {
+
+            tank.x += 6;
+            tank.TankAngle = 80;
+            // fill(139, 69, 19, 200);
+            // setInterval(DisplayDust, 17, tank.x - 50, tank.y + 35);
+        } if (keyIsDown(65)) {
+
+            // tank.TankAngle = 80;
+            tank.x -= 6;
+        } if (keyIsDown(87)) {
+            // DisplayTracks(tank.x + 28, tank.y + 40, 0);
+            // DisplayTracks(tank.x - 28, tank.y + 40, 0)
+            tank.TankAngle = 0;
+            tank.y -= 6;
+        } if (keyIsDown(83)) {
+            // DisplayTracks(tank.x + 28, tank.y - 40, PI);
+            // DisplayTracks(tank.x - 28, tank.y - 40, PI)
+            // tank.TankAngle = 0;
+            tank.y += 6;
+        }
+                camera.position.x = tank.x;
         camera.position.y = tank.y;
     }
+
 }
 
 /**
