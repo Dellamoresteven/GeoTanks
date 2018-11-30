@@ -47,6 +47,7 @@ class Drop {
     checkDrops(x, y) {
         if (dist(x, y, this.x + 20, this.y + 20) < 40) {
             if (this.type == 0) {
+                // tank.zoom = 1;
             	tank.armor += 10;
             } else if (this.type == 1) {
                 tank.weps.push(1);

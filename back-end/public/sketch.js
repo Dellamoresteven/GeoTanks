@@ -13,6 +13,7 @@ var socketID;
 var mouseDownID = -1;
 var CoolDown = 0;
 var map;
+var tireTracksPNG;
 
 
 
@@ -45,6 +46,7 @@ function setup() {
     imageMode(CENTER);
     BodyOfTank = loadImage("jpgs/Tank_body.png");
     HeadOfTank = loadImage("jpgs/Tank_head.png");
+    tireTracksPNG = loadImage("jpgs/TireTracks.png")
 
     // console.log(socket.id);
     socket.emit('inilizeGame');
@@ -194,19 +196,14 @@ function GeoTank() {
     this.utility = [];
     this.health = 100;
     this.armor = 50;
-    // this.TankBody = loadImage("jpgs/Tank_body.png");
-    // this.TankTop = loadImage("jpgs/Tank_head.png");
     this.basicMgImage = loadImage("jpgs/LightMachineGun.png");
-    // this.abilityBar = loadImage("jpgs/Tank_head.png");
     this.TankAngle = 0;
     this.TankStatus = true;
     this.moX = mouseX;
     this.moY = mouseY;
-    this.zoom = 2.5;
+    this.zoom = 1.7;
     this.update = function() {
-        // console.log(wep)
         if (this.weps.length != 0) {
-            // this.wepUsing = this.weps[this.weps.length - 1];
             this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
         }
         // console.log(this.wepUsing);
@@ -215,7 +212,7 @@ function GeoTank() {
         let ch = -1;
         if (this.TankStatus) {
             /* displays the current health and armor */
-            // this.displayHealth();
+            this.displayHealth();
             // this.displayWep();
             /* displays all the drops on the map */
             for (var i = 0; i < drops.length - 1; i++) {
@@ -233,25 +230,23 @@ function GeoTank() {
             /* This is to start translating the screen */
             push();
             /* check to make sure they cant go off the screen */
-            if ((this.x > windowWidth - GoeTankWidth + 10)) {
-                this.x = windowWidth - GoeTankWidth + 10;
-            }
-            if ((this.x < 0 + GoeTankWidth - 10)) {
-                this.x = GoeTankWidth - 10;
-            }
-            if ((this.y > windowHeight - GeoTankLength + 25)) {
-                this.y = windowHeight - GeoTankLength + 25;
-            }
-            if ((this.y < 0 + GoeTankWidth)) {
-                this.y = 0 + GoeTankWidth - 5;
-            }
+            // if ((this.x > windowWidth - GoeTankWidth + 10)) {
+            //     this.x = windowWidth - GoeTankWidth + 10;
+            // }
+            // if ((this.x < 0 + GoeTankWidth - 10)) {
+            //     this.x = GoeTankWidth - 10;
+            // }
+            // if ((this.y > windowHeight - GeoTankLength + 25)) {
+            //     this.y = windowHeight - GeoTankLength + 25;
+            // }
+            // if ((this.y < 0 + GoeTankWidth)) {
+            //     this.y = 0 + GoeTankWidth - 5;
+            // }
             /* translate the x y plane to be around the rect */
             translate(this.x, this.y);
             angleMode(RADIANS);
             /* finding the angle of a vector of the mouseX and mouse Y */
-            this.angle = atan2(mouseY - displayHeight / 2, mouseX - displayWidth / 2);
-            console.log(displayHeight / 2);
-            console.log(displayWidth / 2);
+            this.angle = atan2(mouseY - windowHeight / 2, mouseX - windowWidth / 2);
             this.angle += PI / 2;
 
             /* setting up what we want to be shared to everything */
@@ -296,18 +291,6 @@ function GeoTank() {
             bullets: bulletData,
             drop: ch
         }
-        // console.log("\n\n\n\n\n\n");
-        // console.log(data.bullets);
-
-
-
-
-        // var data = {
-        //     tank: tank,
-        //     socketID: socketID,
-        //     drop: ch
-        // }
-        /* SEND IT */
         socket.emit('update', data);
     }
     this.shoot = function() {
@@ -315,24 +298,35 @@ function GeoTank() {
         this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, this.wepUsing, socketID));
     }
     this.displayHealth = function() {
+        // console.log(this.health);
+        push();
         if (this.armor > 100) {
             this.armor = 100;
         }
+        stroke(255, 20, 40);
+        fill(255, 20, 40, 50);
+        rect((this.x), this.y + 50, 105, 14);
         fill(255, 20, 40, 255);
-        // rect(0, 0, this.health * 5, 30);
         let Hbars = this.health / 5;
         let Abars = this.armor / 5;
         let placement = 15;
+        // rect((this.x), this.y + 50, 120, 10);
         for (var i = 0; i < Hbars; i++) {
-            rect(placement, 15, 20, 20);
+            rect((this.x), this.y + 50, this.health, 10);
             placement += 23;
         }
+        stroke(0, 255, 255);
+        fill(0, 255, 255, 50);
+        rect((this.x), this.y + 67, 105, 14);
+        fill(255, 20, 40, 255);
         fill(0, 255, 255, 255);
+        stroke(0, 255, 255);
         placement = 15;
         for (var i = 0; i < Abars; i++) {
-            rect(placement, 40, 20, 20);
+            rect((this.x), this.y + 67, this.armor, 10);
             placement += 23;
         }
+        pop();
     }
     this.displayWep = function() {
         textSize(25);
@@ -394,28 +388,53 @@ function AutoMaticShoot() {
 }
 
 /**
+ * I WANT THIS TO MAKE DUST, I HATE GRAPHICSFSAEF 
+ * - Stevne Dellamroe
+ */
+function DisplayDust(x, y) {
+    ellipse(x, y, 2, 2);
+}
+
+
+function DisplayTracks(x, y, rot) {
+    push();
+    console.log(rot);
+    translate(x,y);
+    angleMode(RADIANS)
+    rotate(rot);
+    tint(255, 180);
+    image(tireTracksPNG, 0, 0, tireTracksPNG.width / 5, tireTracksPNG.height / 5);
+    pop();
+}
+/**
  * Checks to see if a key is pressed. Function name is important in p5. 
  * If it a key is pressed it can change the direction of the rect moving
  */
 function keyPressed() {
     if (tank.TankStatus) {
         if (keyIsDown(68)) {
+
             tank.x += 6;
             tank.TankAngle = 80;
-        }
-        if (keyIsDown(65)) {
+            // fill(139, 69, 19, 200);
+            // setInterval(DisplayDust, 17, tank.x - 50, tank.y + 35);
+        } else if (keyIsDown(65)) {
+
             tank.TankAngle = 80;
             tank.x -= 6;
-        }
-        if (keyIsDown(87)) {
+        } else if (keyIsDown(87)) {
+            DisplayTracks(tank.x + 28, tank.y + 40, 0);
+            DisplayTracks(tank.x - 28, tank.y + 40, 0)
             tank.TankAngle = 0;
             tank.y -= 6;
-        }
-        if (keyIsDown(83)) {
+        } else if (keyIsDown(83)) {
+            DisplayTracks(tank.x + 28, tank.y - 40, PI);
+            DisplayTracks(tank.x - 28, tank.y - 40, PI)
             tank.TankAngle = 0;
             tank.y += 6;
         }
         if (keyIsDown(49)) {
+
             if (tank.weps.indexOf(1) != -1) {
                 tank.wepinUse = 0;
                 tank.wepUsing = 1;
@@ -461,6 +480,9 @@ function keyPressed() {
         }
         if (keyIsDown(187)) {
             tank.zoom += .01;
+        }
+        if (keyIsDown(72)) {
+            tank.health -= 10;
         }
         //http://keycode.info
         camera.position.x = tank.x;

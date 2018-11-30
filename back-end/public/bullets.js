@@ -1,5 +1,6 @@
 class bullet {
     constructor(mouseX, mouseY, x, y, bulletType, socketID) {
+
         // console.log(socketID);
         imageMode(CENTER);
         this.dmg = 0;
@@ -10,11 +11,21 @@ class bullet {
         this.xx = 0;
         this.yy = 0;
         this.bulletType = bulletType;
-        this.H = sqrt(pow(this.y - this.moY, 2) + pow(this.x - this.moX, 2));
-        this.intervalX = (this.y - this.moY) / this.H;
-        this.intervalY = (this.x - this.moX) / this.H;
-        this.angle = atan2(mouseY - displayHeight / 2, mouseX - displayWidth / 2);
+        this.H = sqrt(pow(this.moY - windowHeight / 2, 2) + pow(this.moX - windowWidth / 2, 2)); //PROBLEM HERE!!
+
+
+        this.intervalY = (this.moX - windowWidth / 2) / this.H; //PROBLERM HERE!!!!
+        this.intervalX = (this.moY - windowHeight / 2) / this.H; //PROBLEMM HERE!!!!
+        if (this.moX != 0) {
+            // console.log(this.H + " : " + this.intervalX + " : " + this.intervalY);
+        }
+
+        // push();
+        // translate(this.x, this.y);
+        this.angle = atan2(mouseY - windowHeight / 2, mouseX - windowWidth / 2);
         this.angle += PI / 2;
+
+        // pop();
         this.socketIDE = socketID;
 
         //Bullet Damage and Icon
@@ -39,6 +50,9 @@ class bullet {
         push();
         // rotate(this.angle);
         translate(this.x, this.y);
+
+
+
         fill(this.bulletColor);
         if (this.explosionState == 0) {
             if (this.bulletType == 6) {
@@ -62,71 +76,69 @@ class bullet {
 
             // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
 
-            this.xx -= this.intervalY * this.speed;
-            this.yy -= this.intervalX * this.speed;
+            this.xx += this.intervalY * this.speed;
+            this.yy += this.intervalX * this.speed;
         }
+
         if (abs(this.xx) + abs(this.yy) > this.travelDist) {
-            this.explosionState++;
-            this.explode(this);
-            if (this.explosionState >= 5) {
-                arr.splice(i, 1);
-            }
+            arr.splice(i, 1);
         }
+        // if (check != 0) {
         for (var i = 0; i < player.length; i++) {
             if (player[i].TankStatus) {
+
                 let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
                 // console.log(d);
                 if (d < this.bulletHitBox) {
-                    this.explosionState++;
                     // this.explode(this);
 
                     // console.log("HERE");
-                    if (this.explosionState == 1) {
-                        var data = {
-                            socketID: player[i].socketID,
-                            dmg: this.dmg
-                        }
-                        /* SEND IT */
-                        this.explosionState--;
-                        socket.emit('hitSomeone', data);
-                        arr.splice(i, 1);
+                    var data = {
+                        socketID: player[i].socketID,
+                        dmg: this.dmg
                     }
-
+                    /* SEND IT */
+                    socket.emit('hitSomeone', data);
+                    arr.splice(i, 1);
                 }
+
             }
         }
         pop();
+        // }
     }
-    display(data) {
-        push();
 
-        translate(data.x, data.y);
-        this.setBullet(data.bulletType);
-        fill(this.bulletColor);
-        if (data.explosionState == 0) {
-            if (data.bulletType == 6) {
-                push();
-                //console.log((this.xx + this.x), (this.yy + this.x));
-                translate(data.xx, data.yy);
-                rotate(data.angle - PI / 2);
 
-                rect(0, 0, this.bulletSize / 1.5, this.bulletSize / 4);
-                fill(255);
-                triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
-                // line(0,0, 1000, 1000);
-                stroke(0);
-                strokeWeight(4);
-                line(3, this.bulletSize / 10, 3, -this.bulletSize / 10)
-                line(-9, this.bulletSize / 10, -9, -this.bulletSize / 10)
-                pop();
-            } else {
-                ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
-            }
-        } else {
-            this.explode(data);
-        }
-        pop()
-    }
+    // display(data) {
+    //     push();
+
+    //     translate(data.x, data.y);
+    //     this.setBullet(data.bulletType);
+    //     fill(this.bulletColor);
+    //     if (data.explosionState == 0) {
+    //         if (data.bulletType == 6) {
+    //             push();
+    //             //console.log((this.xx + this.x), (this.yy + this.x));
+    //             translate(data.xx, data.yy);
+    //             rotate(data.angle - PI / 2);
+
+    //             rect(0, 0, this.bulletSize / 1.5, this.bulletSize / 4);
+    //             fill(255);
+    //             triangle(15, this.bulletSize / 5, 15, -this.bulletSize / 5, 30, 0);
+    //             // line(0,0, 1000, 1000);
+    //             stroke(0);
+    //             strokeWeight(4);
+    //             line(3, this.bulletSize / 10, 3, -this.bulletSize / 10)
+    //             line(-9, this.bulletSize / 10, -9, -this.bulletSize / 10)
+    //             pop();
+    //         } else {
+    //             ellipse(data.xx, data.yy, this.bulletSize, this.bulletSize);
+    //         }
+    //     } else {
+    //         this.explode(data);
+    //     }
+    //     pop()
+    // }
     setBullet(type) {
         switch (type) {
             /**
@@ -142,7 +154,7 @@ class bullet {
             case 1:
                 this.dmg = 10;
                 this.speed = 20;
-                this.travelDist = 1500;
+                this.travelDist = 600;
                 this.attackSpeed = 1;
                 this.automatic = false;
                 //this.bulletIcon = loadImage("jpgs/Tank_Bullet.png")
@@ -153,7 +165,7 @@ class bullet {
             case 2:
                 this.dmg = 5;
                 this.speed = 25;
-                this.travelDist = 1000;
+                this.travelDist = 700;
                 this.attackSpeed = 100;
                 this.automatic = true;
                 this.bulletColor = "#C0C0C0";
@@ -164,7 +176,7 @@ class bullet {
             case 3:
                 this.dmg = 7;
                 this.speed = 40;
-                this.travelDist = 700;
+                this.travelDist = 370;
                 this.attackSpeed = 100;
                 this.automatic = true;
                 this.bulletColor = "#0BDAEF";
@@ -175,7 +187,7 @@ class bullet {
             case 6:
                 this.dmg = 40;
                 this.speed = 10;
-                this.travelDist = 1000;
+                this.travelDist = 500;
                 this.attackSpeed = 1500;
                 this.automatic = false;
                 this.bulletColor = "#cc0000";
@@ -186,7 +198,7 @@ class bullet {
             case 7:
                 this.dmg = 5;
                 this.speed = 10;
-                this.travelDist = 2000;
+                this.travelDist = 600;
                 this.attackSpeed = 500;
                 this.automatic = false;
                 this.bulletColor = "#000000";
