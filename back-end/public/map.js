@@ -23,18 +23,38 @@ class MapObjects {
                 ellipse(0, 0, 80, 80);
                 fill("#A9A9A9");
                 ellipse(7, 7, 20, 20);
-                fill("#7CFC00"); 
+                fill("#7CFC00");
         }
         pop();
     }
     renderMap() {
-        this.renderObj(1, 500, 500);
-        this.renderObj(1, 75, 300);
-        this.renderObj(1, 900, 200);
-        this.renderObj(1, 900, 700);
-        this.renderObj(2, 700, 200);
-        this.renderObj(2, 200, 700);
-        this.renderObj(2, 200, 500);
-        this.renderObj(2, 1200, 500);
+        let i;
+        for (i = 0; i < randomNumList.length / 2; i += 2) {
+            if (((tank.x + (windowWidth / 2)) > randomNumList[i]) && ((tank.x - (windowWidth / 2)) < randomNumList[i])) {
+                if (((tank.y + (windowHeight / 2)) > randomNumList[i + 1]) && ((tank.y - (windowHeight / 2)) < randomNumList[i + 1])) {
+                    // console.log("1");
+                    this.renderObj(1, randomNumList[i], randomNumList[i + 1]);
+                }
+            }
+        }
+
+        for (i = i; i < randomNumList.length; i += 2) {
+            if (((tank.x + (windowWidth / 2)) > randomNumList[i]) && ((tank.x - (windowWidth / 2)) < randomNumList[i])) {
+                if (((tank.y + (windowHeight / 2)) > randomNumList[i + 1]) && ((tank.y - (windowHeight / 2)) < randomNumList[i + 1])) {
+                    // console.log("HERE");
+                    this.renderObj(2, randomNumList[i], randomNumList[i + 1]);
+                }
+            }
+        }
+
+
+        // this.renderObj(1, 75, 300);
+        // this.renderObj(1, 900, 200);
+        // this.renderObj(1, 900, 700);
+        // this.renderObj(2, 700, 200);
+        // this.renderObj(2, 200, 700);
+        // this.renderObj(2, 200, 500);
+        // this.renderObj(2, 1200, 500);
+        // this.renderObj(2, random(10000), random(10000));
     }
 }

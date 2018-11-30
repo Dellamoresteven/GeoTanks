@@ -99,6 +99,7 @@ app.use("/players.js", express.static(__dirname + "/public/players.js"));
 app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
 app.use("/bullets.js", express.static(__dirname + "/public/bullets.js"));
 app.use("/map.js", express.static(__dirname + "/public/map.js"));
+app.use("/randomNums.txt", express.static(__dirname + "/public/randomNums.txt"));
 app.use("/jpgs/*", function(req, res) {
     // console.log("HERE: ")
     // console.log(req.params[0]);
@@ -108,7 +109,7 @@ app.use("/jpgs/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 1 * 5000);
+// setInterval(newDrop, 1 * 10000);
 io.on('connect', (socket) => {
 
     /* PUT STUFF IN HERE IDNDODODO */
@@ -242,16 +243,16 @@ io.on('connect', (socket) => {
 
 function newDrop() {
     // console.log(drop.length);
-    if (drop.length <= 10) {
+    // if (drop.length <= 10) {
         let type = ["Armor", "Attack", "Defence"];
         let rare = ["Common", "Rare", "Legendary"];
         const newData = {
             type: Math.floor(Math.random() * Math.floor(7)),
             rare: Math.floor(Math.random() * Math.floor(3)),
-            locationX: Math.floor(Math.random() * Math.floor(1440)),
-            locationY: Math.floor(Math.random() * Math.floor(800))
+            locationX: Math.floor(Math.random() * Math.floor(10000)),
+            locationY: Math.floor(Math.random() * Math.floor(10000))
         }
         drop.push(newData);
         io.sockets.emit('Drop', newData);
-    }
+    // }
 }

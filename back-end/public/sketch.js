@@ -14,8 +14,11 @@ var mouseDownID = -1;
 var CoolDown = 0;
 var map;
 var tireTracksPNG;
-
-
+var randomNums;
+var randomNumList = [];
+function preload() {
+    randomNums = loadStrings("randomNums.txt");
+}
 
 /**
  * This function is the first thing that is called when setting up the program. 
@@ -23,6 +26,9 @@ var tireTracksPNG;
  */
 
 function setup() {
+    for (var i = 0; i < randomNums.length; i++) {
+        randomNumList.push(parseInt(randomNums[i]));
+    }
     map = new MapObjects();
     cursor(CROSS);
     socket = io.connect(window.location.host);
@@ -203,7 +209,7 @@ function GeoTank() {
     this.moY = mouseY;
     this.zoom = 1.7;
     this.update = function() {
-        if(this.health <= 0){
+        if (this.health <= 0) {
             this.TankStatus = false;
         }
         if (this.weps.length != 0) {
@@ -267,12 +273,12 @@ function GeoTank() {
                 this.bullets[i].nextPoint(this.x, this.y, 0, i, this.bullets, socketID);
             }
 
-        }else{
+        } else {
             this.zoom = 1;
             push();
             textSize(20);
             textFont('Helvetica');
-            text("You are dead" , this.x- 60, this.y - 70);
+            text("You are dead", this.x - 60, this.y - 70);
             pop();
         }
         let bulletData = [];
@@ -408,8 +414,8 @@ function DisplayDust(x, y) {
 
 function DisplayTracks(x, y, rot) {
     push();
-    console.log(rot);
-    translate(x,y);
+    // console.log(rot);
+    translate(x, y);
     angleMode(RADIANS)
     rotate(rot);
     tint(255, 180);
@@ -495,30 +501,35 @@ function keyPressed() {
             tank.health -= 10;
         }
         //http://keycode.info
+        camera.position.x = tank.x;
+        camera.position.y = tank.y;
+    } else {
 
-    }else{
         if (keyIsDown(68)) {
 
-            tank.x += 6;
+            tank.x += 10;
             tank.TankAngle = 80;
             // fill(139, 69, 19, 200);
             // setInterval(DisplayDust, 17, tank.x - 50, tank.y + 35);
-        } if (keyIsDown(65)) {
+        }
+        if (keyIsDown(65)) {
 
             // tank.TankAngle = 80;
-            tank.x -= 6;
-        } if (keyIsDown(87)) {
+            tank.x -= 10;
+        }
+        if (keyIsDown(87)) {
             // DisplayTracks(tank.x + 28, tank.y + 40, 0);
             // DisplayTracks(tank.x - 28, tank.y + 40, 0)
-            tank.TankAngle = 0;
-            tank.y -= 6;
-        } if (keyIsDown(83)) {
+            // tank.TankAngle = 0;
+            tank.y -= 10;
+        }
+        if (keyIsDown(83)) {
             // DisplayTracks(tank.x + 28, tank.y - 40, PI);
             // DisplayTracks(tank.x - 28, tank.y - 40, PI)
             // tank.TankAngle = 0;
-            tank.y += 6;
+            tank.y += 10;
         }
-                camera.position.x = tank.x;
+        camera.position.x = tank.x;
         camera.position.y = tank.y;
     }
 
