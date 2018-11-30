@@ -16,8 +16,11 @@ var map;
 var tireTracksPNG;
 var randomNums;
 var randomNumList = [];
+
 function preload() {
     randomNums = loadStrings("randomNums.txt");
+    BodyOfTank = loadImage("jpgs/Tank_body.png");
+    HeadOfTank = loadImage("jpgs/Tank_head.png");
 }
 
 /**
@@ -50,8 +53,7 @@ function setup() {
     // angleMode(DEGREES);
     rectMode(CENTER);
     imageMode(CENTER);
-    BodyOfTank = loadImage("jpgs/Tank_body.png");
-    HeadOfTank = loadImage("jpgs/Tank_head.png");
+
     tireTracksPNG = loadImage("jpgs/TireTracks.png")
 
     // console.log(socket.id);
@@ -85,8 +87,13 @@ function newDraw(data) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
             if (player[i].socketID == data.socketID) {
+                preDictedMovemntX = player[i].x;
+                preDictedMovemntY = player[i].y;
                 player[i].settank(data);
+                preDictedMovemntX -= data.x;
+                preDictedMovemntY -= data.y;
                 newPlayer = false;
+                player[i].updated = true;
             }
         }
         if (newPlayer) {
@@ -127,9 +134,14 @@ function minusHealth(data) {
  * are not moving, we have to save there position. 
  */
 function updateCanvas() {
+
     for (var i = 0; i < player.length; i++) {
         if (player[i].TankStatus) {
             push();
+            if(player[i].updated == false){
+                player[i].x += player[i].preX;
+                player[i].y += player[i].preY;
+            }
             // console.log(player[i].bulletss.length);
             translate(player[i].x, player[i].y);
             rotate(player[i].TankAng);
@@ -202,7 +214,6 @@ function GeoTank() {
     this.utility = [];
     this.health = 100;
     this.armor = 50;
-    this.basicMgImage = loadImage("jpgs/LightMachineGun.png");
     this.TankAngle = 0;
     this.TankStatus = true;
     this.moX = mouseX;
@@ -357,7 +368,7 @@ function GeoTank() {
                 push();
                 translate(windowWidth - (windowWidth - 80), windowHeight - rectSpace);
                 rotate(PI / 4);
-                image(this.basicMgImage, 0, 0, this.basicMgImage.width / 6, this.basicMgImage.height / 6);
+                // image(this.basicMgImage, 0, 0, this.basicMgImage.width / 6, this.basicMgImage.height / 6);
                 pop();
             } else {
 
