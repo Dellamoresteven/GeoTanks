@@ -142,6 +142,7 @@ function updateCanvas() {
                 player[i].x += player[i].preX;
                 player[i].y += player[i].preY;
             }
+            player[i].updated = false;
             // console.log(player[i].bulletss.length);
             translate(player[i].x, player[i].y);
             rotate(player[i].TankAng);
