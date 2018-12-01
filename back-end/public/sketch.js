@@ -1,10 +1,5 @@
-// var socket = io();
 var socket;
-// var w = windowWidth;
-// var h = windowHeight;
 var tank;
-var GeoTankLength = 40;
-var GoeTankWidth = 30;
 var player = [];
 var drops = [];
 var BodyOfTank;
@@ -16,11 +11,30 @@ var map;
 var tireTracksPNG;
 var randomNums;
 var randomNumList = [];
+var gunsList = [];
+var guns = {};
+var SMGPNG;
+var MsixPNG;
+var heavyMGPNG;
+var rocketPNG;
+var SniperPNG;
+var playerPicList = [];
 
 function preload() {
+    // frameRate(30);
     randomNums = loadStrings("randomNums.txt");
+    playerPicList.push(loadImage("jpgs/Tank_body-player-1.png"));
+    playerPicList.push(loadImage("jpgs/Tank_body-player-2.png"));
+    playerPicList.push(loadImage("jpgs/Tank_body-player-3.png"));
+    playerPicList.push(loadImage("jpgs/Tank_body-player-4.png"));
     BodyOfTank = loadImage("jpgs/Tank_body.png");
     HeadOfTank = loadImage("jpgs/Tank_head.png");
+    SMGPNG = loadImage("jpgs/LightMachineGun.png");
+    MsixPNG = loadImage("jpgs/MachineGun_Basic.png");
+    heavyMGPNG = loadImage("jpgs/Heavy_MG.png")
+    rocketPNG = loadImage("jpgs/rocket.png")
+    SniperPNG = loadImage("jpgs/Sniper.png")
+    guns = loadJSON("guns.json");
 }
 
 /**
@@ -29,6 +43,9 @@ function preload() {
  */
 
 function setup() {
+    // console.log(guns.shareInfo)
+    // console.log(Object.keys(guns).length);
+    // frameRate(10);
     for (var i = 0; i < randomNums.length; i++) {
         randomNumList.push(parseInt(randomNums[i]));
     }
@@ -39,6 +56,7 @@ function setup() {
     // socket.on('bulletUpdate', addNewBullet);
     socket.on('Drop', addNewDrop);
     socket.on('disconnects', disconnectUser);
+    socket.on('bulletShot', bulletShot);
     socket.on('init', init);
     minusHealth
     socket.on('hit', minusHealth);
@@ -46,7 +64,7 @@ function setup() {
     // socket.on('Tankkilled', tankKilled);
     socket.on('gameOver', () => {
         console.log("THE GAME ENDED!");
-        window.location.href = "http://localhost:3000/results";
+        // window.location.href = "http://localhost:3000/results";
     })
     createCanvas(windowWidth, windowHeight);
     tank = new GeoTank();
@@ -87,20 +105,60 @@ function newDraw(data) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
             if (player[i].socketID == data.socketID) {
-                preDictedMovemntX = player[i].x;
-                preDictedMovemntY = player[i].y;
+                // console.log(player[i].bulletss.length);
+                // preDictedMovemntX = player[i].x;
+                // preDictedMovemntY = player[i].y;
+                
                 player[i].settank(data);
-                preDictedMovemntX -= data.x;
-                preDictedMovemntY -= data.y;
+                
+                // preDictedMovemntX -= data.x;
+                // preDictedMovemntY -= data.y;
                 newPlayer = false;
-                player[i].updated = true;
+                // player[i].updated = true;
+                // console.log(player[i].bulletss.length);
             }
         }
         if (newPlayer) {
             player.push(new Players(data));
         }
     }
+    
+}
 
+
+/**
+ * This keeps printing people, because the server is not sending us anyhting if they
+ * are not moving, we have to save there position. 
+ */
+function updateCanvas() {
+    for (var i = 0; i < player.length; i++) {
+        if (player[i].TankStatus) {
+            // console.log(player[i].bulletss.length);
+            push();
+            translate(player[i].x, player[i].y);
+            rotate(player[i].TankAng);
+            image(playerPicList[player[i].playerNum], 0, 0, playerPicList[player[i].playerNum].width / 10, playerPicList[player[i].playerNum].height / 10);
+            rotate(player[i].ang - player[i].TankAng);
+            image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
+            pop();
+            // console.log(player[i].bulletss.length);
+            for (var j = 0; j < player[i].bulletss.length; j++) {
+                player[i].bulletss[j].nextPoint(i, player[i].bulletss, 1);
+            }
+            // console.log(player[i].bulletss.length);
+        }
+    }
+}
+
+function bulletShot(data) {
+
+    // console.log(data);
+    for (var i = 0; i < player.length; i++) {
+        if (player[i].socketID == data.socketID) {
+            player[i].bulletss.push(new bullet(data.type, data.x, data.y, data.intervalX, data.intervalY, data.angle));
+            // console.log(player[i].bulletss)
+        }
+    }
 }
 
 /**
@@ -129,34 +187,7 @@ function minusHealth(data) {
     }
 }
 
-/**
- * This keeps printing people, because the server is not sending us anyhting if they
- * are not moving, we have to save there position. 
- */
-function updateCanvas() {
 
-    for (var i = 0; i < player.length; i++) {
-        if (player[i].TankStatus) {
-            push();
-            if(player[i].updated == false){
-                player[i].x += player[i].preX;
-                player[i].y += player[i].preY;
-            }
-            player[i].updated = false;
-            // console.log(player[i].bulletss.length);
-            translate(player[i].x, player[i].y);
-            rotate(player[i].TankAng);
-            image(BodyOfTank, 0, 0, BodyOfTank.width / 10, BodyOfTank.height / 10);
-            rotate(player[i].ang - player[i].TankAng);
-            image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
-            pop();
-            let x = new bullet(0, 0, 0, 0, 0);
-            for (var j = 0; j < player[i].bulletss.length; j++) {
-                x.display(player[i].bulletss[j]);
-            }
-        }
-    }
-}
 
 /**
  * Disconnects a user by splcing them from the player array.
@@ -180,13 +211,13 @@ function draw() {
     camera.position.x = tank.x;
     camera.position.y = tank.y;
     noStroke();
-    background("#009933"); //repaints the background to black
+    background("#00802b"); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
     keyPressed();
 
-    if (mouseIsPressed && (mouseDownID == -1) && tank.currentBullet.automatic) {
-        mouseDownID = setInterval(AutoMaticShoot, tank.currentBullet.attackSpeed);
+    if (mouseIsPressed && (mouseDownID == -1) && guns[tank.wepinUse].auto) {
+        mouseDownID = setInterval(AutoMaticShoot, guns[tank.wepinUse].cd);
     }
     if ((mouseDownID != -1) && !mouseIsPressed) {
         clearInterval(mouseDownID);
@@ -209,9 +240,9 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
-    this.wepUsing = 7;
-    this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
-    this.wepinUse = -1;
+    // this.wepUsing = 7;
+    // this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
+    this.wepinUse = 0;
     this.utility = [];
     this.health = 100;
     this.armor = 50;
@@ -224,9 +255,7 @@ function GeoTank() {
         if (this.health <= 0) {
             this.TankStatus = false;
         }
-        if (this.weps.length != 0) {
-            this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
-        }
+        // console.log(this.wepinUse);
         // console.log(this.wepUsing);
         this.moX = mouseX;
         this.moY = mouseY;
@@ -282,7 +311,7 @@ function GeoTank() {
             /* to reset the translated screen to the old value that push() saved */
             pop();
             for (var i = 0; i < this.bullets.length; i++) {
-                this.bullets[i].nextPoint(this.x, this.y, 0, i, this.bullets, socketID);
+                this.bullets[i].nextPoint(i, this.bullets, 0);
             }
 
         } else {
@@ -293,22 +322,6 @@ function GeoTank() {
             text("You are dead", this.x - 60, this.y - 70);
             pop();
         }
-        let bulletData = [];
-        for (var i = 0; i < this.bullets.length; i++) {
-            let bulletIndv = {
-                xx: this.bullets[i].xx,
-                yy: this.bullets[i].yy,
-                angle: this.bullets[i].angle,
-                bulletType: this.bullets[i].bulletType,
-                explosionState: this.bullets[i].explosionState,
-                x: this.bullets[i].x,
-                y: this.bullets[i].y
-            }
-
-            bulletData.push(bulletIndv);
-        }
-
-        // console.log(bulletData);
         let data = {
             x: this.x,
             y: this.y,
@@ -316,14 +329,29 @@ function GeoTank() {
             TankAngle: this.TankAngle,
             TankStatus: this.TankStatus,
             socketID: socketID,
-            bullets: bulletData,
+
             drop: ch
-        }
+        } // bullets: bulletData,
         socket.emit('update', data);
     }
     this.shoot = function() {
+        // console.log("Sjhot");
+        let H = sqrt(pow(mouseY - windowHeight / 2, 2) + pow(mouseX- windowWidth / 2, 2)); //PROBLEM HERE!!
+        let intervalY = (mouseX - windowWidth / 2) / H; //PROBLERM HERE!!!!
+        let intervalX = (mouseY - windowHeight / 2) / H; //PROBLEMM HERE!!!!
         /* maybe when we render the bullets we translate the whole screen to a x-y axis type thing */
-        this.bullets.push(new bullet(mouseX, mouseY, this.x, this.y, this.wepUsing, socketID));
+        this.bullets.push(new bullet(this.wepinUse, this.x, this.y, intervalX, intervalY,this.angle));
+        let dataBullet = {
+            socketID: socketID,
+            type: this.wepinUse,
+            x: this.bullets[this.bullets.length - 1].x,
+            y: this.bullets[this.bullets.length - 1].y,
+            intervalX: this.bullets[this.bullets.length - 1].intervalX,
+            intervalY: this.bullets[this.bullets.length - 1].intervalY,
+            angle: this.angle
+        }
+        // console.log(dataBullet);
+        socket.emit('bulletShot', dataBullet);
     }
     this.displayHealth = function() {
         // console.log(this.health);
@@ -389,29 +417,25 @@ function GeoTank() {
 /* mouse clicked */
 function mouseClicked() {
 
-    let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
-    // console.log(typ.automatic);
-    if (tank.TankStatus && mouseIsPressed && typ.automatic) {
+    if (tank.TankStatus && mouseIsPressed && guns[tank.wepinUse].auto) {
         tank.shoot();
         return;
     }
 
     if (tank.TankStatus && !mouseIsPressed && (CoolDown == 0)) {
-        CoolDown = setInterval(realeaseCD, tank.currentBullet.attackSpeed);
+        CoolDown = setInterval(realeaseCD, guns[tank.wepinUse].cd);
         tank.shoot();
     }
 }
 
 
 function realeaseCD() {
-    // console.log("CLEAR");
     clearInterval(CoolDown);
     CoolDown = 0;
 }
 
 
 function AutoMaticShoot() {
-    // let typ = new bullet(0, 0, 0, 0, tank.wepUsing, socketID);
     tank.shoot();
 }
 
@@ -441,13 +465,9 @@ function DisplayTracks(x, y, rot) {
 function keyPressed() {
     if (tank.TankStatus) {
         if (keyIsDown(68)) {
-
             tank.x += 6;
             tank.TankAngle = 80;
-            // fill(139, 69, 19, 200);
-            // setInterval(DisplayDust, 17, tank.x - 50, tank.y + 35);
         } else if (keyIsDown(65)) {
-
             tank.TankAngle = 80;
             tank.x -= 6;
         } else if (keyIsDown(87)) {
@@ -462,46 +482,49 @@ function keyPressed() {
             tank.y += 6;
         }
         if (keyIsDown(49)) {
-
-            if (tank.weps.indexOf(1) != -1) {
+            if (tank.weps.indexOf(0) != -1) {
                 tank.wepinUse = 0;
-                tank.wepUsing = 1;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
             }
         }
         if (keyIsDown(50)) {
-            if (tank.weps.indexOf(2) != -1) {
+            if (tank.weps.indexOf(1) != -1) {
                 tank.wepinUse = 1;
-                tank.wepUsing = 2;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
             }
         }
 
         if (keyIsDown(51)) {
-            if (tank.weps.indexOf(3) != -1) {
+            if (tank.weps.indexOf(2) != -1) {
                 tank.wepinUse = 2;
-                tank.wepUsing = 3;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
             }
         }
 
         if (keyIsDown(52)) {
-            if (tank.weps.indexOf(6) != -1) {
+            // console.log("PRESSED");
+            if (tank.weps.indexOf(3) != -1) {
                 tank.wepinUse = 3;
-                tank.wepUsing = 6;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            }
+        }
+        if (keyIsDown(53)) {
+            if (tank.weps.indexOf(4) != -1) {
+                tank.wepinUse = 4;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
             }
         }
         /* FOR TESTING -- press 0 to get all guns */
         if (keyIsDown(48)) {
-            tank.weps.push(1);
-            tank.weps.push(2);
-            tank.weps.push(3);
-            tank.weps.push(6);
+            // console.log(guns.length);
+            for (var i = 0; i < Object.keys(guns).length; i++) {
+                tank.weps.push(i);
+            }
         }
         if (keyIsDown(189)) {
             tank.zoom -= .01;

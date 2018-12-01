@@ -9,7 +9,7 @@ class App extends Component {
     super();
     this.state = {
       // the endpoint want to connect to for the server
-      endpoint: window.location.href,
+      endpoint: window.location.href, 
       data: "",
       gotoGame: false,
       value: "",

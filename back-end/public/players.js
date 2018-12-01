@@ -32,36 +32,30 @@
 */
 class Players {
     constructor(data) {
-
         this.socketID = data.socketID;
         this.x = data.x;
         this.y = data.y;
         this.ang = data.angle;
-        this.bulletss = data.bullets;
+        this.bulletss = [];
         this.TankAng = data.TankAngle;
-        // this.moX = data.tank.moX;
-        // this.moY = data.tank.moY;
-        // this.health = data.tank.health;
-        // this.armor = data.tank.armor;
-        // this.weps = data.tank.weps;
-        // this.utility = data.tank.utility;
         this.TankStatus = data.TankStatus;
         this.ang += PI / 2;
         this.updated = true;
         this.preX = 0;
         this.preY = 0;
+        this.playerNum = player.length;
     }
     settank(data) {
+        // this.bulletss = this.bulletss;
         this.updated = true;
         this.preX = data.x - this.x;
         this.preY = data.y - this.y;
-        console.log(this.preX + ":" + this.preY);
+        // console.log(this.preX + ":" + this.preY);
         // console.log(this.preY);
         this.socketID = data.socketID;
         this.x = data.x;
         this.y = data.y;
         this.ang = data.angle;
-        this.bulletss = data.bullets;
         this.TankAng = data.TankAngle;
         // this.moX = data.tank.moX;
         // this.moY = data.tank.moY;

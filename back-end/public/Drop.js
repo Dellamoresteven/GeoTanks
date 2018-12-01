@@ -22,6 +22,7 @@ class Drop {
         this.imgAA = loadImage("jpgs/LightMachineGun.png");
         this.imgAAA = loadImage("jpgs/Heavy_MG.png");
         this.RL = loadImage("jpgs/RocketLauncher.png");
+        this.Sniper = loadImage("jpgs/Sniper.png");
     }
 
     displayDrop() {
@@ -40,6 +41,8 @@ class Drop {
             image(this.imgDDD, this.x, this.y, this.imgDDD.width / 3, this.imgDDD.height / 3);
         } else if (this.type == 6) {
             image(this.RL, this.x, this.y, this.RL.width / 3, this.RL.height / 3);
+        }else if (this.type == 8) {
+            image(this.Sniper, this.x, this.y, this.Sniper.width / 3, this.Sniper.height / 3);
         }
         pop();
     }
