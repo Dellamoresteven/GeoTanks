@@ -89,7 +89,7 @@ const closeDB = () => {
 // app.use(express.static('front-end/public'));
 var staticPath = path.join(__dirname, '..', 'front-end', 'build');
 app.use("/", express.static(staticPath));
-app.use("/gamer", express.static(__dirname + "/public/index.html"));
+app.use("/gamer*", express.static(__dirname + "/public/index.html"));
 app.use("/p5.min.js", express.static(__dirname + "/public/p5.min.js"));
 app.use("/addons/p5.dom.min.js", express.static(__dirname + "/public/addons/p5.dom.min.js"));
 app.use("/addons/p5.sound.min.js", express.static(__dirname + "/public/addons/p5.sound.min.js"));

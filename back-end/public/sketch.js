@@ -19,6 +19,7 @@ var heavyMGPNG;
 var rocketPNG;
 var SniperPNG;
 var playerPicList = [];
+var tilePreferences = {};
 
 function preload() {
     // frameRate(30);
@@ -41,11 +42,45 @@ function preload() {
  * This function is the first thing that is called when setting up the program. 
  * I put a super simple program to help you get started. 
  */
+function getPlayerInfo() {
+    let windowHref = window.location.href;
+    let tiles = windowHref.split("?");
+    let allTileInfo = {};
+
+    let numAttack = 0;
+    let numDefense = 0;
+    let numUtility = 0;
+
+    for(let i = 0; i < tiles.length; i++){
+        let currTile = tiles[i];
+        let tileType = currTile.substring(3,4);
+        allTileInfo[currTile.substring(0,2)] = tileType;
+        switch(tileType) {
+            case "0": numAttack++; break;
+            case "1": numDefense++; break;
+            default: numUtility++;
+        }
+    }
+
+    allTileInfo["ATTACK"] = numAttack;
+    allTileInfo["DEFENSE"] = numDefense;
+    allTileInfo["UTILITY"] = numUtility;
+
+
+    console.log("TILE INFO");
+    console.log(allTileInfo);
+    // returns the position of every tile along with the number of attack, defense, and utility tiles
+    return allTileInfo;
+}  
 
 function setup() {
     // console.log(guns.shareInfo)
     // console.log(Object.keys(guns).length);
     // frameRate(10);
+
+    // get all the tiles that the player chose - FOR CURRENT PLAYER
+    tilePreferences = getPlayerInfo();
+
     for (var i = 0; i < randomNums.length; i++) {
         randomNumList.push(parseInt(randomNums[i]));
     }
