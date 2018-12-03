@@ -28,13 +28,18 @@ class MapObjects {
         }
         pop();
     }
+
     renderMap() {
         let i;
+        
+        terrains = [];
+
         for (i = 0; i < randomNumList.length / 2; i += 2) {
             if (((tank.x + (windowWidth / 2)) > randomNumList[i]) && ((tank.x - (windowWidth / 2)) < randomNumList[i])) {
                 if (((tank.y + (windowHeight / 2)) > randomNumList[i + 1]) && ((tank.y - (windowHeight / 2)) < randomNumList[i + 1])) {
                     // console.log("1");
                     this.renderObj(1, randomNumList[i], randomNumList[i + 1]);
+                    terrains.push(new terrain(1, randomNumList[i], randomNumList[i + 1], 40));
                 }
             }
         }
@@ -44,6 +49,7 @@ class MapObjects {
                 if (((tank.y + (windowHeight / 2)) > randomNumList[i + 1]) && ((tank.y - (windowHeight / 2)) < randomNumList[i + 1])) {
                     // console.log("HERE");
                     this.renderObj(2, randomNumList[i], randomNumList[i + 1]);
+                    terrains.push(new terrain(2, randomNumList[i], randomNumList[i + 1], 75));
                 }
             }
         }

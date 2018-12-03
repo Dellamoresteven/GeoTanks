@@ -23,8 +23,9 @@ class bullet {
         this.y = y;
         this.intervalX = intervalX;
         this.intervalY = intervalY;
-        this.xx = 0;
-        this.yy = 0;
+        this.currDist = 0;
+        // this.xx = 0;
+        // this.yy = 0;
         this.angle = angle;
         // console.log(Object.keys(guns[0])._id);
         // console.log("F");
@@ -49,60 +50,62 @@ class bullet {
         angleMode(RADIANS);
 
         push();
-        translate(this.x, this.y);
+        //translate(this.x, this.y);
         fill(this.bulletColor);
         if (this.explosionState == 0) {
             if ("Rocket" == guns[this._id].name) {
-                push();
-                //console.log((this.xx + this.x), (this.yy + this.x));
-                translate(this.xx, this.yy);
-                rotate(this.angle - PI / 2);
-                // console.log(this.angle);
-                rect(0, 0, 50 / 1.5, 50 / 4);
-                fill(255);
-                triangle(15, 50 / 5, 15, -50 / 5, 30, 0);
-                // line(0,0, 1000, 1000);
-                stroke(0);
-                strokeWeight(4);
-                line(3, 50 / 10, 3, -50 / 10)
-                line(-9, 50 / 10, -9, -50 / 10)
-                pop();
+                // push();
+                // //console.log((this.xx + this.x), (this.yy + this.x));
+                // translate(this.xx, this.yy);
+                // rotate(this.angle - PI / 2);
+                // // console.log(this.angle);
+                // rect(0, 0, 50 / 1.5, 50 / 4);
+                // fill(255);
+                // triangle(15, 50 / 5, 15, -50 / 5, 30, 0);
+                // // line(0,0, 1000, 1000);
+                // stroke(0);
+                // strokeWeight(4);
+                // line(3, 50 / 10, 3, -50 / 10)
+                // line(-9, 50 / 10, -9, -50 / 10)
+                // pop();
             } else {
-                ellipse(this.xx, this.yy, this.bulletSize, this.bulletSize);
+                ellipse(this.x, this.y, this.bulletSize, this.bulletSize);
             }
 
 
             // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
-            this.xx += this.intervalY * this.speed;
-            this.yy += this.intervalX * this.speed;
+            this.x += this.intervalX * this.speed;
+            this.y += this.intervalY * this.speed;
         }
         // console.log("S");
-        if (abs(this.xx) + abs(this.yy) > this.travelDist) {
+        this.currDist += 10;
+        if (this.currDist > this.travelDist) {
             arr.splice(i, 1);
         }
         // if (check != 0) {
-        if (check == 1) {
-            for (var i = 0; i < player.length; i++) {
-                for (var j = 0; j < player[i].bulletss.length; j++) {
-                    if (dist((player[i].bulletss[j].xx + player[i].bulletss[j].x), (player[i].bulletss[j].yy + player[i].bulletss[j].y), tank.x, tank.y) < this.bulletHitBox) {
-                        if (tank.armor < this.dmg) {
-                            this.dmg -= tank.armor;
-                            tank.armor = 0;
-                            if (tank.health < this.dmg) {
-                                tank.TankStatus = false;
-                                tank.health = 0;
-                            } else {
-                                tank.health -= this.dmg;
-                            }
-                        } else {
-                            tank.armor -= this.dmg
-                        }
-                        player[i].bulletss.splice(j, 1);
-                    }
-                }
-            }
-        }
+        // if (check == 1) {
+        //     for (var i = 0; i < player.length; i++) {
+        //         for (var j = 0; j < player[i].bulletss.length; j++) {
+        //             if (dist((player[i].bulletss[j].xx + player[i].bulletss[j].x), (player[i].bulletss[j].yy + player[i].bulletss[j].y), tank.x, tank.y) < this.bulletHitBox) {
+        //                 if (tank.armor < this.dmg) {
+        //                     this.dmg -= tank.armor;
+        //                     tank.armor = 0;
+        //                     if (tank.health < this.dmg) {
+        //                         tank.TankStatus = false;
+        //                         tank.health = 0;
+        //                     } else {
+        //                         tank.health -= this.dmg;
+        //                     }
+        //                 } else {
+        //                     tank.armor -= this.dmg
+        //                 }
+        //                 player[i].bulletss.splice(j, 1);
+        //             }
+        //         }
+        //     }
+        // }
 
+<<<<<<< HEAD
         if (check == 0) {
             for (var i = 0; i < player.length; i++) {
                 if (player[i].TankStatus) {
@@ -111,10 +114,35 @@ class bullet {
                     if (d < this.bulletHitBox) {
                         arr.splice(i, 1);
                     }
+=======
+        // if (check == 0) {
+        //     for (var i = 0; i < player.length; i++) {
+        //         if (player[i].TankStatus) {
+        //             let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
+        //             if (d < this.bulletHitBox) {
+        //                 arr.splice(i, 1);
+        //             }
+>>>>>>> 8f8d0639191c2bb1bbd1941c024db294d756f966
 
-                }
-            }
-        }
+        //         }
+        //     }
+        // }
         pop();
+    }
+
+    dealDamage(p,b) {
+        if (tank.armor < this.dmg) {
+            this.dmg -= tank.armor;
+            tank.armor = 0;
+            if (tank.health < this.dmg) {
+                tank.TankStatus = false;
+                tank.health = 0;
+            } else {
+                tank.health -= this.dmg;
+            }
+        } else {
+            tank.armor -= this.dmg
+        }
+        player[p].bulletss.splice(b, 1);
     }
 }

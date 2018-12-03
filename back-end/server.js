@@ -89,7 +89,7 @@ const closeDB = () => {
 // app.use(express.static('front-end/public'));
 var staticPath = path.join(__dirname, '..', 'front-end', 'build');
 app.use("/", express.static(staticPath));
-app.use("/gamer", express.static(__dirname + "/public/index.html"));
+app.use("/gamer*", express.static(__dirname + "/public/index.html"));
 app.use("/p5.min.js", express.static(__dirname + "/public/p5.min.js"));
 app.use("/addons/p5.dom.min.js", express.static(__dirname + "/public/addons/p5.dom.min.js"));
 app.use("/addons/p5.sound.min.js", express.static(__dirname + "/public/addons/p5.sound.min.js"));
@@ -97,6 +97,7 @@ app.use("/addons/p5.play.js", express.static(__dirname + "/public/addons/p5.play
 app.use("/sketch.js", express.static(__dirname + "/public/sketch.js"));
 app.use("/players.js", express.static(__dirname + "/public/players.js"));
 app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
+app.use("/terrains.js", express.static(__dirname + "/public/terrains.js"));
 app.use("/bullets.js", express.static(__dirname + "/public/bullets.js"));
 app.use("/map.js", express.static(__dirname + "/public/map.js"));
 app.use("/randomNums.txt", express.static(__dirname + "/public/randomNums.txt"));
@@ -110,7 +111,6 @@ app.use("/mp3/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-setInterval(newDrop, 1 * 10000);
 io.on('connect', (socket) => {
 
     /* PUT STUFF IN HERE IDNDODODO */

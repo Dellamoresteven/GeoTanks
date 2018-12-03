@@ -1,0 +1,14 @@
+Bruser
+  Passive: Secondary shield bar that regens overtime but has a low shield cap
+  Active: Fireworks, Shields
+JankTank:
+  Passive: Take dmg, and do more dmg based on missing health.
+  Active: Random teleport and takes the damage at that location, Place down a turret to fight with you! 
+Scout:
+  Passive: 50% movment speed
+  Active: 300% speed boost, Stun gernade
+Sniper:
+  Passive: Larger zoom
+  Active: Railgun, Camo UP! (if touching tree turn invis)
+  
+ Name, score, place, class type of the person who won
