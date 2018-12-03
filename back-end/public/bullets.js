@@ -75,7 +75,7 @@ class bullet {
             this.y += this.intervalY * this.speed;
         }
         // console.log("S");
-        this.currDist += 1;
+        this.currDist += 10;
         if (this.currDist > this.travelDist) {
             arr.splice(i, 1);
         }

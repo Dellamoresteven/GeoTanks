@@ -268,6 +268,7 @@ function checkBulletCollision() {
             currDist = dist(tank.bullets[k].x, tank.bullets[k].y, player[i].x, player[i].y);
             if (currDist < tank.bullets[k].bulletHitBox) {
                 tank.bullets.splice(k,1);
+                console.log("splicing");
             }
         }
     }
@@ -278,6 +279,7 @@ function checkBulletCollision() {
             currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
             if (currDist < tank.bullets[i].bulletHitBox) {
                 tank.bullets.splice(i,1);
+                break;
             }
         }
     }
@@ -347,6 +349,7 @@ function disconnectUser(data) {
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
+    checkCollisions();
     camera.on();
     camera.zoom = tank.zoom;
     camera.position.x = tank.x;
@@ -355,7 +358,6 @@ function draw() {
     background("#00802b"); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
-    checkCollisions();
     keyPressed();
 
     if (mouseIsPressed && (mouseDownID == -1) && guns[tank.wepinUse].auto) {
@@ -365,6 +367,7 @@ function draw() {
         clearInterval(mouseDownID);
         mouseDownID = -1;
     }
+
 
 }
 
