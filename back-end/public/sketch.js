@@ -2,6 +2,7 @@ var socket;
 var tank;
 var player = [];
 var drops = [];
+var terrains = [];
 var BodyOfTank;
 var HeadOfTank;
 var socketID;
@@ -131,6 +132,7 @@ function newDraw(data) {
  * are not moving, we have to save there position. 
  */
 function updateCanvas() {
+    map.renderMap();
     for (var i = 0; i < player.length; i++) {
         if (player[i].TankStatus) {
             // console.log(player[i].bulletss.length);
@@ -148,6 +150,103 @@ function updateCanvas() {
             // console.log(player[i].bulletss.length);
         }
     }
+}
+
+function checkTerrainCollision() {
+    for (var i = 0; i < terrains.length; i++) {
+        var currDist = dist(terrains[i].x, terrains[i].y, tank.x, tank.y)
+        if (currDist < terrains[i].hitbox) {
+            tank.x -= tank.direction.x * (6 + (int(terrains[i].hitbox - currDist)));
+            tank.y += tank.direction.y * (6 + (int(terrains[i].hitbox - currDist)));
+        }
+    }
+}
+
+function checkPlayerCollision() {
+    for (var i = 0; i < player.length; i++) {
+
+        var diffX = player[i].x - tank.x;
+        var diffY = player[i].y - tank.y;
+
+        var currDistX = Math.abs(diffX);
+        var currDistY = Math.abs(diffY);
+
+        if (currDistX < tank.tankLength && currDistY < tank.tankLength) {
+            var relPosX = tank.direction.x * diffX;
+            var relPosY = tank.direction.y * diffY;
+
+            if (relPosX > 0) {
+                tank.x -= tank.direction.x * (6 + (int(player[i].tankLength - currDistX)));
+            }
+
+            if (relPosY < 0) {
+                tank.y += tank.direction.y * (6 + (int(player[i].tankLength - currDistY)));
+            }
+        }
+    }
+}
+
+function checkBulletCollision() {
+    var currDist = 0;
+    for (var i = 0; i < player.length; i++) {
+
+        //If other players hit me or another player
+        for (var j = 0; j < player[i].bulletss.length; j++) {
+
+            //I get hit
+            currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, tank.x, tank.y);
+            if (currDist < player[i].bulletss[j].bulletHitBox) {
+                player[i].bulletss[j].dealDamage(i,j);
+                continue;
+            }
+
+            //Other player gets hit
+            for (var k = 0; k < player.length; k++) {
+                if (k != i) {
+                    currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, player[k].x, player[k].y);
+                    if (currDist < player[i].bulletss[j].bulletHitBox) {
+                        player[i].bulletss.splice(j,1);
+                        break;
+                    }
+                }
+            }
+
+            //Hit terrain
+            for (var k = 0; k < terrains.length; k++) {
+                currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, terrains[k].x, terrains[k].y);
+                if (currDist < player[i].bulletss[j].bulletHitBox) {
+                    player[i].bulletss.splice(j,1);
+                    break;
+                }
+            }
+        }
+
+        //If I hit other players
+        for (var k = 0; k < tank.bullets.length; k++) {
+            currDist = dist(tank.bullets[k].x, tank.bullets[k].y, player[i].x, player[i].y);
+            if (currDist < tank.bullets[k].bulletHitBox) {
+                tank.bullets.splice(k,1);
+            }
+        }
+    }
+
+    //If I hit other terrain
+    for (var i = 0; i < tank.bullets.length; i++) {
+        for (var j = 0; j < terrains.length; j++) {
+            currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
+            if (currDist < tank.bullets[i].bulletHitBox) {
+                tank.bullets.splice(i,1);
+            }
+        }
+    }
+}
+
+function checkCollisions() {
+
+    // Check terrain collisions
+    checkTerrainCollision();
+    checkPlayerCollision();
+    checkBulletCollision();
 }
 
 function bulletShot(data) {
@@ -214,6 +313,7 @@ function draw() {
     background("#00802b"); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
+    checkCollisions();
     keyPressed();
 
     if (mouseIsPressed && (mouseDownID == -1) && guns[tank.wepinUse].auto) {
@@ -223,7 +323,6 @@ function draw() {
         clearInterval(mouseDownID);
         mouseDownID = -1;
     }
-    map.renderMap();
 
 }
 
@@ -236,6 +335,9 @@ function GeoTank() {
     /* Position */
     this.x = windowWidth / 2;
     this.y = windowHeight / 2;
+
+    this.tankLength = int(BodyOfTank.width / 10);
+
     this.angle = 0;
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
@@ -251,6 +353,7 @@ function GeoTank() {
     this.moX = mouseX;
     this.moY = mouseY;
     this.zoom = 1.7;
+    this.direction = createVector(0,0);
     this.update = function() {
         if (this.health <= 0) {
             this.TankStatus = false;
@@ -337,8 +440,8 @@ function GeoTank() {
     this.shoot = function() {
         // console.log("Sjhot");
         let H = sqrt(pow(mouseY - windowHeight / 2, 2) + pow(mouseX- windowWidth / 2, 2)); //PROBLEM HERE!!
-        let intervalY = (mouseX - windowWidth / 2) / H; //PROBLERM HERE!!!!
-        let intervalX = (mouseY - windowHeight / 2) / H; //PROBLEMM HERE!!!!
+        let intervalX = (mouseX - windowWidth / 2) / H; //PROBLERM HERE!!!!
+        let intervalY = (mouseY - windowHeight / 2) / H; //PROBLEMM HERE!!!!
         /* maybe when we render the bullets we translate the whole screen to a x-y axis type thing */
         this.bullets.push(new bullet(this.wepinUse, this.x, this.y, intervalX, intervalY,this.angle));
         let dataBullet = {
@@ -465,21 +568,31 @@ function DisplayTracks(x, y, rot) {
 function keyPressed() {
     if (tank.TankStatus) {
         if (keyIsDown(68)) {
+            tank.direction = createVector(1,0);
+
             tank.x += 6;
             tank.TankAngle = 80;
         } else if (keyIsDown(65)) {
+            tank.direction = createVector(-1,0);
+
             tank.TankAngle = 80;
             tank.x -= 6;
         } else if (keyIsDown(87)) {
+            tank.direction = createVector(0,1);
+
             DisplayTracks(tank.x + 28, tank.y + 40, 0);
-            DisplayTracks(tank.x - 28, tank.y + 40, 0)
+            DisplayTracks(tank.x - 28, tank.y + 40, 0);
             tank.TankAngle = 0;
             tank.y -= 6;
         } else if (keyIsDown(83)) {
+            tank.direction = createVector(0,-1);
+
             DisplayTracks(tank.x + 28, tank.y - 40, PI);
             DisplayTracks(tank.x - 28, tank.y - 40, PI)
             tank.TankAngle = 0;
             tank.y += 6;
+        } else {
+            tank.direction = createVector(0,0);
         }
         if (keyIsDown(49)) {
             if (tank.weps.indexOf(0) != -1) {
@@ -541,14 +654,12 @@ function keyPressed() {
     } else {
 
         if (keyIsDown(68)) {
-
             tank.x += 10;
             tank.TankAngle = 80;
             // fill(139, 69, 19, 200);
             // setInterval(DisplayDust, 17, tank.x - 50, tank.y + 35);
         }
         if (keyIsDown(65)) {
-
             // tank.TankAngle = 80;
             tank.x -= 10;
         }
