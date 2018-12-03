@@ -20,6 +20,7 @@ var heavyMGPNG;
 var rocketPNG;
 var SniperPNG;
 var playerPicList = [];
+var bulletShotArrayMP3 = [];
 var tilePreferences = {};
 
 function preload() {
@@ -37,6 +38,10 @@ function preload() {
     rocketPNG = loadImage("jpgs/rocket.png")
     SniperPNG = loadImage("jpgs/Sniper.png")
     guns = loadJSON("guns.json");
+    bulletShotArrayMP3.push(loadSound("mp3/LAZERS.mp3"));
+    bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
+    bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
+    bulletShotArrayMP3.push(loadSound("mp3/SMG.mp3"));
 }
 
 /**
@@ -75,6 +80,7 @@ function getPlayerInfo() {
 }  
 
 function setup() {
+    // bulletShotMP3.play();
     // console.log(guns.shareInfo)
     // console.log(Object.keys(guns).length);
     // frameRate(10);
@@ -278,6 +284,7 @@ function checkBulletCollision() {
             currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
             if (currDist < tank.bullets[i].bulletHitBox) {
                 tank.bullets.splice(i,1);
+                break;
             }
         }
     }
@@ -347,6 +354,7 @@ function disconnectUser(data) {
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
+    checkCollisions();
     camera.on();
     camera.zoom = tank.zoom;
     camera.position.x = tank.x;
@@ -355,7 +363,6 @@ function draw() {
     background("#00802b"); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
-    checkCollisions();
     keyPressed();
 
     if (mouseIsPressed && (mouseDownID == -1) && guns[tank.wepinUse].auto) {
@@ -365,6 +372,7 @@ function draw() {
         clearInterval(mouseDownID);
         mouseDownID = -1;
     }
+
 
 }
 
@@ -563,12 +571,14 @@ function GeoTank() {
 function mouseClicked() {
 
     if (tank.TankStatus && mouseIsPressed && guns[tank.wepinUse].auto) {
+        // bulletShotMP3.play();
         tank.shoot();
         return;
     }
 
     if (tank.TankStatus && !mouseIsPressed && (CoolDown == 0)) {
         CoolDown = setInterval(realeaseCD, guns[tank.wepinUse].cd);
+        // bulletShotMP3.play();
         tank.shoot();
     }
 }
@@ -581,6 +591,7 @@ function realeaseCD() {
 
 
 function AutoMaticShoot() {
+    // 
     tank.shoot();
 }
 

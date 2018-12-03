@@ -17,6 +17,8 @@ class bullet {
         // console.log(type + ":" + x + ":" + y + ":" + intervalX + ":" + intervalY)
         imageMode(CENTER);
         this._id = type;
+        // console.log("shooting");
+        bulletShotArrayMP3[this._id].play();
         this.x = x;
         this.y = y;
         this.intervalX = intervalX;
@@ -40,6 +42,7 @@ class bullet {
         this.bulletColor = guns[this._id].color;
         this.bulletSize = guns[this._id].bulletsize;
         this.explosionState = 0;
+
         // this.setBullet(this.bulletType);
     }
 
@@ -75,7 +78,7 @@ class bullet {
             this.y += this.intervalY * this.speed;
         }
         // console.log("S");
-        this.currDist += 1;
+        this.currDist += 10;
         if (this.currDist > this.travelDist) {
             arr.splice(i, 1);
         }
@@ -101,15 +104,6 @@ class bullet {
         //         }
         //     }
         // }
-
-        // if (check == 0) {
-        //     for (var i = 0; i < player.length; i++) {
-        //         if (player[i].TankStatus) {
-        //             let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
-        //             if (d < this.bulletHitBox) {
-        //                 arr.splice(i, 1);
-        //             }
-
         //         }
         //     }
         // }

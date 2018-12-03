@@ -1,3 +1,4 @@
+
 class MapObjects {
     renderObj(type, x, y) {
         push();
