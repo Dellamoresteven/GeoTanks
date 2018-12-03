@@ -102,10 +102,10 @@ app.use("/map.js", express.static(__dirname + "/public/map.js"));
 app.use("/randomNums.txt", express.static(__dirname + "/public/randomNums.txt"));
 app.use("/guns.json", express.static(__dirname + "/public/guns.json"));
 app.use("/jpgs/*", function(req, res) {
-    // console.log("HERE: ")
-    // console.log(req.params[0]);
-    // console.log(__dirname + '/jpgs/' + req.params[0]);
     res.sendFile(path.join(__dirname + '/public/jpgs/' + req.params[0]));
+})
+app.use("/mp3/*", function(req, res) {
+    res.sendFile(path.join(__dirname + '/public/mp3/' + req.params[0]));
 })
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))

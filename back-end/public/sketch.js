@@ -19,6 +19,7 @@ var heavyMGPNG;
 var rocketPNG;
 var SniperPNG;
 var playerPicList = [];
+var bulletShotArrayMP3 = [];
 
 function preload() {
     // frameRate(30);
@@ -35,6 +36,10 @@ function preload() {
     rocketPNG = loadImage("jpgs/rocket.png")
     SniperPNG = loadImage("jpgs/Sniper.png")
     guns = loadJSON("guns.json");
+    bulletShotArrayMP3.push(loadSound("mp3/LAZERS.mp3"));
+    bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
+    bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
+    bulletShotArrayMP3.push(loadSound("mp3/SMG.mp3"));
 }
 
 /**
@@ -43,6 +48,7 @@ function preload() {
  */
 
 function setup() {
+    // bulletShotMP3.play();
     // console.log(guns.shareInfo)
     // console.log(Object.keys(guns).length);
     // frameRate(10);
@@ -418,12 +424,14 @@ function GeoTank() {
 function mouseClicked() {
 
     if (tank.TankStatus && mouseIsPressed && guns[tank.wepinUse].auto) {
+        // bulletShotMP3.play();
         tank.shoot();
         return;
     }
 
     if (tank.TankStatus && !mouseIsPressed && (CoolDown == 0)) {
         CoolDown = setInterval(realeaseCD, guns[tank.wepinUse].cd);
+        // bulletShotMP3.play();
         tank.shoot();
     }
 }
@@ -436,6 +444,7 @@ function realeaseCD() {
 
 
 function AutoMaticShoot() {
+    // 
     tank.shoot();
 }
 
