@@ -30,7 +30,7 @@ function preload() {
     playerPicList.push(loadImage("jpgs/Tank_body-player-2.png"));
     playerPicList.push(loadImage("jpgs/Tank_body-player-3.png"));
     playerPicList.push(loadImage("jpgs/Tank_body-player-4.png"));
-    BodyOfTank = loadImage("jpgs/Tank_body.png");
+    BodyOfTank = loadImage("jpgs/UFO.png");
     HeadOfTank = loadImage("jpgs/Tank_head.png");
     SMGPNG = loadImage("jpgs/LightMachineGun.png");
     MsixPNG = loadImage("jpgs/MachineGun_Basic.png");
@@ -360,7 +360,7 @@ function draw() {
     camera.position.x = tank.x;
     camera.position.y = tank.y;
     noStroke();
-    background("#00802b"); //repaints the background to black
+    background(0); //repaints the background to black
     tank.update(); //calls update in GeoTank
     updateCanvas();
     keyPressed();
@@ -372,8 +372,6 @@ function draw() {
         clearInterval(mouseDownID);
         mouseDownID = -1;
     }
-
-
 }
 
 
@@ -456,9 +454,9 @@ function GeoTank() {
 
             fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
             rotate(this.TankAngle);
-            image(BodyOfTank, 0, 0, BodyOfTank.width / 10, BodyOfTank.height / 10);
+            image(BodyOfTank, 0, 0, BodyOfTank.width / 5, BodyOfTank.height / 5);
             rotate(this.angle - this.TankAngle);
-            image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
+            // image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
             // rect(0, 0, GoeTankWidth, GeoTankLength);
 
             /* to reset the translated screen to the old value that push() saved */
