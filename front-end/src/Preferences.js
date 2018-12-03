@@ -15,7 +15,9 @@ class Preferences extends Component {
 				'Defense',
 				'Utility',
 			],
-			// readyToJoin: false,
+			allTiles: {},
+			readyToJoin: false,
+			newEndpoint: undefined,
 		}
 	}
 
@@ -32,16 +34,48 @@ class Preferences extends Component {
 		// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
 	}
 
+	// getPowerList(tileIndex) {
+	// 	return (
+	// 		<List
+	// 			className='list'
+	// 			items={this.state.powers}
+	// 			multiple={false}
+	// 			onChange={(selected: number) => {
+	// 				this.handleChange(selected, tileIndex)
+	// 			}}
+	// 		/>
+	// 	);
+	// }
+
+	getNewEndpoint(allTiles) {
+		let newEndpoint = this.state.endpoint;
+		for (var property in allTiles) {
+			newEndpoint = newEndpoint + "?" + property + "=" + allTiles[property];
+		}
+		console.log("THE NEW ENDPOINT IS " + newEndpoint);
+		return newEndpoint;
+	}
+
+	setTile(tileType, tileIndex) {
+		let tempAllTiles = Object.assign({}, this.state.allTiles);
+		tempAllTiles[tileIndex] = tileType;
+		let newEnd = this.getNewEndpoint(tempAllTiles);
+		this.setState({
+			allTiles: tempAllTiles,
+			readyToJoin: Object.keys(tempAllTiles).length == 9,
+			newEndpoint: newEnd, 
+		});
+	}
+
 	getPowerList(tileIndex) {
 		return (
-			<List
-				className='list'
-				items={this.state.powers}
-				multiple={false}
-				onChange={(selected: number) => {
-					this.handleChange(selected, tileIndex)
-				}}
-			/>
+			<div>
+				<ul>
+					<li> <button onClick={()=>this.setTile(0, tileIndex)}> Attack </button> </li>
+					<li> <button onClick={()=>this.setTile(1, tileIndex)}> Defense </button> </li>
+					<li> <button onClick={()=>this.setTile(2, tileIndex)}> Utility </button> </li>
+				</ul>
+			</div>
 		);
 	}
 
@@ -72,18 +106,32 @@ class Preferences extends Component {
 	}
 
 	render() {
+		console.log(this.state.allTiles)
 		console.log("READY TO JOIN IS " + this.state.readyToJoin)
+		if (this.state.readyToJoin == true) {
+			return (
+			<div> 
+				<h1> Hey {this.props.playerName} </h1>
+				<h1> Choose your tiles respective to positions on the car! </h1>
+				<h4> Choosing Attack tiles will allow you to hold more weapons </h4>
+				<h4> The Defense tiles help you defend yourself when getting hit by other GeoTanks </h4>
+				<h4> The Utility tiles give your tank bonus effects </h4>
+				<h4> NOTE: If you do not choose a tile, it will default to an utility tile </h4>
+				{this.getPowerTable()}
+				<a href = {this.state.newEndpoint} className = "Href" > START! </a>
+			</div>
+			);
+		}
 		return (
-		<div> 
-			<h1> Hey {this.props.playerName} </h1>
-			<h1> Choose your tiles respective to positions on the car! </h1>
-			<h4> Choosing Attack tiles will allow you to hold more weapons </h4>
-			<h4> The Defense tiles help you defend yourself when getting hit by other GeoTanks </h4>
-			<h4> The Utility tiles give your tank bonus effects </h4>
-			<h4> NOTE: If you do not choose a tile, it will default to an utility tile </h4>
-			{this.getPowerTable()}
-			<a href = {this.state.endpoint} className = "Href" > START! </a>
-		</div>
+			<div> 
+				<h1> Hey {this.props.playerName} </h1>
+				<h1> Choose your tiles respective to positions on the car! </h1>
+				<h4> Choosing Attack tiles will allow you to hold more weapons </h4>
+				<h4> The Defense tiles help you defend yourself when getting hit by other GeoTanks </h4>
+				<h4> The Utility tiles give your tank bonus effects </h4>
+				<h4> NOTE: If you do not choose a tile, it will default to an utility tile </h4>
+				{this.getPowerTable()}
+			</div>
 		);
 	}
 }

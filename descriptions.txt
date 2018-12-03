@@ -1,0 +1,12 @@
+Bruzer
+  Passive: Secondary shield bar that regens overtime but has a low shield cap
+  Active: 
+JankTank:
+  Passive: Railgun 
+  Active:
+Scout:
+  Passive:
+  Active:
+Sniper:
+  Passive:
+  Active:

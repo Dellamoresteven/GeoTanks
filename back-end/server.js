@@ -89,7 +89,7 @@ const closeDB = () => {
 // app.use(express.static('front-end/public'));
 var staticPath = path.join(__dirname, '..', 'front-end', 'build');
 app.use("/", express.static(staticPath));
-app.use("/gamer", express.static(__dirname + "/public/index.html"));
+app.use("/gamer*", express.static(__dirname + "/public/index.html"));
 app.use("/p5.min.js", express.static(__dirname + "/public/p5.min.js"));
 app.use("/addons/p5.dom.min.js", express.static(__dirname + "/public/addons/p5.dom.min.js"));
 app.use("/addons/p5.sound.min.js", express.static(__dirname + "/public/addons/p5.sound.min.js"));
@@ -111,7 +111,6 @@ app.use("/jpgs/*", function(req, res) {
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
-//setInterval(newDrop, 1 * 10000);
 io.on('connect', (socket) => {
 
     /* PUT STUFF IN HERE IDNDODODO */
@@ -249,16 +248,16 @@ io.on('connect', (socket) => {
 
 function newDrop() {
     // console.log(drop.length);
-    // if (drop.length <= 10) {
-    let type = ["Armor", "Attack", "Defence"];
-    let rare = ["Common", "Rare", "Legendary"];
-    const newData = {
-        type: Math.floor(Math.random() * Math.floor(8)),
-        rare: Math.floor(Math.random() * Math.floor(3)),
-        locationX: Math.floor(Math.random() * Math.floor(10000)),
-        locationY: Math.floor(Math.random() * Math.floor(10000))
+    if (drop.length <= 10) {
+        let type = ["Armor", "Attack", "Defence"];
+        let rare = ["Common", "Rare", "Legendary"];
+        const newData = {
+            type: Math.floor(Math.random() * Math.floor(8)),
+            rare: Math.floor(Math.random() * Math.floor(3)),
+            locationX: Math.floor(Math.random() * Math.floor(10000)),
+            locationY: Math.floor(Math.random() * Math.floor(10000))
+        }
+        drop.push(newData);
+        io.sockets.emit('Drop', newData);
     }
-    drop.push(newData);
-    io.sockets.emit('Drop', newData);
-    // }
 }
