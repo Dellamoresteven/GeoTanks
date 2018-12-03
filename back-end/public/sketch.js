@@ -235,15 +235,22 @@ function checkBulletCollision() {
                 continue;
             }
 
+            var hit_player = 0;
+
             //Other player gets hit
             for (var k = 0; k < player.length; k++) {
                 if (k != i) {
                     currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, player[k].x, player[k].y);
                     if (currDist < player[i].bulletss[j].bulletHitBox) {
                         player[i].bulletss.splice(j,1);
+                        hit_player = 1;
                         break;
                     }
                 }
+            }
+
+            if (hit_player == 1) {
+                break;
             }
 
             //Hit terrain
