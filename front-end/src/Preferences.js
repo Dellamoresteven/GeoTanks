@@ -21,13 +21,13 @@ class Preferences extends Component {
 
 	handleChange = (selected, tileIndex) => {
 		this.props.clicked[tileIndex] = selected;
-		console.log(this.props.clicked);
+		// console.log(this.props.clicked);
 		// number of things that are clicked
-		if (Object.keys(this.props.clicked).length == 9) {
-			const socket = socketIOClient(port);
-			socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
+		// if (Object.keys(this.prop).length == 9) {
+			// const socket = socketIOClient(port);
+			// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
 			// this.setState({readyToJoin: 'true'});
-		}
+		// }
 		// const socket = socketIOClient(port);
 		// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
 	}
@@ -63,8 +63,9 @@ class Preferences extends Component {
 		return (
 			<div>
 				<ul>
-					<li> <button onClick={()=>this.setOptions('0')}> {optionNames[0]} </button> </li>
-					<li> <button onClick={()=>this.setOptions('1')}> {optionNames[1]} </button> </li>
+					<li> <button className='Button1' onClick={()=>this.setOptions('0')}> {optionNames[0]} </button> </li>
+					<li> </li>
+					<li> <button className='Button1' onClick={()=>this.setOptions('1')}> {optionNames[1]} </button> </li>
 				</ul>
 			</div>
 		);
@@ -80,34 +81,50 @@ class Preferences extends Component {
 	getClassInfo(typeName) {
 		if (typeName == 'Bruser') {
 			return (
-				<div onClick={() => this.setClassInfo('Bruser')}>
+				<div className='card' onClick={() => this.setClassInfo('Bruser')}>
 					<h1> Bruzer </h1>
 					<h3> Secondary shield bar that regens overtime but has a low shield cap </h3>
-					<h3> Options: Shoot like fireworks, Place a shield in front of you </h3>
+					<h3> Options: </h3>
+					<ul> 
+						<li> Shoot like fireworks </li>
+						<li> Place a shield in front of you </li>
+					</ul>
 				</div>
 			);
 		} else if (typeName == 'JankTank') {
 			return (
-				<div onClick={() => this.setClassInfo('JankTank')}>
+				<div className='card' onClick={() => this.setClassInfo('JankTank')}>
 					<h1> JankTank </h1>
 					<h3> Take dmg, and do more dmg based on missing health </h3>
-					<h3> Options: Random teleport and takes the damage at that location, Place down a turret to fight with you </h3>
+					<h3> Options: </h3> 
+					<ul>
+						<li> Random teleport and takes the damage at that location </li>
+						<li> Place down a turret to fight with you </li>
+					</ul>
 				</div>
 			);
 		} else if (typeName == 'Scout') {
 			return (
-				<div onClick={() => this.setClassInfo('Scout')}>
+				<div className='card' onClick={() => this.setClassInfo('Scout')}>
 					<h1> Scout </h1>
 					<h3> 50% movment speed </h3>
-					<h3> Options: 300% speed boost, Stun gernade </h3>
+					<h3> Options: </h3>
+					<ul>
+						<li> 300% speed boost </li>
+						<li> Stun gernade </li>
+					</ul>
 				</div>
 			);
 		} else if (typeName == 'Sniper') {
 			return (
-				<div onClick={() => this.setClassInfo('Sniper')}>
+				<div className='card' onClick={() => this.setClassInfo('Sniper')}>
 					<h1> Sniper </h1>
 					<h3> Larger zoom </h3>
-					<h3> Options: Railgun, Camo UP! (if touching tree turn invis) </h3>
+					<h3> Options: </h3>
+					<ul>
+						<li> Railgun </li>
+						<li> Camo UP! (if touching tree turn invis) </li>
+					</ul>
 				</div>
 			);
 		} 
@@ -137,8 +154,6 @@ class Preferences extends Component {
 			return (
 			<div> 
 				<h1> Hey {this.props.playerName} </h1>
-				<h4> Choose a tank type </h4>
-				{this.getOptions()}
 				<a href = {this.state.newEndpoint} className = "Href" > START! </a>
 			</div>
 			);
@@ -154,7 +169,7 @@ class Preferences extends Component {
 		return (
 			<div> 
 				<h1> Hey {this.props.playerName} </h1>
-				<h4> Choose a tank type </h4>
+				<h3> Choose a tank type </h3>
 				{this.getClassTable()}
 			</div>
 		);

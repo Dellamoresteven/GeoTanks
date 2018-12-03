@@ -21,7 +21,7 @@ var rocketPNG;
 var SniperPNG;
 var playerPicList = [];
 var bulletShotArrayMP3 = [];
-var tilePreferences = {};
+var playerClass = {};
 
 function preload() {
     // frameRate(30);
@@ -71,7 +71,7 @@ function setup() {
     // frameRate(10);
 
     // get all the tiles that the player chose - FOR CURRENT PLAYER
-    tilePreferences = getPlayerInfo();
+    playerClass = getPlayerInfo();
 
     for (var i = 0; i < randomNums.length; i++) {
         randomNumList.push(parseInt(randomNums[i]));

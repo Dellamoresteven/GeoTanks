@@ -4,35 +4,81 @@
   padding-top: 20px;
 }
 
-.react-list-select {
-    background: #fafafa;
-    border: 10px solid black;
-    margin-right: 0.5em;
-    display: inline-block;
-    position: relative;
+.Href:hover {background-color: #2DA917}
+
+.Href:active {
+  background-color: #2DA917;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
 }
 
-.react-list-select--item.is-selected {
-    background: #00cccc;
+.Button {
+  padding: 10px 15px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #2DC213;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px #999;
 }
 
-.react-list-select--item {
-	border: 2px solid black;
-    padding: 0.3em 0.6em;
-    cursor: pointer;
-    position: relative;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -o-user-select: none;
-    user-select: none;
+.Button1:hover {background-color: #2DA917}
+
+.Button1:active {
+  background-color: #2DA917;
+  box-shadow: 0 5px #666;
+  font-size: 15px;
+  transform: translateY(4px);
+}
+
+.Button {
+  padding: 10px 15px;
+  font-size: 15px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #2DC213;
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 5px #999;
+}
+
+.Button:hover {background-color: #2DA917}
+
+.Button:active {
+  background-color: #2DA917;
+  box-shadow: 0 5px #666;
+  font-size: 15px;
+  transform: translateY(4px);
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+  width: 100%;
+  height: 100%;
+  background-color: #2DA917;
+  text-align:left;
+}
+
+.card:hover {
+  box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+  background-color: #44C22D;
+}
+
+td {
+  width: 25%;
 }
 
 table {
 	text-align: center;
-  	vertical-align: middle;
-  	margin-left: 41%;
-  	padding-bottom: 20px;
+  vertical-align: middle;
+  padding-bottom: 20px;
+  height: 100%;
 }
 
 h1 {
@@ -43,8 +89,15 @@ h4 {
 	color: white;
 }
 
+h3 {
+  color: white;
+}
+
 ul {
-    list-style: none;
     padding: 0;
     margin: 0;
+}
+
+li {
+  color: white;
 }
