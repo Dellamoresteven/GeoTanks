@@ -17,7 +17,7 @@ class bullet {
         // console.log(type + ":" + x + ":" + y + ":" + intervalX + ":" + intervalY)
         imageMode(CENTER);
         this._id = type;
-        console.log("shooting");
+        // console.log("shooting");
         bulletShotArrayMP3[this._id].play();
         this.x = x;
         this.y = y;
@@ -104,26 +104,6 @@ class bullet {
         //         }
         //     }
         // }
-
-<<<<<<< HEAD
-        if (check == 0) {
-            for (var i = 0; i < player.length; i++) {
-                if (player[i].TankStatus) {
-                    let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
-                    // console.log(d);
-                    if (d < this.bulletHitBox) {
-                        arr.splice(i, 1);
-                    }
-=======
-        // if (check == 0) {
-        //     for (var i = 0; i < player.length; i++) {
-        //         if (player[i].TankStatus) {
-        //             let d = dist(this.xx, this.yy, player[i].x - this.x, player[i].y - this.y);
-        //             if (d < this.bulletHitBox) {
-        //                 arr.splice(i, 1);
-        //             }
->>>>>>> 8f8d0639191c2bb1bbd1941c024db294d756f966
-
         //         }
         //     }
         // }

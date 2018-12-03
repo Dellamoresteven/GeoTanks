@@ -20,11 +20,8 @@ var heavyMGPNG;
 var rocketPNG;
 var SniperPNG;
 var playerPicList = [];
-<<<<<<< HEAD
 var bulletShotArrayMP3 = [];
-=======
 var tilePreferences = {};
->>>>>>> 8f8d0639191c2bb1bbd1941c024db294d756f966
 
 function preload() {
     // frameRate(30);
@@ -277,7 +274,6 @@ function checkBulletCollision() {
             currDist = dist(tank.bullets[k].x, tank.bullets[k].y, player[i].x, player[i].y);
             if (currDist < tank.bullets[k].bulletHitBox) {
                 tank.bullets.splice(k,1);
-                console.log("splicing");
             }
         }
     }
