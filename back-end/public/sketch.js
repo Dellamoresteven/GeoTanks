@@ -50,33 +50,18 @@ function preload() {
  */
 function getPlayerInfo() {
     let windowHref = window.location.href;
-    let tiles = windowHref.split("?");
-    let allTileInfo = {};
+    let classInfo = windowHref.substr(windowHref.indexOf('?')+1, windowHref.length);
+    classInfo = classInfo.split('=');
+    let allPlayerInfo = {};
 
-    let numAttack = 0;
-    let numDefense = 0;
-    let numUtility = 0;
-
-    for(let i = 0; i < tiles.length; i++){
-        let currTile = tiles[i];
-        let tileType = currTile.substring(3,4);
-        allTileInfo[currTile.substring(0,2)] = tileType;
-        switch(tileType) {
-            case "0": numAttack++; break;
-            case "1": numDefense++; break;
-            default: numUtility++;
-        }
-    }
-
-    allTileInfo["ATTACK"] = numAttack;
-    allTileInfo["DEFENSE"] = numDefense;
-    allTileInfo["UTILITY"] = numUtility;
+    allPlayerInfo['classType'] = classInfo[0];
+    allPlayerInfo['option'] = classInfo[1];
 
 
     console.log("TILE INFO");
-    console.log(allTileInfo);
-    // returns the position of every tile along with the number of attack, defense, and utility tiles
-    return allTileInfo;
+    console.log(allPlayerInfo);
+    // returns the class player had chosen with option
+    return allPlayerInfo;
 }  
 
 function setup() {
