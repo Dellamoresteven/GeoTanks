@@ -37,7 +37,7 @@ class App extends Component {
         <Preferences
           className='Preferences'
           playerName={this.state.value}
-          clicked={{'00':1}}/>
+          />
       </div>
     );
   }
@@ -63,9 +63,10 @@ class App extends Component {
       <div className="App">
       	  <h1 className = "title"> GeoTanks </h1>
           <div>
-          <label>
-              Name:<input type="text" value={this.state.value} onChange={this.handleChange} />
-          </label>
+            <label>
+                <h3 className = 'nameStyle'> Name: </h3>
+                <input className='playerName' type="text" value={this.state.value} onChange={this.handleChange} />
+            </label>
           </div>
       	  <button onClick = {() => this.sendJoinGame()} className = "Button"> Play Game! </button>
       </div>

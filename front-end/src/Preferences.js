@@ -10,94 +10,136 @@ class Preferences extends Component {
 		super(props);
 		this.state = {
 			endpoint: port + "gamer",
-			powers: [
-				'Attack',
-				'Defense',
-				'Utility',
-			],
 			allTiles: {},
 			readyToJoin: false,
+			readyToChooseOptions: false,
+			optionType: undefined,
+			classType: undefined,
 			newEndpoint: undefined,
 		}
 	}
 
 	handleChange = (selected, tileIndex) => {
 		this.props.clicked[tileIndex] = selected;
-		console.log(this.props.clicked);
+		// console.log(this.props.clicked);
 		// number of things that are clicked
-		if (Object.keys(this.props.clicked).length == 9) {
-			const socket = socketIOClient(port);
-			socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
+		// if (Object.keys(this.prop).length == 9) {
+			// const socket = socketIOClient(port);
+			// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
 			// this.setState({readyToJoin: 'true'});
-		}
+		// }
 		// const socket = socketIOClient(port);
 		// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
 	}
 
-	// getPowerList(tileIndex) {
-	// 	return (
-	// 		<List
-	// 			className='list'
-	// 			items={this.state.powers}
-	// 			multiple={false}
-	// 			onChange={(selected: number) => {
-	// 				this.handleChange(selected, tileIndex)
-	// 			}}
-	// 		/>
-	// 	);
-	// }
-
-	getNewEndpoint(allTiles) {
+	getNewEndpoint(optionNumber) {
 		let newEndpoint = this.state.endpoint;
-		for (var property in allTiles) {
-			newEndpoint = newEndpoint + "?" + property + "=" + allTiles[property];
-		}
+		newEndpoint = newEndpoint + '?' + this.state.classType + '=' + optionNumber;
 		console.log("THE NEW ENDPOINT IS " + newEndpoint);
 		return newEndpoint;
 	}
 
-	setTile(tileType, tileIndex) {
-		let tempAllTiles = Object.assign({}, this.state.allTiles);
-		tempAllTiles[tileIndex] = tileType;
-		let newEnd = this.getNewEndpoint(tempAllTiles);
+	setOptions(optionNumber) {
+		let endpoint = this.getNewEndpoint(optionNumber);
 		this.setState({
-			allTiles: tempAllTiles,
-			readyToJoin: Object.keys(tempAllTiles).length == 9,
-			newEndpoint: newEnd, 
+			readyToJoin: true,
+			optionType: optionNumber,
+			newEndpoint: endpoint,
 		});
 	}
 
-	getPowerList(tileIndex) {
+	getOptionNames() {
+		switch(this.state.classType) {
+			case 'Bruser': return ['Shoot like fireworks', 'Place a shield in front of you']; 
+			case 'JankTank': return ['Random teleport and takes the damage at that location', 'Place down a turret to fight with you'];
+			case 'Scout': return ['300% speed boost', 'Stun gernade'];
+			case 'Sniper': return ['Railgun', 'Camo UP! (if touching tree turn invis)'];
+			default: return ['','']
+		}
+	}
+
+	getOptions() {
+		let optionNames = this.getOptionNames();
 		return (
 			<div>
 				<ul>
-					<li> <button onClick={()=>this.setTile(0, tileIndex)}> Attack </button> </li>
-					<li> <button onClick={()=>this.setTile(1, tileIndex)}> Defense </button> </li>
-					<li> <button onClick={()=>this.setTile(2, tileIndex)}> Utility </button> </li>
+					<li> <button className='Button1' onClick={()=>this.setOptions('0')}> {optionNames[0]} </button> </li>
+					<li> </li>
+					<li> <button className='Button1' onClick={()=>this.setOptions('1')}> {optionNames[1]} </button> </li>
 				</ul>
 			</div>
 		);
 	}
 
-	getPowerTable() {
+	setClassInfo(typeName) {
+		this.setState({
+			readyToChooseOptions: true, 
+			classType: typeName,
+		});
+	}
+
+	getClassInfo(typeName) {
+		if (typeName == 'Bruser') {
+			return (
+				<div className='card' onClick={() => this.setClassInfo('Bruser')}>
+					<h1> Bruzer </h1>
+					<h3> Secondary shield bar that regens overtime but has a low shield cap </h3>
+					<h3> Options: </h3>
+					<ul> 
+						<li> Shoot like fireworks </li>
+						<li> Place a shield in front of you </li>
+					</ul>
+				</div>
+			);
+		} else if (typeName == 'JankTank') {
+			return (
+				<div className='card' onClick={() => this.setClassInfo('JankTank')}>
+					<h1> JankTank </h1>
+					<h3> Take dmg, and do more dmg based on missing health </h3>
+					<h3> Options: </h3> 
+					<ul>
+						<li> Random teleport and takes the damage at that location </li>
+						<li> Place down a turret to fight with you </li>
+					</ul>
+				</div>
+			);
+		} else if (typeName == 'Scout') {
+			return (
+				<div className='card' onClick={() => this.setClassInfo('Scout')}>
+					<h1> Scout </h1>
+					<h3> 50% movment speed </h3>
+					<h3> Options: </h3>
+					<ul>
+						<li> 300% speed boost </li>
+						<li> Stun gernade </li>
+					</ul>
+				</div>
+			);
+		} else if (typeName == 'Sniper') {
+			return (
+				<div className='card' onClick={() => this.setClassInfo('Sniper')}>
+					<h1> Sniper </h1>
+					<h3> Larger zoom </h3>
+					<h3> Options: </h3>
+					<ul>
+						<li> Railgun </li>
+						<li> Camo UP! (if touching tree turn invis) </li>
+					</ul>
+				</div>
+			);
+		} 
+	}
+
+	getClassTable() {
 		return (
 			<div>
 				<table>
 					<tbody>
 						<tr>
-							<td> {this.getPowerList('00')} </td>
-							<td> {this.getPowerList('01')} </td>
-							<td> {this.getPowerList('02')} </td>
-						</tr>
-						<tr>
-							<td> {this.getPowerList('10')} </td>
-							<td> {this.getPowerList('11')} </td>
-							<td> {this.getPowerList('12')} </td>
-						</tr>
-						<tr>
-							<td> {this.getPowerList('20')} </td>
-							<td> {this.getPowerList('21')} </td>
-							<td> {this.getPowerList('22')} </td>
+							<td> {this.getClassInfo('Bruser')} </td>
+							<td> {this.getClassInfo('JankTank')} </td>
+							<td> {this.getClassInfo('Scout')} </td>
+							<td> {this.getClassInfo('Sniper')} </td>
 						</tr>
 					</tbody>
 				</table>
@@ -112,25 +154,23 @@ class Preferences extends Component {
 			return (
 			<div> 
 				<h1> Hey {this.props.playerName} </h1>
-				<h1> Choose your tiles respective to positions on the car! </h1>
-				<h4> Choosing Attack tiles will allow you to hold more weapons </h4>
-				<h4> The Defense tiles help you defend yourself when getting hit by other GeoTanks </h4>
-				<h4> The Utility tiles give your tank bonus effects </h4>
-				<h4> NOTE: If you do not choose a tile, it will default to an utility tile </h4>
-				{this.getPowerTable()}
 				<a href = {this.state.newEndpoint} className = "Href" > START! </a>
 			</div>
+			);
+		}
+		if (this.state.readyToChooseOptions == true){
+			return (
+				<div>
+					<h1> Hey {this.props.playerName} </h1>
+					{this.getOptions()}
+				</div>
 			);
 		}
 		return (
 			<div> 
 				<h1> Hey {this.props.playerName} </h1>
-				<h1> Choose your tiles respective to positions on the car! </h1>
-				<h4> Choosing Attack tiles will allow you to hold more weapons </h4>
-				<h4> The Defense tiles help you defend yourself when getting hit by other GeoTanks </h4>
-				<h4> The Utility tiles give your tank bonus effects </h4>
-				<h4> NOTE: If you do not choose a tile, it will default to an utility tile </h4>
-				{this.getPowerTable()}
+				<h3> Choose a tank type </h3>
+				{this.getClassTable()}
 			</div>
 		);
 	}

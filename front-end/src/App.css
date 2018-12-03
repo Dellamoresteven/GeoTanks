@@ -3,13 +3,32 @@
   vertical-align: middle;
 }
 
+.playerName {
+  width: 30%;
+  padding: 12px 20px;
+  margin: 8px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.nameStyle {
+  color: white;
+  margin: 0;
+}
+
+body {
+  margin-top: 10%;
+}
+
 .title {
   color: white;
   font-size: 50px;
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #136207;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -26,16 +45,16 @@
   cursor: pointer;
   outline: none;
   color: #fff;
-  background-color: #00e6e6;
+  background-color: #2DC213;
   border: none;
   border-radius: 15px;
   box-shadow: 0 5px #999;
 }
 
-.Button:hover {background-color: #00cccc}
+.Button:hover {background-color: #2DA917}
 
 .Button:active {
-  background-color: #00cccc;
+  background-color: #2DA917;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
@@ -47,16 +66,16 @@
   cursor: pointer;
   outline: none;
   color: #fff;
-  background-color: #00e6e6;
+  background-color: #2DC213;
   border: none;
   border-radius: 15px;
   box-shadow: 0 5px #999;
 }
 
-.Href:hover {background-color: #00cccc}
+.Href:hover {background-color: #2DA917}
 
 .Href:active {
-  background-color: #00cccc;
+  background-color: #2DA917;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
