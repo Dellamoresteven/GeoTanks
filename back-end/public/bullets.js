@@ -14,11 +14,20 @@
 
 class bullet {
     constructor(type, x, y, intervalX, intervalY, angle) {
+        if (type == 5) {
+            for (var i = 0; i < tank.bullets.length; i++) {
+                if (tank.bullets[i]._id == 5){
+                    console.log("S");
+                    tank.bullets.splice(i,1);
+                }
+            }
+        }
+
         // console.log(type + ":" + x + ":" + y + ":" + intervalX + ":" + intervalY)
         imageMode(CENTER);
         this._id = type;
         // console.log("shooting");
-        bulletShotArrayMP3[this._id].play();
+        // bulletShotArrayMP3[this._id].play();
         this.x = x;
         this.y = y;
         this.intervalX = intervalX;
@@ -50,24 +59,34 @@ class bullet {
         angleMode(RADIANS);
 
         push();
+        if (this.currDist > this.travelDist) {
+            arr.splice(i, 1);
+        }
         //translate(this.x, this.y);
         fill(this.bulletColor);
         if (this.explosionState == 0) {
             if ("Rocket" == guns[this._id].name) {
-                // push();
-                // //console.log((this.xx + this.x), (this.yy + this.x));
-                // translate(this.xx, this.yy);
-                // rotate(this.angle - PI / 2);
-                // // console.log(this.angle);
-                // rect(0, 0, 50 / 1.5, 50 / 4);
-                // fill(255);
-                // triangle(15, 50 / 5, 15, -50 / 5, 30, 0);
-                // // line(0,0, 1000, 1000);
-                // stroke(0);
-                // strokeWeight(4);
-                // line(3, 50 / 10, 3, -50 / 10)
-                // line(-9, 50 / 10, -9, -50 / 10)
-                // pop();
+                push();
+                // console.log("F");
+                //console.log((this.xx + this.x), (this.yy + this.x));
+                translate(this.x, this.y);
+                rotate(this.angle - PI / 2);
+                // console.log(this.angle);
+                rect(60, -20, 80, 5, 255);
+                rect(60, 20, 80, 5, 20, 255);
+                pop();
+            } else if ("Sniper" == guns[this._id].name) {
+                push();
+                translate(this.x, this.y);
+                rotate(this.angle - PI / 2);
+                fill(255, 0, 0, 255);
+                rect(200, 0, 400, 20, 255);
+                let distX = abs(mouseX - tank.x);
+                let distY = abs(mouseY - tank.y);
+
+                // rect((distX+distY)/2, 0, (distX+distY), 20, 255);
+                pop();
+                // console.log("X");
             } else {
                 ellipse(this.x, this.y, this.bulletSize, this.bulletSize);
             }
@@ -79,38 +98,10 @@ class bullet {
         }
         // console.log("S");
         this.currDist += 10;
-        if (this.currDist > this.travelDist) {
-            arr.splice(i, 1);
-        }
-        // if (check != 0) {
-        // if (check == 1) {
-        //     for (var i = 0; i < player.length; i++) {
-        //         for (var j = 0; j < player[i].bulletss.length; j++) {
-        //             if (dist((player[i].bulletss[j].xx + player[i].bulletss[j].x), (player[i].bulletss[j].yy + player[i].bulletss[j].y), tank.x, tank.y) < this.bulletHitBox) {
-        //                 if (tank.armor < this.dmg) {
-        //                     this.dmg -= tank.armor;
-        //                     tank.armor = 0;
-        //                     if (tank.health < this.dmg) {
-        //                         tank.TankStatus = false;
-        //                         tank.health = 0;
-        //                     } else {
-        //                         tank.health -= this.dmg;
-        //                     }
-        //                 } else {
-        //                     tank.armor -= this.dmg
-        //                 }
-        //                 player[i].bulletss.splice(j, 1);
-        //             }
-        //         }
-        //     }
-        // }
-        //         }
-        //     }
-        // }
         pop();
     }
 
-    dealDamage(p,b) {
+    dealDamage(p, b) {
         if (tank.armor < this.dmg) {
             this.dmg -= tank.armor;
             tank.armor = 0;

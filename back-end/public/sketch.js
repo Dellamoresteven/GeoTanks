@@ -21,7 +21,8 @@ var rocketPNG;
 var SniperPNG;
 var playerPicList = [];
 var bulletShotArrayMP3 = [];
-var playerClass = {};
+var tilePreferences = {};
+var astroids = [];
 
 function preload() {
     // frameRate(30);
@@ -42,6 +43,7 @@ function preload() {
     bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
     bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
     bulletShotArrayMP3.push(loadSound("mp3/SMG.mp3"));
+    astroids.push(loadImage("jpgs/astroid1.png"))
 }
 
 /**
@@ -50,28 +52,43 @@ function preload() {
  */
 function getPlayerInfo() {
     let windowHref = window.location.href;
-    let classInfo = windowHref.substr(windowHref.indexOf('?')+1, windowHref.length);
-    classInfo = classInfo.split('=');
-    let allPlayerInfo = {};
+    let tiles = windowHref.split("?");
+    let allTileInfo = {};
 
-    allPlayerInfo['classType'] = classInfo[0];
-    allPlayerInfo['option'] = classInfo[1];
+    let numAttack = 0;
+    let numDefense = 0;
+    let numUtility = 0;
+
+    for (let i = 0; i < tiles.length; i++) {
+        let currTile = tiles[i];
+        let tileType = currTile.substring(3, 4);
+        allTileInfo[currTile.substring(0, 2)] = tileType;
+        switch (tileType) {
+            case "0":
+                numAttack++;
+                break;
+            case "1":
+                numDefense++;
+                break;
+            default:
+                numUtility++;
+        }
+    }
+
+    allTileInfo["ATTACK"] = numAttack;
+    allTileInfo["DEFENSE"] = numDefense;
+    allTileInfo["UTILITY"] = numUtility;
 
 
     console.log("TILE INFO");
-    console.log(allPlayerInfo);
-    // returns the class player had chosen with option
-    return allPlayerInfo;
-}  
+    console.log(allTileInfo);
+    // returns the position of every tile along with the number of attack, defense, and utility tiles
+    return allTileInfo;
+}
 
 function setup() {
-    // bulletShotMP3.play();
-    // console.log(guns.shareInfo)
-    // console.log(Object.keys(guns).length);
-    // frameRate(10);
-
     // get all the tiles that the player chose - FOR CURRENT PLAYER
-    playerClass = getPlayerInfo();
+    tilePreferences = getPlayerInfo();
 
     for (var i = 0; i < randomNums.length; i++) {
         randomNumList.push(parseInt(randomNums[i]));
@@ -122,34 +139,22 @@ function init(data) {
  * @params data holds the meta data of the other tanks. 
  */
 function newDraw(data) {
-    // console.log(data.bullets);
-    //console.log(data);
     if (data.drop != -1) {
-        // console.log(data.drop);
         drops.splice(data.drop, 1);
     }
     if (data.socketID != undefined) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
             if (player[i].socketID == data.socketID) {
-                // console.log(player[i].bulletss.length);
-                // preDictedMovemntX = player[i].x;
-                // preDictedMovemntY = player[i].y;
-                
                 player[i].settank(data);
-                
-                // preDictedMovemntX -= data.x;
-                // preDictedMovemntY -= data.y;
                 newPlayer = false;
-                // player[i].updated = true;
-                // console.log(player[i].bulletss.length);
             }
         }
         if (newPlayer) {
             player.push(new Players(data));
         }
     }
-    
+
 }
 
 
@@ -158,16 +163,18 @@ function newDraw(data) {
  * are not moving, we have to save there position. 
  */
 function updateCanvas() {
-    map.renderMap();
     for (var i = 0; i < player.length; i++) {
         if (player[i].TankStatus) {
             // console.log(player[i].bulletss.length);
             push();
             translate(player[i].x, player[i].y);
-            rotate(player[i].TankAng);
-            image(playerPicList[player[i].playerNum], 0, 0, playerPicList[player[i].playerNum].width / 10, playerPicList[player[i].playerNum].height / 10);
-            rotate(player[i].ang - player[i].TankAng);
-            image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
+            rotate(player[i].rotate += .005);
+
+            image(BodyOfTank, 0, 0, BodyOfTank.width / 5, BodyOfTank.height / 5);
+
+            //image(playerPicList[player[i].playerNum], 0, 0, playerPicList[player[i].playerNum].width / 10, playerPicList[player[i].playerNum].height / 10);
+            // rotate(player[i].ang - player[i].TankAng);
+            // image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
             pop();
             // console.log(player[i].bulletss.length);
             for (var j = 0; j < player[i].bulletss.length; j++) {
@@ -179,13 +186,21 @@ function updateCanvas() {
 }
 
 function checkTerrainCollision() {
+    //     camera.position.x = tank.x;
+    // camera.position.y = tank.y;
+
+    // tank.y - terrains[i].y
     for (var i = 0; i < terrains.length; i++) {
         var currDist = dist(terrains[i].x, terrains[i].y, tank.x, tank.y)
         if (currDist < terrains[i].hitbox) {
-            tank.x -= tank.direction.x * (6 + (int(terrains[i].hitbox - currDist)));
-            tank.y += tank.direction.y * (6 + (int(terrains[i].hitbox - currDist)));
+            xDir = abs(tank.x - terrains[i].x);
+            yDir = abs(tank.y - terrains[i].y);
+            tank.x -= tank.direction.x * xDir / (xDir + yDir) * (6 + (int(terrains[i].hitbox - currDist)));
+            tank.y += tank.direction.y * yDir / (xDir + yDir) * (6 + (int(terrains[i].hitbox - currDist)));
         }
     }
+    camera.position.x = tank.x;
+    camera.position.y = tank.y;
 }
 
 function checkPlayerCollision() {
@@ -222,7 +237,7 @@ function checkBulletCollision() {
             //I get hit
             currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, tank.x, tank.y);
             if (currDist < player[i].bulletss[j].bulletHitBox) {
-                player[i].bulletss[j].dealDamage(i,j);
+                player[i].bulletss[j].dealDamage(i, j);
                 continue;
             }
 
@@ -233,7 +248,7 @@ function checkBulletCollision() {
                 if (k != i) {
                     currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, player[k].x, player[k].y);
                     if (currDist < player[i].bulletss[j].bulletHitBox) {
-                        player[i].bulletss.splice(j,1);
+                        player[i].bulletss.splice(j, 1);
                         hit_player = 1;
                         break;
                     }
@@ -248,7 +263,7 @@ function checkBulletCollision() {
             for (var k = 0; k < terrains.length; k++) {
                 currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, terrains[k].x, terrains[k].y);
                 if (currDist < player[i].bulletss[j].bulletHitBox) {
-                    player[i].bulletss.splice(j,1);
+                    player[i].bulletss.splice(j, 1);
                     break;
                 }
             }
@@ -258,7 +273,7 @@ function checkBulletCollision() {
         for (var k = 0; k < tank.bullets.length; k++) {
             currDist = dist(tank.bullets[k].x, tank.bullets[k].y, player[i].x, player[i].y);
             if (currDist < tank.bullets[k].bulletHitBox) {
-                tank.bullets.splice(k,1);
+                tank.bullets.splice(k, 1);
             }
         }
     }
@@ -268,7 +283,7 @@ function checkBulletCollision() {
         for (var j = 0; j < terrains.length; j++) {
             currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
             if (currDist < tank.bullets[i].bulletHitBox) {
-                tank.bullets.splice(i,1);
+                tank.bullets.splice(i, 1);
                 break;
             }
         }
@@ -339,15 +354,18 @@ function disconnectUser(data) {
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
-    checkCollisions();
+
     camera.on();
     camera.zoom = tank.zoom;
     camera.position.x = tank.x;
     camera.position.y = tank.y;
     noStroke();
+
     background(0); //repaints the background to black
+    map.renderMap();
     tank.update(); //calls update in GeoTank
     updateCanvas();
+    checkCollisions();
     keyPressed();
 
     if (mouseIsPressed && (mouseDownID == -1) && guns[tank.wepinUse].auto) {
@@ -386,8 +404,10 @@ function GeoTank() {
     this.moX = mouseX;
     this.moY = mouseY;
     this.zoom = 1.7;
-    this.direction = createVector(0,0);
+    this.direction = createVector(0, 0);
+    this.rotate = 0;
     this.update = function() {
+
         if (this.health <= 0) {
             this.TankStatus = false;
         }
@@ -438,9 +458,10 @@ function GeoTank() {
             /* setting up what we want to be shared to everything */
 
             fill(255, 20, 40, 255); //fills the rect with RGBA 255,20,40,255
-            rotate(this.TankAngle);
+            rotate(this.rotate);
+            this.rotate += .005;
             image(BodyOfTank, 0, 0, BodyOfTank.width / 5, BodyOfTank.height / 5);
-            rotate(this.angle - this.TankAngle);
+            // rotate(this.angle - this.TankAngle);
             // image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
             // rect(0, 0, GoeTankWidth, GeoTankLength);
 
@@ -472,11 +493,11 @@ function GeoTank() {
     }
     this.shoot = function() {
         // console.log("Sjhot");
-        let H = sqrt(pow(mouseY - windowHeight / 2, 2) + pow(mouseX- windowWidth / 2, 2)); //PROBLEM HERE!!
+        let H = sqrt(pow(mouseY - windowHeight / 2, 2) + pow(mouseX - windowWidth / 2, 2)); //PROBLEM HERE!!
         let intervalX = (mouseX - windowWidth / 2) / H; //PROBLERM HERE!!!!
         let intervalY = (mouseY - windowHeight / 2) / H; //PROBLEMM HERE!!!!
         /* maybe when we render the bullets we translate the whole screen to a x-y axis type thing */
-        this.bullets.push(new bullet(this.wepinUse, this.x, this.y, intervalX, intervalY,this.angle));
+        this.bullets.push(new bullet(this.wepinUse, this.x, this.y, intervalX, intervalY, this.angle));
         let dataBullet = {
             socketID: socketID,
             type: this.wepinUse,
@@ -589,7 +610,6 @@ function DisplayDust(x, y) {
 
 function DisplayTracks(x, y, rot) {
     push();
-    // console.log(rot);
     translate(x, y);
     angleMode(RADIANS)
     rotate(rot);
@@ -602,34 +622,42 @@ function DisplayTracks(x, y, rot) {
  * If it a key is pressed it can change the direction of the rect moving
  */
 function keyPressed() {
+    // console.log(tank.direction.x + ":" + tank.direction.y);
     if (tank.TankStatus) {
         if (keyIsDown(68)) {
-            tank.direction = createVector(1,0);
-
+            tank.direction.x = 1;
+            // checkTerrainCollision();
             tank.x += 6;
+            // checkTerrainCollision();
             tank.TankAngle = 80;
         } else if (keyIsDown(65)) {
-            tank.direction = createVector(-1,0);
-
+            tank.direction.x = -1;
             tank.TankAngle = 80;
             tank.x -= 6;
-        } else if (keyIsDown(87)) {
-            tank.direction = createVector(0,1);
-
+            // checkTerrainCollision();
+        } else {
+            tank.direction.x = 0;
+        }
+        if (keyIsDown(87)) {
+            tank.direction.y = 1;
             DisplayTracks(tank.x + 28, tank.y + 40, 0);
             DisplayTracks(tank.x - 28, tank.y + 40, 0);
             tank.TankAngle = 0;
             tank.y -= 6;
+            // checkTerrainCollision();
         } else if (keyIsDown(83)) {
-            tank.direction = createVector(0,-1);
+            tank.direction.y = -1;
+
 
             DisplayTracks(tank.x + 28, tank.y - 40, PI);
             DisplayTracks(tank.x - 28, tank.y - 40, PI)
             tank.TankAngle = 0;
             tank.y += 6;
+            // checkTerrainCollision();
         } else {
-            tank.direction = createVector(0,0);
+            tank.direction.y = 0;
         }
+
         if (keyIsDown(49)) {
             if (tank.weps.indexOf(0) != -1) {
                 tank.wepinUse = 0;
@@ -664,6 +692,13 @@ function keyPressed() {
         if (keyIsDown(53)) {
             if (tank.weps.indexOf(4) != -1) {
                 tank.wepinUse = 4;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            }
+        }
+        if (keyIsDown(54)) {
+            if (tank.weps.indexOf(5) != -1) {
+                tank.wepinUse = 5;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
             }

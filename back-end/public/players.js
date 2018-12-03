@@ -44,6 +44,7 @@ class Players {
         this.preX = 0;
         this.preY = 0;
         this.playerNum = player.length;
+        this.rotate = 0;
     }
     settank(data) {
         // this.bulletss = this.bulletss;
