@@ -11,12 +11,12 @@ class Routing extends Component {
 	}
 
 	render() {
+		console.log("CALLING THE ROUTING");
 		return (
 			<Router>
 				<div>
 					<Route exact path = '/' component={App} />
 					<Route path = '/results' component={Results} />
-					<Route path = '/game' component={Game} />
 				</div>
 			</Router>
 		);

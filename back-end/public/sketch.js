@@ -23,6 +23,7 @@ var playerPicList = [];
 var bulletShotArrayMP3 = [];
 var playerPreferences = {};
 var astroids = [];
+var hrefWithoutQueryString = "";
 
 function preload() {
     // frameRate(30);
@@ -52,6 +53,10 @@ function preload() {
  */
 function getPlayerInfo() {
     let windowHref = window.location.href;
+    console.log("THE HREF IS " + windowHref);
+    hrefWithoutQueryString = windowHref.substr(windowHref.substring(0, windowHref.indexOf('g')));
+    console.log("I am here");
+    console.log("WIHTOUT THE STRING IS " + hrefWithoutQueryString);
     let playerInfo = windowHref.substr(windowHref.indexOf('?')+1, windowHref.length);
     let nameAndClass = playerInfo.split("?");
     let nameInfo = nameAndClass[0].split('=');
@@ -69,6 +74,12 @@ function getPlayerInfo() {
     return allPlayerInfo;
 }
 
+function seeResults(allPlayerNames) {
+    console.log("ALL THE NAMES" + allPlayerNames);
+    window.location.href = hrefWithoutQueryString + "results" + allPlayerNames;
+}
+
+
 function setup() {
     // get all the tiles that the player chose - FOR CURRENT PLAYER
 
@@ -82,6 +93,9 @@ function setup() {
     // sending the player class preferences over
     playerPreferences = getPlayerInfo();
     socket.emit('playerPreferences', playerPreferences);
+
+    // when game ends
+    socket.on('gameDone', (allPlayerNames) => seeResults(allPlayerNames));
 
     socket.on('data', newDraw);
     // socket.on('bulletUpdate', addNewBullet);

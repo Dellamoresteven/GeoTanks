@@ -11,6 +11,7 @@ const io = socketIO(server);
 
 let numPlayers = 0;
 let numSurvivors = 0;
+let allPlayerNames = "";
 let drop = [];
 
 // setup for database
@@ -30,6 +31,8 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     const playerObj = {
         playerName: playername,
     };
+
+    allPlayerNames = allPlayerNames + ";" + playername;
 
     const playerInfo = {
         classType: classtype,
@@ -74,6 +77,7 @@ app.use("/jpgs/*", function(req, res) {
 app.use("/mp3/*", function(req, res) {
     res.sendFile(path.join(__dirname + '/public/mp3/' + req.params[0]));
 })
+app.use("/results*", express.static(staticPath));
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 // server.listen(port, () => console.log(`I'm listening ${port}`))
@@ -100,25 +104,7 @@ io.on('connect', (socket) => {
      */
     socket.on('getResults', () => {
         // need to call database
-        let stubResults = [{
-                Bob: {
-                    score: 20,
-                    otherData: 5,
-                }
-            },
-            {
-                Nick: {
-                    score: 30,
-                    otherData: 3,
-                }
-            },
-            {
-                Mary: {
-                    score: 40,
-                    otherData: 4,
-                }
-            }
-        ];
+        let stubResults = "";
         io.emit('results', stubResults);
     });
 
@@ -144,10 +130,16 @@ io.on('connect', (socket) => {
             numSurvivors--;
             if ((numPlayers - numSurvivors) == 1) {
                 console.log("GAME ENDING");
+                // take everyone to results page
+                socket.emit('gameDone', allPlayerNames)
+                numPlayers = 0;
+                numSurvivors = 0;
+                allPlayerNames = "";
             }
+        } else {
+            socket.broadcast.emit('data', data); //sends to everyone not including self        
         }
         // console.log(newData);
-        socket.broadcast.emit('data', data); //sends to everyone not including self
     })
 
     socket.on('hitSomeone', (data) => {
@@ -174,9 +166,7 @@ io.on('connect', (socket) => {
         numPlayers++;
         console.log("Num players is " + numPlayers)
         if (numPlayers <= 3) {
-            // return url for game
-            // data contains the name of the player
-            // createNewPlayer(socket.id, data);
+            // return the rul for the game
             socket.emit('joinGameResponse', numPlayers);
         } else {
             // return same url for react page and say to render the same page again
