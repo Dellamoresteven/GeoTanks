@@ -9,7 +9,7 @@ class Preferences extends Component {
 		
 		super(props);
 		this.state = {
-			endpoint: port + "gamer",
+			endpoint: port + "gamer" + "?name=" + this.props.playerName,
 			allTiles: {},
 			readyToJoin: false,
 			readyToChooseOptions: false,
@@ -17,19 +17,6 @@ class Preferences extends Component {
 			classType: undefined,
 			newEndpoint: undefined,
 		}
-	}
-
-	handleChange = (selected, tileIndex) => {
-		this.props.clicked[tileIndex] = selected;
-		// console.log(this.props.clicked);
-		// number of things that are clicked
-		// if (Object.keys(this.prop).length == 9) {
-			// const socket = socketIOClient(port);
-			// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
-			// this.setState({readyToJoin: 'true'});
-		// }
-		// const socket = socketIOClient(port);
-		// socket.emit('putPreferences', {clicked: this.props.clicked, playerName: this.props.playerName});
 	}
 
 	getNewEndpoint(optionNumber) {

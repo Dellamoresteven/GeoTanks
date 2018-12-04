@@ -13,22 +13,31 @@ class App extends Component {
       data: "",
       gotoGame: false,
       value: "",
+      badName: false,
     }
   }
 
   sendJoinGame = () => {
     // set up socket to emit event
-  	const socket = socketIOClient(this.state.endpoint)
-    console.log("I WANT TO JOIN GAME!!");
-  	socket.emit('joinGame', this.state.value)
-  	socket.on('joinGameResponse', (data) => {
-  		console.log("I GOT TO JOIN!" + data)
-      // allowed to save the data
-      if (data != "same") {
-        // need to trigger a rerender with new data
-        this.setState({data: data, gotoGame: true})
-      }
-  	})
+    if (this.state.value == '') {
+      console.log("Bad name given")
+      this.setState({
+        badName: true,
+      });
+      return;
+    }
+
+    if (this.state.value != '') {
+    	const socket = socketIOClient(this.state.endpoint);
+    	socket.emit('joinGame', this.state.value);
+    	socket.on('joinGameResponse', (data) => {
+        // allowed to save the data
+        if (data != "same") {
+          // need to trigger a rerender with new data
+          this.setState({data: data, gotoGame: true, badName: false})
+        }
+    	})
+    }
   }
 
   renderRedirect = () => {
@@ -51,6 +60,21 @@ class App extends Component {
   	console.log("MUST RERENDER" + this.state.data);
     console.log("STATE");
     console.log(this.state);
+
+    if (this.state.badName === true) {
+      return (
+        <div className="App">
+          <h1 className = "title"> GeoTanks </h1>
+          <div>
+                <h2 className = 'h2Mod'> Please enter valid name </h2>
+            <label>
+                <h3 className = 'nameStyle'> Name: </h3>
+                <input className='playerName' type="text" value={this.state.value} onChange={this.handleChange} />
+            </label>
+          </div>
+          <button onClick = {() => this.sendJoinGame()} className = "StartButton"> Play Game! </button>
+      </div>);
+    }
 
     if (this.state.gotoGame === true) {
       return (

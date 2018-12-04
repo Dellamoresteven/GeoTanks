@@ -21,7 +21,7 @@ var rocketPNG;
 var SniperPNG;
 var playerPicList = [];
 var bulletShotArrayMP3 = [];
-var tilePreferences = {};
+var playerPreferences = {};
 var astroids = [];
 
 function preload() {
@@ -52,43 +52,25 @@ function preload() {
  */
 function getPlayerInfo() {
     let windowHref = window.location.href;
-    let tiles = windowHref.split("?");
-    let allTileInfo = {};
+    let playerInfo = windowHref.substr(windowHref.indexOf('?')+1, windowHref.length);
+    let nameAndClass = playerInfo.split("?");
+    let nameInfo = nameAndClass[0].split('=');
+    let allPlayerInfo = {};
 
-    let numAttack = 0;
-    let numDefense = 0;
-    let numUtility = 0;
+    allPlayerInfo['playerName'] = nameInfo[1];
 
-    for (let i = 0; i < tiles.length; i++) {
-        let currTile = tiles[i];
-        let tileType = currTile.substring(3, 4);
-        allTileInfo[currTile.substring(0, 2)] = tileType;
-        switch (tileType) {
-            case "0":
-                numAttack++;
-                break;
-            case "1":
-                numDefense++;
-                break;
-            default:
-                numUtility++;
-        }
-    }
+    let classInfo = nameAndClass[1].split('=');
 
-    allTileInfo["ATTACK"] = numAttack;
-    allTileInfo["DEFENSE"] = numDefense;
-    allTileInfo["UTILITY"] = numUtility;
+    allPlayerInfo['classType'] = classInfo[0];
+    allPlayerInfo['option'] = classInfo[1];
 
-
-    console.log("TILE INFO");
-    console.log(allTileInfo);
-    // returns the position of every tile along with the number of attack, defense, and utility tiles
-    return allTileInfo;
+    console.log(allPlayerInfo);
+    // returns the class player had chosen with option
+    return allPlayerInfo;
 }
 
 function setup() {
     // get all the tiles that the player chose - FOR CURRENT PLAYER
-    tilePreferences = getPlayerInfo();
 
     for (var i = 0; i < randomNums.length; i++) {
         randomNumList.push(parseInt(randomNums[i]));
@@ -96,6 +78,11 @@ function setup() {
     map = new MapObjects();
     cursor(CROSS);
     socket = io.connect(window.location.host);
+
+    // sending the player class preferences over
+    playerPreferences = getPlayerInfo();
+    socket.emit('playerPreferences', playerPreferences);
+
     socket.on('data', newDraw);
     // socket.on('bulletUpdate', addNewBullet);
     socket.on('Drop', addNewDrop);

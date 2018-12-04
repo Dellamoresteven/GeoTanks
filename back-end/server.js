@@ -9,14 +9,6 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIO(server);
 
-// var path = require('path');
-// var express = require('express'),
-//     app = express(),
-//     server = require('http').createServer(app),
-//     io = require('socket.io').listen(server);
-//     const port = (process.env.PORT || 4001);
-//     server.listen(port);
-
 let numPlayers = 0;
 let numSurvivors = 0;
 let drop = [];
@@ -34,44 +26,18 @@ MongoClient.connect(url, { useNewUrlParser: true }, function(err, db) {
     console.log("Database obj is " + myDBO);
 });
 
-const updatePlayerInfo = (newData, socketId) => {
-    const socketIDObj = {
-        socketID: socketId,
-    };
-    console.log("UPDATING DATA TO " + socketId);
-    console.log(newData);
-    const preferences = {
-        00: newData['00'],
-        01: newData['01'],
-        02: newData['02'],
-        10: newData['00'],
-        11: newData['01'],
-        12: newData['02'],
-        20: newData['00'],
-        21: newData['01'],
-        22: newData['02'],
-    };
-    if (myDBO) {
-        myDBO.collection("players").updateOne(socketIDObj, { $set: preferences }, { upsert: true }).catch(() => {
-            // catch the error
-            console.log(err);
-        }).then(() => {
-            // console.log(newData);
-        });
-    }
-}
-
-const createNewPlayer = (socketID, playerName) => {
-    const socketIDObj = {
-        socketID: socketID,
+const createNewPlayer = (playername, classtype, optionchosen) => {
+    const playerObj = {
+        playerName: playername,
     };
 
     const playerInfo = {
-        name: playerName,
+        classType: classtype,
+        option: optionchosen,
     };
 
     if (myDBO) {
-        myDBO.collection("players").updateOne(socketIDObj, { $set: playerInfo }, { upsert: true }).catch(() => {
+        myDBO.collection("players").updateOne(playerObj, { $set: playerInfo }, { upsert: true }).catch(() => {
             // catch the error
             console.log(err);
         }).then(() => {
@@ -194,15 +160,13 @@ io.on('connect', (socket) => {
         socket.broadcast.emit('bulletShot', data); //sends to everyone not including self
     })
 
-
-    socket.on('putPreferences', (data) => {
-        // if (data != NULL) {
-        //     console.log("Everything" + data);
-        // } 
-        console.log("data from preferences");
-        console.log(data);
-        updatePlayerInfo(data, socket.id);
+    socket.on('playerPreferences', (data) => {
+        console.log("setting the player preferences")
+        console.log(data)
+        console.log(data['playerName'])
+        createNewPlayer(data['playerName'], data['classType'], data['option']);
     })
+
 
     socket.on('joinGame', (data) => {
         // if the number of players is less than 3, allow to join
@@ -212,7 +176,7 @@ io.on('connect', (socket) => {
         if (numPlayers <= 3) {
             // return url for game
             // data contains the name of the player
-            createNewPlayer(socket.id, data);
+            // createNewPlayer(socket.id, data);
             socket.emit('joinGameResponse', numPlayers);
         } else {
             // return same url for react page and say to render the same page again
