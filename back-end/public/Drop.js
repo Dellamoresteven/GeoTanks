@@ -9,12 +9,12 @@
  */
 
 class Drop {
-    constructor(data) {
+    constructor(data,x,y) {
         // {type: 2, rare: 1, locationX: 304, locationY: 138}
         this.type = data.type;
         this.rare = data.rare;
-        this.x = data.locationX;
-        this.y = data.locationY;
+        this.x = x;
+        this.y = y;
         this.imgA = loadImage("jpgs/MachineGun_Basic.png");
         this.imgD = loadImage("jpgs/Basic_Armor.png");
         this.imgDD = loadImage("jpgs/Armor_Level_2.png");

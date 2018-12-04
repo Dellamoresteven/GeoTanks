@@ -146,8 +146,13 @@ io.on('connect', (socket) => {
         // console.log((numPlayers-numSurvivors));
         // console.log((-1*(numPlayers)));
         if (!(data.TankStatus)) {
+            console.log("THE NUMBER O FPLAYER IS " + numPlayers + " " + numSurvivors);
             numSurvivors--;
+<<<<<<< HEAD
             if (((numPlayers - numSurvivors) == 1) && (numPlayers != 0)) {
+=======
+            if (((numPlayers - numSurvivors) == 1) && numPlayers >= 0) {
+>>>>>>> b1dd7b2bdf7e6eba8a4901b16c7eb97fa357d6b9
                 console.log("GAME ENDING");
                 // take everyone to results page
                 io.sockets.emit('gameDone', allPlayerNames)
@@ -205,6 +210,10 @@ io.on('connect', (socket) => {
     socket.on('end', () => {
         closeDB();
     })
+
+    socket.on('destroyAsteroid', (data) => {
+        io.sockets.emit("destroyAsteroid",data);
+    })
 })
 
 // app.get('/gamer', function(req, res) {
@@ -219,18 +228,33 @@ io.on('connect', (socket) => {
 //     // console.log(res.body);
 // });
 
+setInterval(newAsteroid, 10000);
+
 function newDrop() {
     // console.log(drop.length);
-    if (drop.length <= 10) {
-        let type = ["Armor", "Attack", "Defence"];
-        let rare = ["Common", "Rare", "Legendary"];
-        const newData = {
-            type: Math.floor(Math.random() * Math.floor(8)),
-            rare: Math.floor(Math.random() * Math.floor(3)),
-            locationX: Math.floor(Math.random() * Math.floor(10000)),
-            locationY: Math.floor(Math.random() * Math.floor(10000))
-        }
-        drop.push(newData);
-        io.sockets.emit('Drop', newData);
+    let type = ["Armor", "Attack", "Defence"];
+    let rare = ["Common", "Rare", "Legendary"];
+    const newData = {
+        type: Math.floor(Math.random() * Math.floor(8)),
+        rare: Math.floor(Math.random() * Math.floor(3))
+        // locationX: Math.floor(Math.random() * Math.floor(10000)),
+        // locationY: Math.floor(Math.random() * Math.floor(10000))
     }
+    // drop.push(newData);
+    // io.sockets.emit('Drop', newData);
+    return newData;
+}
+
+function newAsteroid() {
+    console.log("creating asteroid");
+    const newAst = {
+        type: 3,
+        hitbox: 50,
+        x: Math.floor(Math.random() * Math.floor(1000)),
+        y: Math.floor(Math.random() * Math.floor(1000)),
+        drop: newDrop()
+    }
+    // drop.push(newAst);
+    io.sockets.emit("spawnAsteroid", newAst);
+
 }
