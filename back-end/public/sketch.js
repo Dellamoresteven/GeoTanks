@@ -54,9 +54,9 @@ function preload() {
 function getPlayerInfo() {
     let windowHref = window.location.href;
     console.log("THE HREF IS " + windowHref);
-    hrefWithoutQueryString = windowHref.substr(windowHref.substring(0, windowHref.indexOf('g')));
-    console.log("I am here");
-    console.log("WIHTOUT THE STRING IS " + hrefWithoutQueryString);
+    // hrefWithoutQueryString = windowHref.substr(windowHref.substring(0, windowHref.indexOf('g')));
+    // console.log("I am here");
+    // console.log("WIHTOUT THE STRING IS " + hrefWithoutQueryString);
     let playerInfo = windowHref.substr(windowHref.indexOf('?')+1, windowHref.length);
     let nameAndClass = playerInfo.split("?");
     let nameInfo = nameAndClass[0].split('=');
@@ -76,7 +76,8 @@ function getPlayerInfo() {
 
 function seeResults(allPlayerNames) {
     console.log("ALL THE NAMES" + allPlayerNames);
-    window.location.href = hrefWithoutQueryString + "results" + allPlayerNames;
+    console.log("HTE ORIGIN PORT IS " + location.origin);
+    window.location.href = location.origin + "/results" + allPlayerNames;
 }
 
 
@@ -107,10 +108,7 @@ function setup() {
     socket.on('hit', minusHealth);
     // socket.on('bulletHits', BulletHit);
     // socket.on('Tankkilled', tankKilled);
-    socket.on('gameOver', () => {
-        console.log("THE GAME ENDED!");
-        // window.location.href = "http://localhost:3000/results";
-    })
+
     createCanvas(windowWidth, windowHeight);
     tank = new GeoTank();
     // angleMode(DEGREES);

@@ -131,7 +131,7 @@ io.on('connect', (socket) => {
             if ((numPlayers - numSurvivors) == 1) {
                 console.log("GAME ENDING");
                 // take everyone to results page
-                socket.emit('gameDone', allPlayerNames)
+                io.sockets.emit('gameDone', allPlayerNames)
                 numPlayers = 0;
                 numSurvivors = 0;
                 allPlayerNames = "";
