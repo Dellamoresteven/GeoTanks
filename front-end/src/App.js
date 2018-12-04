@@ -68,7 +68,7 @@ class App extends Component {
                 <input className='playerName' type="text" value={this.state.value} onChange={this.handleChange} />
             </label>
           </div>
-      	  <button onClick = {() => this.sendJoinGame()} className = "Button"> Play Game! </button>
+      	  <button onClick = {() => this.sendJoinGame()} className = "StartButton"> Play Game! </button>
       </div>
     );
   }

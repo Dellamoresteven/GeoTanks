@@ -28,7 +28,7 @@ body {
 }
 
 .App-header {
-  background-color: #136207;
+  background-color: darkblue;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -38,23 +38,23 @@ body {
   color: white;
 }
 
-.Button {
+.StartButton {
   padding: 10px 15px;
   font-size: 24px;
   text-align: center;
   cursor: pointer;
   outline: none;
   color: #fff;
-  background-color: #2DC213;
+  background-color: #00e6e6;
   border: none;
   border-radius: 15px;
   box-shadow: 0 5px #999;
 }
 
-.Button:hover {background-color: #2DA917}
+.StartButton:hover {background-color: #00cccc}
 
-.Button:active {
-  background-color: #2DA917;
+.StartButton:active {
+  background-color: #00cccc;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }
@@ -66,16 +66,16 @@ body {
   cursor: pointer;
   outline: none;
   color: #fff;
-  background-color: #2DC213;
+  background-color: #00e6e6;
   border: none;
   border-radius: 15px;
   box-shadow: 0 5px #999;
 }
 
-.Href:hover {background-color: #2DA917}
+.Href:hover {background-color: #00cccc}
 
 .Href:active {
-  background-color: #2DA917;
+  background-color: #00cccc;
   box-shadow: 0 5px #666;
   transform: translateY(4px);
 }

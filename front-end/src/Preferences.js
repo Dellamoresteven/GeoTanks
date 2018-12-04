@@ -61,13 +61,20 @@ class Preferences extends Component {
 	getOptions() {
 		let optionNames = this.getOptionNames();
 		return (
-			<div>
-				<ul>
-					<li> <button className='Button1' onClick={()=>this.setOptions('0')}> {optionNames[0]} </button> </li>
-					<li> </li>
-					<li> <button className='Button1' onClick={()=>this.setOptions('1')}> {optionNames[1]} </button> </li>
-				</ul>
-			</div>
+			<table>
+					<tbody>
+						<tr>
+							<td className = 'options'> <div className = 'card' onClick={()=>this.setOptions('0')}>
+									<h3> {optionNames[0]} </h3>
+								</div> 
+							</td>
+							<td className = 'options'> <div className = 'card' onClick={()=>this.setOptions('1')}>
+									<h3> {optionNames[1]} </h3>
+							</div> 
+						</td>
+						</tr>
+					</tbody>
+			</table>
 		);
 	}
 
@@ -82,7 +89,7 @@ class Preferences extends Component {
 		if (typeName == 'Bruser') {
 			return (
 				<div className='card' onClick={() => this.setClassInfo('Bruser')}>
-					<h1> Bruzer </h1>
+					<h1 className = 'h1Mod'> Bruser </h1>
 					<h3> Secondary shield bar that regens overtime but has a low shield cap </h3>
 					<h3> Options: </h3>
 					<ul> 
@@ -94,7 +101,7 @@ class Preferences extends Component {
 		} else if (typeName == 'JankTank') {
 			return (
 				<div className='card' onClick={() => this.setClassInfo('JankTank')}>
-					<h1> JankTank </h1>
+					<h1 className = 'h1Mod'> JankTank </h1>
 					<h3> Take dmg, and do more dmg based on missing health </h3>
 					<h3> Options: </h3> 
 					<ul>
@@ -106,7 +113,7 @@ class Preferences extends Component {
 		} else if (typeName == 'Scout') {
 			return (
 				<div className='card' onClick={() => this.setClassInfo('Scout')}>
-					<h1> Scout </h1>
+					<h1 className = 'h1Mod'> Scout </h1>
 					<h3> 50% movment speed </h3>
 					<h3> Options: </h3>
 					<ul>
@@ -118,7 +125,7 @@ class Preferences extends Component {
 		} else if (typeName == 'Sniper') {
 			return (
 				<div className='card' onClick={() => this.setClassInfo('Sniper')}>
-					<h1> Sniper </h1>
+					<h1 className = 'h1Mod'> Sniper </h1>
 					<h3> Larger zoom </h3>
 					<h3> Options: </h3>
 					<ul>
@@ -169,7 +176,7 @@ class Preferences extends Component {
 		return (
 			<div> 
 				<h1> Hey {this.props.playerName} </h1>
-				<h3> Choose a tank type </h3>
+				<h2> Choose a tank type </h2>
 				{this.getClassTable()}
 			</div>
 		);
