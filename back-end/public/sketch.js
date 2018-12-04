@@ -24,9 +24,11 @@ var bulletShotArrayMP3 = [];
 var playerPreferences = {};
 var astroids = [];
 var hrefWithoutQueryString = "";
+var gui;
 
 function preload() {
     // frameRate(30);
+
     randomNums = loadStrings("randomNums.txt");
     playerPicList.push(loadImage("jpgs/Tank_body-player-1.png"));
     playerPicList.push(loadImage("jpgs/Tank_body-player-2.png"));
@@ -717,8 +719,15 @@ function keyPressed() {
         }
         if (keyIsDown(72)) {
             tank.health -= 10;
+        }//http://keycode.info
+        if(keyIsDown(73)){
+            push();
+            fill(50,50,50,100);
+            rect(tank.x, tank.y, 600, 400, 100);
+            fill(50,50,50,150);
+            rect(tank.x - 200, tank.y - 100, 100, 50, 10);
+            pop();
         }
-        //http://keycode.info
         camera.position.x = tank.x;
         camera.position.y = tank.y;
     } else {
@@ -726,23 +735,14 @@ function keyPressed() {
         if (keyIsDown(68)) {
             tank.x += 10;
             tank.TankAngle = 80;
-            // fill(139, 69, 19, 200);
-            // setInterval(DisplayDust, 17, tank.x - 50, tank.y + 35);
         }
         if (keyIsDown(65)) {
-            // tank.TankAngle = 80;
             tank.x -= 10;
         }
         if (keyIsDown(87)) {
-            // DisplayTracks(tank.x + 28, tank.y + 40, 0);
-            // DisplayTracks(tank.x - 28, tank.y + 40, 0)
-            // tank.TankAngle = 0;
             tank.y -= 10;
         }
         if (keyIsDown(83)) {
-            // DisplayTracks(tank.x + 28, tank.y - 40, PI);
-            // DisplayTracks(tank.x - 28, tank.y - 40, PI)
-            // tank.TankAngle = 0;
             tank.y += 10;
         }
         camera.position.x = tank.x;

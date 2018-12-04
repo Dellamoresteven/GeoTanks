@@ -143,9 +143,11 @@ io.on('connect', (socket) => {
         //     bullets: data.tank.bullets,
         //     drop: data.drop
         // }
+        // console.log((numPlayers-numSurvivors));
+        // console.log((-1*(numPlayers)));
         if (!(data.TankStatus)) {
             numSurvivors--;
-            if (((numPlayers - numSurvivors) == 1) && numPlayers != 0) {
+            if (((numPlayers - numSurvivors) == 1) && (numPlayers != 0)) {
                 console.log("GAME ENDING");
                 // take everyone to results page
                 io.sockets.emit('gameDone', allPlayerNames)

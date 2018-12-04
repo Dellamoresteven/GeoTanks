@@ -45,9 +45,11 @@ class Players {
         this.preY = 0;
         this.playerNum = player.length;
         this.rotate = 0;
+
     }
     settank(data) {
         // this.bulletss = this.bulletss;
+        console.log(this.TankStatus);
         this.updated = true;
         this.preX = data.x - this.x;
         this.preY = data.y - this.y;
