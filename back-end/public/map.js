@@ -24,6 +24,7 @@ class MapObjects {
     }
 
     renderMap() {
+        terrains = [];
         for (let i = 0; i < randomNumList.length; i += 3) {
             if (((tank.x + (windowWidth / 2)) > randomNumList[i]) && ((tank.x - (windowWidth / 2)) < randomNumList[i])) {
                 if (((tank.y + (windowHeight / 2)) > randomNumList[i + 1]) && ((tank.y - (windowHeight / 2)) < randomNumList[i + 1])) {
@@ -31,10 +32,19 @@ class MapObjects {
                 }
             }
         }
-        for (let i = 0; i < 30; i += 3) {
-            if (((tank.x + (windowWidth / 2)) > randomNumList[i]) && ((tank.x - (windowWidth / 2)) < randomNumList[i])) {
-                if (((tank.y + (windowHeight / 2)) > randomNumList[i + 1]) && ((tank.y - (windowHeight / 2)) < randomNumList[i + 1])) {
-                    this.renderObj(3, randomNumList[i], randomNumList[i + 1], randomNumList[i + 3]);
+        // for (let i = 0; i < 30; i += 3) {
+        //     if (((tank.x + (windowWidth / 2)) > randomNumList[i]) && ((tank.x - (windowWidth / 2)) < randomNumList[i])) {
+        //         if (((tank.y + (windowHeight / 2)) > randomNumList[i + 1]) && ((tank.y - (windowHeight / 2)) < randomNumList[i + 1])) {
+        //             this.renderObj(3, randomNumList[i], randomNumList[i + 1], randomNumList[i + 3]);
+        //         }
+        //     }
+        // }
+
+        for (let i = 0; i < asteroids.length; i++) {
+            if (((tank.x + (windowWidth / 2)) > asteroids[i].x) && ((tank.x - (windowWidth / 2)) < asteroids[i].x)) {
+                if (((tank.y + (windowHeight / 2)) > asteroids[i].y) && ((tank.y - (windowHeight / 2)) < asteroids[i].y)) {
+                    this.renderObj(3, asteroids[i].x, asteroids[i].y, asteroids[i].hitbox);
+                    terrains.push(asteroids[i]);
                 }
             }
         }

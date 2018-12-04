@@ -1,6 +1,7 @@
 var socket;
 var tank;
 var player = [];
+var asteroids = [];
 var drops = [];
 var terrains = [];
 var BodyOfTank;
@@ -104,6 +105,8 @@ function setup() {
     socket.on('disconnects', disconnectUser);
     socket.on('bulletShot', bulletShot);
     socket.on('init', init);
+    socket.on('spawnAsteroid', spawnAsteroid);
+    socket.on('destroyAsteroid', destroyAsteroid);
     minusHealth
     socket.on('hit', minusHealth);
     // socket.on('bulletHits', BulletHit);
@@ -155,6 +158,20 @@ function newDraw(data) {
     }
 
 }
+
+function spawnAsteroid(data) {
+    let newDrop = new Drop(data.drop, data.x, data.y);
+    asteroids.push(new terrain(3, data.x, data.y, data.hitbox, newDrop));
+}
+
+function destroyAsteroid(data) {
+    console.log("destroyd ast");
+    console.log(data);
+    drops.push(asteroids[data].drop);
+    asteroids.splice(data,1);
+}
+
+
 
 
 /**
@@ -282,6 +299,15 @@ function checkBulletCollision() {
         for (var j = 0; j < terrains.length; j++) {
             currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
             if (currDist < tank.bullets[i].bulletHitBox) {
+                if (terrains[j].type == 3) {
+                    let a = 0;
+                    for (a  = 0; a < asteroids.length; a++) {
+                        if (JSON.stringify(terrains[j]) === JSON.stringify(asteroids[a])) {
+                            break;
+                        }
+                    }
+                    asteroids[a].takeDamage(3, tank.bullets[i].dmg, a);
+                }
                 tank.bullets.splice(i, 1);
                 break;
             }
@@ -420,7 +446,7 @@ function GeoTank() {
             this.displayHealth();
             // this.displayWep();
             /* displays all the drops on the map */
-            for (var i = 0; i < drops.length - 1; i++) {
+            for (var i = 0; i < drops.length; i++) {
                 drops[i].displayDrop();
             }
 

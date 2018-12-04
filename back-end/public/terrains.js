@@ -1,24 +1,20 @@
-// "_id": 0,
-// "name": "Basic",
-// "dmg": 5,
-// "speed": 10,
-// "distance": 600,
-// "cd": 500,
-// "auto": false,
-// "size": 10,
-// "hitbox": 50,
-// "iconname": "",
-// "iconf
-
-
-
 class terrain {
-    constructor(type, x, y, hitbox) {
-        // console.log(type + ":" + x + ":" + y + ":" + intervalX + ":" + intervalY)
-        // imageMode(CENTER);
+    constructor(type, x, y, hitbox, drop) {
         this.type = type;
         this.x = x;
         this.y = y;
         this.hitbox = hitbox;
+        this.health = 50;
+        this.drop = drop;
+    }
+
+    takeDamage(type, damage, index) {
+    	this.health -= damage;
+    	console.log(index);
+    	if (type == 3 && this.health <= 0) {
+    		// drops.push(this.drop);
+    		// asteroids.splice(index,1);
+    		socket.emit("destroyAsteroid",index);
+    	}
     }
 }
