@@ -49,6 +49,10 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     }
 }
 
+const getPlayerResults = (playerNames) => {
+
+}
+
 const closeDB = () => {
     myDBO.close();
 }
@@ -80,19 +84,13 @@ app.use("/mp3/*", function(req, res) {
 app.use("/results*", express.static(staticPath));
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
-// server.listen(port, () => console.log(`I'm listening ${port}`))
 io.on('connect', (socket) => {
 
-    /* PUT STUFF IN HERE IDNDODODO */
     socket.on('inilizeGame', () => {
-        // console.log(socket.id);
-        // console.log(data.i);
-        // console.log(drop);
         const newData = {
             socketID: socket.id,
             drop: drop
         }
-        // console.log(newData);
         socket.emit('init', newData);
     })
 
@@ -102,10 +100,29 @@ io.on('connect', (socket) => {
     /** updates each socket, 'socket' will be the user sending the update 
      * @param 'data' will be the data being send
      */
-    socket.on('getResults', () => {
+    socket.on('getResults', (playerNames) => {
         // need to call database
-        let stubResults = "";
-        io.emit('results', stubResults);
+         let stubResults = [{
+                Bob: {
+                    score: 20,
+                    otherData: 5,
+                }
+            },
+            {
+                Nick: {
+                    score: 30,
+                    otherData: 3,
+                }
+            },
+            {
+                Mary: {
+                    score: 40,
+                    otherData: 4,
+                }
+            }
+        ];
+        let results = getPlayerResults(playerNames);
+        socket.emit('results', stubResults);
     });
 
     socket.on('update', (data) => {

@@ -6,11 +6,15 @@ import './Results.css'
 class Results extends Component {
 	constructor() {
 		super();
+		let endpoint = window.location.href;
+		let endpointParts = endpoint.split(';');
+		let playerNames = endpointParts.slice(0);
 		this.state = {
   		// the endpoint want to connect to for the server
-  			endpoint: window.location.href, 
+  			endpoint: window.location.origin, 
   			hasTable: false,
   			table: undefined,
+  			names: playerNames,
   		}
 	}
 
@@ -50,7 +54,7 @@ class Results extends Component {
 
 	getResults = () => {
 		const socket = socketIOClient(this.state.endpoint);
-		socket.emit('getResults');
+		socket.emit('getResults', this.state.names);
 		let recievedResults;
 		let table;
 		socket.on('results', results => {
@@ -72,10 +76,9 @@ class Results extends Component {
 				</div>
 			);	
 		} else {
-			// this.getResults();	
+			this.getResults();	
 			return (
 				<div> 
-					HEY I WORK!
 				</div>
 			);
 		}

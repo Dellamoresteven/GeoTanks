@@ -76,8 +76,8 @@ function getPlayerInfo() {
 
 function seeResults(allPlayerNames) {
     console.log("ALL THE NAMES" + allPlayerNames);
-    console.log("HTE ORIGIN PORT IS " + location.origin);
-    window.location.href = location.origin + "/results" + allPlayerNames;
+    console.log("HTE ORIGIN PORT IS " + window.location.origin);
+    window.location.href = window.location.origin + "/results" + allPlayerNames;
 }
 
 
