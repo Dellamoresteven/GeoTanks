@@ -149,6 +149,7 @@ function newDraw(data) {
     if (data.drop != -1) {
         drops.splice(data.drop, 1);
     }
+
     if (data.socketID != undefined) {
         let newPlayer = true;
         for (var i = 0; i < player.length; i++) {
@@ -226,23 +227,26 @@ function checkTerrainCollision() {
 
 function checkPlayerCollision() {
     for (var i = 0; i < player.length; i++) {
+        if (player[i].tankStatus) {
 
-        var diffX = player[i].x - tank.x;
-        var diffY = player[i].y - tank.y;
 
-        var currDistX = Math.abs(diffX);
-        var currDistY = Math.abs(diffY);
+            var diffX = player[i].x - tank.x;
+            var diffY = player[i].y - tank.y;
 
-        if (currDistX < tank.tankLength && currDistY < tank.tankLength) {
-            var relPosX = tank.direction.x * diffX;
-            var relPosY = tank.direction.y * diffY;
+            var currDistX = Math.abs(diffX);
+            var currDistY = Math.abs(diffY);
 
-            if (relPosX > 0) {
-                tank.x -= tank.direction.x * (6 + (int(player[i].tankLength - currDistX)));
-            }
+            if (currDistX < tank.tankLength && currDistY < tank.tankLength) {
+                var relPosX = tank.direction.x * diffX;
+                var relPosY = tank.direction.y * diffY;
 
-            if (relPosY < 0) {
-                tank.y += tank.direction.y * (6 + (int(player[i].tankLength - currDistY)));
+                if (relPosX > 0) {
+                    tank.x -= tank.direction.x * (6 + (int(player[i].tankLength - currDistX)));
+                }
+
+                if (relPosY < 0) {
+                    tank.y += tank.direction.y * (6 + (int(player[i].tankLength - currDistY)));
+                }
             }
         }
     }

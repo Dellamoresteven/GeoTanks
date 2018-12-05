@@ -103,7 +103,7 @@ io.on('connect', (socket) => {
      */
     socket.on('getResults', (playerNames) => {
         // need to call database
-         let stubResults = [{
+        let stubResults = [{
                 Bob: {
                     score: 20,
                     otherData: 5,
@@ -129,7 +129,7 @@ io.on('connect', (socket) => {
 
     // CALL THIS TO SEND THE SCORES
     socket.on('sendScores', (data) => {
-
+        console.log(data);
     })
 
     socket.on('update', (data) => {
@@ -153,7 +153,7 @@ io.on('connect', (socket) => {
         // console.log((numPlayers-numSurvivors));
         // console.log((-1*(numPlayers)));
         if (!(data.TankStatus)) {
-            console.log("THE NUMBER O FPLAYER IS " + numPlayers + " " + numSurvivors);
+            // console.log("THE NUMBER O FPLAYER IS " + numPlayers + " " + numSurvivors);
             // numSurvivors--;
             numSurvivors--;
             // if (((numPlayers - numSurvivors) == 1) && numPlayers >= 0) {
@@ -165,9 +165,9 @@ io.on('connect', (socket) => {
                 numSurvivors = 0;
                 allPlayerNames = "";
             }
-        } else {
-            socket.broadcast.emit('data', data); //sends to everyone not including self        
         }
+        socket.broadcast.emit('data', data); //sends to everyone not including self        
+
         // console.log(newData);
     })
 
@@ -193,6 +193,7 @@ io.on('connect', (socket) => {
         // if the number of players is less than 3, allow to join
         console.log("JOINING GAME WITH NAME" + data);
         numPlayers++;
+        numSurvivors++;
         console.log("Num players is " + numPlayers)
         if (numPlayers <= 3) {
             // return the rul for the game
@@ -217,7 +218,7 @@ io.on('connect', (socket) => {
     })
 
     socket.on('destroyAsteroid', (data) => {
-        io.sockets.emit("destroyAsteroid",data);
+        io.sockets.emit("destroyAsteroid", data);
     })
 })
 
