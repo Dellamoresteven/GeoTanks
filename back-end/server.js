@@ -69,7 +69,6 @@ app.use("/addons/p5.sound.min.js", express.static(__dirname + "/public/addons/p5
 app.use("/addons/p5.play.js", express.static(__dirname + "/public/addons/p5.play.js"));
 app.use("/sketch.js", express.static(__dirname + "/public/sketch.js"));
 app.use("/players.js", express.static(__dirname + "/public/players.js"));
-app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
 app.use("/terrains.js", express.static(__dirname + "/public/terrains.js"));
 app.use("/bullets.js", express.static(__dirname + "/public/bullets.js"));
 app.use("/map.js", express.static(__dirname + "/public/map.js"));
@@ -86,8 +85,9 @@ app.use("/results*", express.static(staticPath));
 
 server.listen(port, () => console.log(`I'm listeni ${port}`))
 io.on('connect', (socket) => {
-
+    console.log(drop.length);
     socket.on('inilizeGame', () => {
+        numPlayers++;
         const newData = {
             socketID: socket.id,
             drop: drop
@@ -252,15 +252,15 @@ function newDrop() {
 }
 
 function newAsteroid() {
-    console.log("creating asteroid");
-    const newAst = {
-        type: 3,
-        hitbox: 50,
-        x: Math.floor(Math.random() * Math.floor(1000)),
-        y: Math.floor(Math.random() * Math.floor(1000)),
-        drop: newDrop()
+    // console.log(numPlayers);
+    if (numPlayers > 0) {
+        console.log("creating asteroid");
+        const newAst = {
+            hitbox: 50,
+            x: Math.floor(Math.random() * Math.floor(1000)),
+            y: Math.floor(Math.random() * Math.floor(1000)),
+        }
+        drop.push(newAst);
+        io.sockets.emit("spawnAsteroid", newAst);
     }
-    // drop.push(newAst);
-    io.sockets.emit("spawnAsteroid", newAst);
-
 }

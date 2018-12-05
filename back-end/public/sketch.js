@@ -97,6 +97,7 @@ function setup() {
     socket = io.connect(window.location.host);
 
     // sending the player class preferences over
+
     playerPreferences = getPlayerInfo();
     socket.emit('playerPreferences', playerPreferences);
 
@@ -105,7 +106,7 @@ function setup() {
 
     socket.on('data', newDraw);
     // socket.on('bulletUpdate', addNewBullet);
-    socket.on('Drop', addNewDrop);
+    // socket.on('Drop', addNewDrop);
     socket.on('disconnects', disconnectUser);
     socket.on('bulletShot', bulletShot);
     socket.on('init', init);
@@ -132,11 +133,12 @@ function setup() {
  * init all the varibles we need to init 
  */
 function init(data) {
+    console.log(data);
     for (var i = 0; i < data.drop.length; i++) {
-        addNewDrop(data.drop[i]);
+        console.log("X");
+        asteroids.push(new terrain(3, data.drop[i].x, data.drop[i].y, data.drop[i].hitbox));
     }
     socketID = data.socketID;
-    // console.log(drops);
 }
 
 /** 
@@ -194,14 +196,11 @@ function updateCanvas() {
 
 
 function spawnAsteroid(data) {
-    let newDrop = new Drop(data.drop, data.x, data.y);
-    asteroids.push(new terrain(3, data.x, data.y, data.hitbox, newDrop));
+    // let newDrop = new Drop(data.x, data.y);
+    asteroids.push(new terrain(3, data.x, data.y, data.hitbox));
 }
 
 function destroyAsteroid(data) {
-    console.log("destroyd ast");
-    console.log(data);
-    drops.push(asteroids[data].drop);
     asteroids.splice(data, 1);
 }
 
@@ -346,9 +345,9 @@ function bulletShot(data) {
  * Adds a new drop to a random place in the canvas, this is coded in the server
  * since we want everyone to get the same one at the same time. 
  */
-function addNewDrop(data) {
-    drops.push(new Drop(data));
-}
+// function addNewDrop(data) {
+//     drops.push(new Drop(data));
+// }
 
 function minusHealth(data) {
     if (data.socketID == socketID) {
@@ -424,8 +423,6 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
-    // this.wepUsing = 7;
-    // this.currentBullet = new bullet(0, 0, 0, 0, this.wepUsing, socketID);
     this.wepinUse = 0;
     this.utility = [];
     this.health = 100;
@@ -437,7 +434,7 @@ function GeoTank() {
     this.zoom = 1.7;
     this.direction = createVector(0, 0);
     this.rotate = 0;
-    this.score = 0;
+    this.points = 0;
     this.update = function() {
         if (this.health <= 0) {
             this.TankStatus = false;
@@ -447,8 +444,7 @@ function GeoTank() {
         let ch = -1;
         if (this.TankStatus) {
             /* displays the current health and armor */
-            this.displayHealth();
-            // this.displayWep();
+            this.overLay();
             /* displays all the drops on the map */
             for (var i = 0; i < drops.length; i++) {
                 drops[i].displayDrop();
@@ -490,10 +486,6 @@ function GeoTank() {
             rotate(this.rotate);
             this.rotate += .005;
             image(BodyOfTank, 0, 0, BodyOfTank.width / 5, BodyOfTank.height / 5);
-            // rotate(this.angle - this.TankAngle);
-            // image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
-            // rect(0, 0, GoeTankWidth, GeoTankLength);
-
             /* to reset the translated screen to the old value that push() saved */
             pop();
             for (var i = 0; i < this.bullets.length; i++) {
@@ -539,7 +531,7 @@ function GeoTank() {
         // console.log(dataBullet);
         socket.emit('bulletShot', dataBullet);
     }
-    this.displayHealth = function() {
+    this.overLay = function() {
         // console.log(this.health);
         push();
         if (this.armor > 100) {
@@ -569,33 +561,34 @@ function GeoTank() {
             placement += 23;
         }
         pop();
-    }
-    this.displayWep = function() {
         textSize(25);
-        let rectSpace = 320;
-        let textSpace = 310;
-        for (var i = 0; i < 4; i++) {
+        let spaceing = 0;
+        let textSpace = 0;
+        push();
+        textSize(9);
+        rectMode(CORNER);
+        fill(150, 211, 211, 60);
+        rect(this.x - 150, this.y + (windowHeight / (2 * this.zoom)) - 80, 350 , 100, 10)
+        for (var i = 0; i < 3; i++) {
             if (this.wepinUse == i) {
-                fill(0, 0, 0, 150);
-                rect(windowWidth - (windowWidth - 65), windowHeight - rectSpace, 120, 75, 10);
-                fill(255, 255, 255, 255);
-                text(i + 1, windowWidth - (windowWidth - 25), windowHeight - textSpace);
-                push();
-                translate(windowWidth - (windowWidth - 80), windowHeight - rectSpace);
-                rotate(PI / 4);
-                // image(this.basicMgImage, 0, 0, this.basicMgImage.width / 6, this.basicMgImage.height / 6);
-                pop();
+                fill(211, 211, 211, 100);
+                ellipse(this.x - 100 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 40, 50, 50);
             } else {
-
-                fill(0, 0, 0, 80);
-                rect(windowWidth - (windowWidth - 65), windowHeight - rectSpace, 120, 75, 10);
-
-                fill(255, 255, 255, 150);
-                text(i + 1, windowWidth - (windowWidth - 25), windowHeight - textSpace);
+                fill(211, 211, 211, 50);
+                ellipse(this.x - 100 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 40, 50, 50);
             }
-            rectSpace -= 80;
-            textSpace -= 80;
+            fill(211, 211, 211, 150);
+
+            text(i + 1, this.x - 110 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 50);
+
+            spaceing += 90;
         }
+        textSize(15);
+        text("Shop(i)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 45);
+        text("Ability(e)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 25);
+        fill("#FFD700");
+        text("Cash: " + this.points,this.x - ((windowWidth) / (2*this.zoom)) + 20, this.y - ((windowHeight) / (2*this.zoom)) + 20);
+        pop();
     }
 }
 
