@@ -16,14 +16,11 @@ class bullet {
     constructor(type, x, y, intervalX, intervalY, angle) {
         if (type == 5) {
             for (var i = 0; i < tank.bullets.length; i++) {
-                if (tank.bullets[i]._id == 5){
-                    console.log("S");
-                    tank.bullets.splice(i,1);
+                if (tank.bullets[i]._id == 5) {
+                    tank.bullets.splice(i, 1);
                 }
             }
         }
-
-        // console.log(type + ":" + x + ":" + y + ":" + intervalX + ":" + intervalY)
         imageMode(CENTER);
         this._id = type;
         // console.log("shooting");
@@ -102,23 +99,43 @@ class bullet {
     }
 
     dealDamage(p, b) {
-        if (tank.armor < this.dmg) {
-            this.dmg -= tank.armor;
-            tank.armor = 0;
-            if (tank.health < this.dmg) {
-                tank.TankStatus = false;
-                tank.health = 0;
-                const data = {
-                    name: playerPreferences['playerName'],
-                    score: tank.score
+        if (tank.TankStatus) {
+            if (tank.armor < this.dmg) {
+                this.dmg -= tank.armor;
+                tank.armor = 0;
+                if (tank.health < this.dmg) {
+                    tank.TankStatus = false;
+                    tank.health = 0;
+                    const data = {
+                        name: playerPreferences['playerName'],
+                        score: tank.score
+                    }
+                    socket.emit("sendScores", data);
+                } else {
+                    tank.health -= this.dmg;
                 }
-                socket.emit("sendScores", data);
             } else {
-                tank.health -= this.dmg;
+                tank.armor -= this.dmg
             }
-        } else {
-            tank.armor -= this.dmg
+            player[p].bulletss.splice(b, 1);
         }
-        player[p].bulletss.splice(b, 1);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

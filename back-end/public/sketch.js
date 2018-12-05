@@ -162,22 +162,7 @@ function newDraw(data) {
             player.push(new Players(data));
         }
     }
-
 }
-
-function spawnAsteroid(data) {
-    let newDrop = new Drop(data.drop, data.x, data.y);
-    asteroids.push(new terrain(3, data.x, data.y, data.hitbox, newDrop));
-}
-
-function destroyAsteroid(data) {
-    console.log("destroyd ast");
-    console.log(data);
-    drops.push(asteroids[data].drop);
-    asteroids.splice(data, 1);
-}
-
-
 
 
 /**
@@ -207,6 +192,19 @@ function updateCanvas() {
     }
 }
 
+
+function spawnAsteroid(data) {
+    let newDrop = new Drop(data.drop, data.x, data.y);
+    asteroids.push(new terrain(3, data.x, data.y, data.hitbox, newDrop));
+}
+
+function destroyAsteroid(data) {
+    console.log("destroyd ast");
+    console.log(data);
+    drops.push(asteroids[data].drop);
+    asteroids.splice(data, 1);
+}
+
 function checkTerrainCollision() {
     //     camera.position.x = tank.x;
     // camera.position.y = tank.y;
@@ -227,26 +225,23 @@ function checkTerrainCollision() {
 
 function checkPlayerCollision() {
     for (var i = 0; i < player.length; i++) {
-        if (player[i].tankStatus) {
 
+        var diffX = player[i].x - tank.x;
+        var diffY = player[i].y - tank.y;
 
-            var diffX = player[i].x - tank.x;
-            var diffY = player[i].y - tank.y;
+        var currDistX = Math.abs(diffX);
+        var currDistY = Math.abs(diffY);
 
-            var currDistX = Math.abs(diffX);
-            var currDistY = Math.abs(diffY);
+        if (currDistX < tank.tankLength && currDistY < tank.tankLength) {
+            var relPosX = tank.direction.x * diffX;
+            var relPosY = tank.direction.y * diffY;
 
-            if (currDistX < tank.tankLength && currDistY < tank.tankLength) {
-                var relPosX = tank.direction.x * diffX;
-                var relPosY = tank.direction.y * diffY;
+            if (relPosX > 0) {
+                tank.x -= tank.direction.x * (6 + (int(player[i].tankLength - currDistX)));
+            }
 
-                if (relPosX > 0) {
-                    tank.x -= tank.direction.x * (6 + (int(player[i].tankLength - currDistX)));
-                }
-
-                if (relPosY < 0) {
-                    tank.y += tank.direction.y * (6 + (int(player[i].tankLength - currDistY)));
-                }
+            if (relPosY < 0) {
+                tank.y += tank.direction.y * (6 + (int(player[i].tankLength - currDistY)));
             }
         }
     }
@@ -255,78 +250,82 @@ function checkPlayerCollision() {
 function checkBulletCollision() {
     var currDist = 0;
     for (var i = 0; i < player.length; i++) {
+        if (player[i].TankStatus) {
 
-        //If other players hit me or another player
-        for (var j = 0; j < player[i].bulletss.length; j++) {
+            //If other players hit me or another player
+            for (var j = 0; j < player[i].bulletss.length; j++) {
 
-            //I get hit
-            currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, tank.x, tank.y);
-            if (currDist < player[i].bulletss[j].bulletHitBox) {
-                player[i].bulletss[j].dealDamage(i, j);
-                continue;
-            }
+                //I get hit
+                currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, tank.x, tank.y);
+                if (currDist < player[i].bulletss[j].bulletHitBox) {
+                    player[i].bulletss[j].dealDamage(i, j);
+                    continue;
+                }
 
-            var hit_player = 0;
+                var hit_player = 0;
 
-            //Other player gets hit
-            for (var k = 0; k < player.length; k++) {
-                if (k != i) {
-                    currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, player[k].x, player[k].y);
+                //Other player gets hit
+                for (var k = 0; k < player.length; k++) {
+                    if (k != i) {
+                        currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, player[k].x, player[k].y);
+                        if (currDist < player[i].bulletss[j].bulletHitBox) {
+                            player[i].bulletss.splice(j, 1);
+                            hit_player = 1;
+                            break;
+                        }
+                    }
+                }
+
+                if (hit_player == 1) {
+                    break;
+                }
+
+                //Hit terrain
+                for (var k = 0; k < terrains.length; k++) {
+                    currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, terrains[k].x, terrains[k].y);
                     if (currDist < player[i].bulletss[j].bulletHitBox) {
                         player[i].bulletss.splice(j, 1);
-                        hit_player = 1;
                         break;
                     }
                 }
             }
 
-            if (hit_player == 1) {
-                break;
-            }
-
-            //Hit terrain
-            for (var k = 0; k < terrains.length; k++) {
-                currDist = dist(player[i].bulletss[j].x, player[i].bulletss[j].y, terrains[k].x, terrains[k].y);
-                if (currDist < player[i].bulletss[j].bulletHitBox) {
-                    player[i].bulletss.splice(j, 1);
-                    break;
+            //If I hit other players
+            if (tank.TankStatus) {
+                for (var k = 0; k < tank.bullets.length; k++) {
+                    currDist = dist(tank.bullets[k].x, tank.bullets[k].y, player[i].x, player[i].y);
+                    if (currDist < tank.bullets[k].bulletHitBox) {
+                        tank.bullets.splice(k, 1);
+                    }
                 }
-            }
-        }
-
-        //If I hit other players
-        for (var k = 0; k < tank.bullets.length; k++) {
-            currDist = dist(tank.bullets[k].x, tank.bullets[k].y, player[i].x, player[i].y);
-            if (currDist < tank.bullets[k].bulletHitBox) {
-                tank.bullets.splice(k, 1);
             }
         }
     }
 
     //If I hit other terrain
-    for (var i = 0; i < tank.bullets.length; i++) {
-        for (var j = 0; j < terrains.length; j++) {
-            currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
-            if (currDist < tank.bullets[i].bulletHitBox) {
-                if (terrains[j].type == 3) {
-                    let a = 0;
-                    for (a = 0; a < asteroids.length; a++) {
-                        if (JSON.stringify(terrains[j]) === JSON.stringify(asteroids[a])) {
-                            break;
+    if (tank.TankStatus) {
+        for (var i = 0; i < tank.bullets.length; i++) {
+            for (var j = 0; j < terrains.length; j++) {
+                currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
+                if (currDist < tank.bullets[i].bulletHitBox) {
+                    if (terrains[j].type == 3) {
+                        let a = 0;
+                        for (a = 0; a < asteroids.length; a++) {
+                            if (JSON.stringify(terrains[j]) === JSON.stringify(asteroids[a])) {
+                                break;
+                            }
                         }
+                        asteroids[a].takeDamage(3, tank.bullets[i].dmg, a);
                     }
-                    asteroids[a].takeDamage(3, tank.bullets[i].dmg, a);
+                    tank.bullets.splice(i, 1);
+                    break;
                 }
-                tank.bullets.splice(i, 1);
-                break;
             }
         }
     }
 }
 
 function checkCollisions() {
-
-    // Check terrain collisions
     checkTerrainCollision();
     checkPlayerCollision();
     checkBulletCollision();
@@ -352,8 +351,6 @@ function addNewDrop(data) {
 }
 
 function minusHealth(data) {
-    // console.log(data.dmg);
-    // console.log(data);
     if (data.socketID == socketID) {
         if (tank.armor < data.dmg) {
             data.dmg -= tank.armor;

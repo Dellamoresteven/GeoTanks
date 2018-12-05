@@ -49,7 +49,7 @@ class Players {
     }
     settank(data) {
         // this.bulletss = this.bulletss;
-        console.log(this.TankStatus);
+        // console.log(this.TankStatus);
         this.updated = true;
         this.preX = data.x - this.x;
         this.preY = data.y - this.y;
