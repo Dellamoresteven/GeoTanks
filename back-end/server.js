@@ -73,6 +73,7 @@ app.use("/Drop.js", express.static(__dirname + "/public/Drop.js"));
 app.use("/terrains.js", express.static(__dirname + "/public/terrains.js"));
 app.use("/bullets.js", express.static(__dirname + "/public/bullets.js"));
 app.use("/map.js", express.static(__dirname + "/public/map.js"));
+app.use("/shop.js", express.static(__dirname + "/public/shop.js"));
 app.use("/randomNums.txt", express.static(__dirname + "/public/randomNums.txt"));
 app.use("/guns.json", express.static(__dirname + "/public/guns.json"));
 app.use("/jpgs/*", function(req, res) {

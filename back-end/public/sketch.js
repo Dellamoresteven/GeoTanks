@@ -56,23 +56,25 @@ function preload() {
  */
 function getPlayerInfo() {
     let windowHref = window.location.href;
-    console.log("THE HREF IS " + windowHref);
+    // console.log("THE HREF IS " + windowHref);
     // hrefWithoutQueryString = windowHref.substr(windowHref.substring(0, windowHref.indexOf('g')));
     // console.log("I am here");
     // console.log("WIHTOUT THE STRING IS " + hrefWithoutQueryString);
-    let playerInfo = windowHref.substr(windowHref.indexOf('?')+1, windowHref.length);
+    let playerInfo = windowHref.substr(windowHref.indexOf('?') + 1, windowHref.length);
     let nameAndClass = playerInfo.split("?");
     let nameInfo = nameAndClass[0].split('=');
+    // console.log("EAFEAEW: " + nameInfo);
     let allPlayerInfo = {};
 
     allPlayerInfo['playerName'] = nameInfo[1];
+
 
     let classInfo = nameAndClass[1].split('=');
 
     allPlayerInfo['classType'] = classInfo[0];
     allPlayerInfo['option'] = classInfo[1];
 
-    console.log(allPlayerInfo);
+    // console.log(allPlayerInfo);
     // returns the class player had chosen with option
     return allPlayerInfo;
 }
@@ -124,6 +126,7 @@ function setup() {
 
     // console.log(socket.id);
     socket.emit('inilizeGame');
+    setInterval(scoreCounter, 1000);
 }
 /**
  * init all the varibles we need to init 
@@ -170,7 +173,7 @@ function destroyAsteroid(data) {
     console.log("destroyd ast");
     console.log(data);
     drops.push(asteroids[data].drop);
-    asteroids.splice(data,1);
+    asteroids.splice(data, 1);
 }
 
 
@@ -303,7 +306,7 @@ function checkBulletCollision() {
             if (currDist < tank.bullets[i].bulletHitBox) {
                 if (terrains[j].type == 3) {
                     let a = 0;
-                    for (a  = 0; a < asteroids.length; a++) {
+                    for (a = 0; a < asteroids.length; a++) {
                         if (JSON.stringify(terrains[j]) === JSON.stringify(asteroids[a])) {
                             break;
                         }
@@ -381,7 +384,7 @@ function disconnectUser(data) {
  * You want to "repaint" the canvas every time it updates with the new values. 
  */
 function draw() {
-
+    // console.log(tank.score);
     camera.on();
     camera.zoom = tank.zoom;
     camera.position.x = tank.x;
@@ -433,13 +436,11 @@ function GeoTank() {
     this.zoom = 1.7;
     this.direction = createVector(0, 0);
     this.rotate = 0;
+    this.score = 0;
     this.update = function() {
-
         if (this.health <= 0) {
             this.TankStatus = false;
         }
-        // console.log(this.wepinUse);
-        // console.log(this.wepUsing);
         this.moX = mouseX;
         this.moY = mouseY;
         let ch = -1;
@@ -745,14 +746,9 @@ function keyPressed() {
         }
         if (keyIsDown(72)) {
             tank.health -= 10;
-        }//http://keycode.info
-        if(keyIsDown(73)){
-            push();
-            fill(50,50,50,100);
-            rect(tank.x, tank.y, 600, 400, 100);
-            fill(50,50,50,150);
-            rect(tank.x - 200, tank.y - 100, 100, 50, 10);
-            pop();
+        } //http://keycode.info
+        if (keyIsDown(73)) {
+            displayShop();
         }
         camera.position.x = tank.x;
         camera.position.y = tank.y;
@@ -776,6 +772,13 @@ function keyPressed() {
     }
 
 }
+
+function scoreCounter() {
+    if (tank.TankStatus) {
+        tank.score += 20;
+    }
+}
+
 
 /**
  * Rezises the window when they change the size. P5 shit.

@@ -108,6 +108,11 @@ class bullet {
             if (tank.health < this.dmg) {
                 tank.TankStatus = false;
                 tank.health = 0;
+                const data = {
+                    name: playerPreferences['playerName'],
+                    score: tank.score
+                }
+                socket.emit("getResults", data);
             } else {
                 tank.health -= this.dmg;
             }
