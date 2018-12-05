@@ -126,6 +126,12 @@ io.on('connect', (socket) => {
         socket.emit('results', stubResults);
     });
 
+
+    // CALL THIS TO SEND THE SCORES
+    socket.on('sendScores', (data) => {
+
+    })
+
     socket.on('update', (data) => {
         // console.log(data);
         // console.log(drop.length);
@@ -148,9 +154,10 @@ io.on('connect', (socket) => {
         // console.log((-1*(numPlayers)));
         if (!(data.TankStatus)) {
             console.log("THE NUMBER O FPLAYER IS " + numPlayers + " " + numSurvivors);
+            // numSurvivors--;
             numSurvivors--;
-            if (((numPlayers - numSurvivors) == 1) && numPlayers >= 0) {
-
+            // if (((numPlayers - numSurvivors) == 1) && numPlayers >= 0) {
+            if (numPlayers > 1 && numSurvivors == 1) {
                 console.log("GAME ENDING");
                 // take everyone to results page
                 io.sockets.emit('gameDone', allPlayerNames)
