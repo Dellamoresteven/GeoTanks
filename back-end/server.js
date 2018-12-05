@@ -49,6 +49,25 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     }
 }
 
+const updateScores = (playerName, playerScore) => {
+    const playerObj = {
+        playerName: playerName,
+    };
+
+    const playerInfo = {
+        score: playerScore,
+    }
+
+    if (myDBO) {
+        myDBO.collection("players").updateOne(playerObj, { $set: playerScore }, { upsert: true }).catch(() => {
+            // catch the error
+            console.log(err);
+        }).then(() => {
+            // console.log(playerInfo);
+        });
+    }
+}
+
 const getPlayerResults = (playerNames) => {
 
 }
@@ -129,6 +148,7 @@ io.on('connect', (socket) => {
 
     // CALL THIS TO SEND THE SCORES
     socket.on('sendScores', (data) => {
+        updateScores(data['name'], data['score']);
         console.log(data);
     })
 
@@ -209,7 +229,6 @@ io.on('connect', (socket) => {
         const newData = {
             socketID: socket.id
         }
-        numPlayers--;
         socket.broadcast.emit('disconnects', newData);
     })
 
