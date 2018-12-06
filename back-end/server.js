@@ -11,7 +11,9 @@ const io = socketIO(server);
 
 let numPlayers = 0;
 let numSurvivors = 0;
+let numPlayersJoinedGame = 0;
 let allPlayerNames = "";
+let allPlayerNamesArr = [];
 let drop = [];
 
 // setup for database
@@ -33,6 +35,8 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     };
 
     allPlayerNames = allPlayerNames + ";" + playername;
+    allPlayerNamesArr.push(playername);
+    console.log("PUSHIGN " + playername);
 
     const playerInfo = {
         classType: classtype,
@@ -49,27 +53,60 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     }
 }
 
-const updateScores = (playerName, playerScore) => {
+const updateScores = (playername, playerScore) => {
     const playerObj = {
-        playerName: playerName,
+        playerName: playername,
     };
 
     const playerInfo = {
-        score: playerScore,
+        score: playerScore == null ? 0 : playerScore,
     }
 
+    console.log("SENDING TO MONGO" + playername + "  " + playerScore);
+
     if (myDBO) {
-        myDBO.collection("players").updateOne(playerObj, { $set: playerScore }, { upsert: true }).catch(() => {
+        myDBO.collection("players").updateOne(playerObj, { "$set": playerInfo }, { upsert: true }).catch(() => {
             // catch the error
             console.log(err);
         }).then(() => {
-            // console.log(playerInfo);
+            console.log(playerInfo);
         });
     }
 }
 
-const getPlayerResults = (playerNames) => {
+const getPlayerResults = () => {
+    // Bob: {
+    //                 score: 20,
+    //                 otherData: 5,
+    //             }
+    // if (myDBO) {
+        // myDBO.collection("players").find
+    // }
+    let allInfo = [];
+    for(let i = 0; i < allPlayerNamesArr.length; i++) {
+        let temp = myDBO.collection("players").findOne({playerName: allPlayerNamesArr[i]});
+        // var myDocument = db.bios.findOne();
 
+    if (temp) {
+        console.log("TEMP IS ")
+        console.log(temp);
+        var myName = temp.playerName;
+        console.log("MY NAME")
+        console.log(myName);
+        console.log(temp.classType);
+       // console.log(tojson(myName));
+    }
+        let tempInfo = {};
+        tempInfo['name'] = allPlayerNamesArr[i];
+        // tempInfo['classType'] = temp
+        console.log("MY INFO" + temp);
+        console.log(temp);
+        allInfo.push(tempInfo); 
+    }
+    console.log("THE PAYER NAMES ARE " + allPlayerNamesArr);
+    allPlayerNamesArr = [];
+    console.log("IN GET RESULTS");
+    return allInfo;
 }
 
 const closeDB = () => {
@@ -106,7 +143,8 @@ server.listen(port, () => console.log(`I'm listeni ${port}`))
 io.on('connect', (socket) => {
     console.log(drop.length);
     socket.on('inilizeGame', () => {
-        numPlayers++;
+        // numPlayers++;
+        numPlayersJoinedGame++;
         const newData = {
             socketID: socket.id,
             drop: drop
@@ -141,7 +179,8 @@ io.on('connect', (socket) => {
                 }
             }
         ];
-        let results = getPlayerResults(playerNames);
+        console.log("GETTING THE RESULTS");
+        let results = getPlayerResults();
         socket.emit('results', stubResults);
     });
 
@@ -173,16 +212,17 @@ io.on('connect', (socket) => {
         // console.log((numPlayers-numSurvivors));
         // console.log((-1*(numPlayers)));
         if (!(data.TankStatus)) {
-            // console.log("THE NUMBER O FPLAYER IS " + numPlayers + " " + numSurvivors);
+            console.log("THE NUMBER OF PLAYER IS " + numPlayersJoinedGame + " " + numSurvivors);
             // numSurvivors--;
             numSurvivors--;
             // if (((numPlayers - numSurvivors) == 1) && numPlayers >= 0) {
-            if (numPlayers > 1 && numSurvivors == 1) {
+            if (numPlayersJoinedGame > 1 && numSurvivors == 1) {
                 console.log("GAME ENDING");
                 // take everyone to results page
                 io.sockets.emit('gameDone', allPlayerNames)
                 numPlayers = 0;
                 numSurvivors = 0;
+                numPlayersJoinedGame = 0;
                 allPlayerNames = "";
             }
         }

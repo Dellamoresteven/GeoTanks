@@ -24,7 +24,7 @@ class Results extends Component {
 		table.push(<tr className = 'resultsRow'>
 			<th className = 'resultsHeader'> Name </th>
 			<th className = 'resultsHeader'> Score </th>
-			<th className = 'resultsHeader'> Other </th>
+			<th className = 'resultsHeader'> Class </th>
 		</tr>
 		);
 		// creating parent
@@ -55,6 +55,7 @@ class Results extends Component {
 	getResults = () => {
 		const socket = socketIOClient(this.state.endpoint);
 		socket.emit('getResults', this.state.names);
+		console.log("emitting get results");
 		let recievedResults;
 		let table;
 		socket.on('results', results => {
@@ -65,6 +66,7 @@ class Results extends Component {
 	}
 
 	render() {
+		console.log("rendering results");
 		if (this.state.hasTable === true) {
 			return (
 				<div>

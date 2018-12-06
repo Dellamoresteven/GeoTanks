@@ -16,7 +16,7 @@ class Routing extends Component {
 			<Router>
 				<div>
 					<Route exact path = '/' component={App} />
-					<Route path = '/results' component={Results} />
+					<Route path = '/results*' component={Results} />
 				</div>
 			</Router>
 		);
