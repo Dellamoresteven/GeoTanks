@@ -28,7 +28,7 @@ class App extends Component {
       return;
     }
 
-    if (this.state.value != '' && tempStr.search('=') == -1 && tempStr.search('/') == -1 && tempStr.search('?') == -1 && tempStr.search(';') != -1) {
+    if (this.state.value != '' && tempStr.search('=') == -1 && tempStr.search('/') == -1 && tempStr.search('?') == -1 && tempStr.search(';') == -1) {
     	const socket = socketIOClient(this.state.endpoint);
     	socket.emit('joinGame', this.state.value);
     	socket.on('joinGameResponse', (data) => {
