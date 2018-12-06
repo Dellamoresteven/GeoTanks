@@ -37,9 +37,9 @@ class Preferences extends Component {
 
 	getOptionNames() {
 		switch(this.state.classType) {
-			case 'Bruiser': return ['Shoot like fireworks', 'Place a shield in front of you']; 
+			case 'Bruiser': return ['Fireworks', 'Place a shield in front of you']; 
 			case 'JankTank': return ['Random teleport and takes the damage at that location', 'Place down a turret to fight with you'];
-			case 'Scout': return ['300% speed boost', 'Stun gernade'];
+			case 'Scout': return ['Randomly Teleport', 'Conversion'];
 			case 'Sniper': return ['Railgun', 'Camo UP! (if touching tree turn invis)'];
 			default: return ['','']
 		}
