@@ -11,7 +11,8 @@
     "bulletsize": 10,
     "hitbox": 50,
     "iconname": "",
-    "iconfilename": ""
+    "iconfilename": "",
+    "price": 0
 },
 {
     "_id": 1,
@@ -25,7 +26,8 @@
     "bulletsize": -1,
     "hitbox": 50,
     "iconname": "rocketPNG",
-    "iconfilename": "rocket.png"
+    "iconfilename": "rocket.png",
+    "price": 50
 },
 {
     "_id": 2,
@@ -39,5 +41,37 @@
     "bulletsize": 20,
     "hitbox": 50,
     "iconname": "SniperPNG",
-    "iconfilename": "Sniper.png"
-}]
+    "iconfilename": "Sniper.png",
+    "price": 100
+},
+{
+    "_id": 3,
+    "name": "Sniper",
+    "dmg": 70,
+    "speed": 10000,
+    "distance": -1,
+    "cd": 1,
+    "auto": true,
+    "color": "#000000",
+    "bulletsize": 20,
+    "hitbox": 50,
+    "iconname": "SniperPNG",
+    "iconfilename": "Sniper.png",
+    "price": 500
+},
+{
+    "_id": 4,
+    "name": "Sniper",
+    "dmg": 70,
+    "speed": 10000,
+    "distance": -1,
+    "cd": 1,
+    "auto": true,
+    "color": "#000000",
+    "bulletsize": 20,
+    "hitbox": 50,
+    "iconname": "SniperPNG",
+    "iconfilename": "Sniper.png",
+    "price": 1000
+}
+]

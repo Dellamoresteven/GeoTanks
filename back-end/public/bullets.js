@@ -14,13 +14,13 @@
 
 class bullet {
     constructor(type, x, y, intervalX, intervalY, angle) {
-        if (type == 5) {
-            for (var i = 0; i < tank.bullets.length; i++) {
-                if (tank.bullets[i]._id == 5) {
-                    tank.bullets.splice(i, 1);
-                }
-            }
-        }
+        // if (type == 5) {
+        //     for (var i = 0; i < tank.bullets.length; i++) {
+        //         if (tank.bullets[i]._id == 5) {
+        //             tank.bullets.splice(i, 1);
+        //         }
+        //     }
+        // }
         imageMode(CENTER);
         this._id = type;
         // console.log("shooting");

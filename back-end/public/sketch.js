@@ -29,6 +29,8 @@ var gui;
 var abilityCoolDown = 0;
 var baseSpeed = 6;
 var shopspeed = 0;
+var coinPNG;
+var speedupgradeCD = 0;
 
 function preload() {
     // frameRate(30);
@@ -50,7 +52,8 @@ function preload() {
     bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
     bulletShotArrayMP3.push(loadSound("mp3/BasicBulletShot.mp3"));
     bulletShotArrayMP3.push(loadSound("mp3/SMG.mp3"));
-    astroids.push(loadImage("jpgs/astroid1.png"))
+    astroids.push(loadImage("jpgs/astroid1.png"));
+    coinPNG = loadImage("jpgs/coin.png")
 }
 
 /**
@@ -584,24 +587,30 @@ function GeoTank() {
         textSize(9);
         rectMode(CORNER);
         fill(150, 211, 211, 60);
-        rect(this.x - 150, this.y + (windowHeight / (2 * this.zoom)) - 80, 350, 100, 10)
-        for (var i = 0; i < 3; i++) {
+        rect(this.x - 300, this.y + (windowHeight / (2 * this.zoom)) - 40, 600, 70, 10)
+        for (var i = 0; i < 5; i++) {
             if (this.wepinUse == i) {
                 fill(211, 211, 211, 100);
-                ellipse(this.x - 100 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 40, 50, 50);
+                ellipse(this.x - 250 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 25, 25, 25);
             } else {
                 fill(211, 211, 211, 50);
-                ellipse(this.x - 100 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 40, 50, 50);
+                ellipse(this.x - 250 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 25, 25, 25);
             }
             fill(211, 211, 211, 150);
-
-            text(i + 1, this.x - 110 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 50);
-
+            text(i + 1, this.x - 260 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 25);
+            if (this.weps.indexOf(i) == -1) {
+                text(guns[i].price, this.x - 253 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 4);
+                image(coinPNG, this.x - 260 + spaceing, this.y + (windowHeight / (2 * this.zoom)) - 7, coinPNG.width / 50, coinPNG.height / 50);
+            }
             spaceing += 90;
         }
         textSize(15);
         // text("Shop(i)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 45);
-        text("Ability(e)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 25);
+        text("Ability(e)", this.x + 240, this.y + (windowHeight / (2 * this.zoom)) - 25);
+        // image(tireTracksPNG, 0, 0, tireTracksPNG.width / 5, tireTracksPNG.height / 5);
+
+        text("SpeedUpgrade(g)", this.x + 180, this.y + (windowHeight / (2 * this.zoom)) - 10);
+
         fill("#FFD700");
         text("Cash: " + this.points, this.x - ((windowWidth) / (2 * this.zoom)) + 20, this.y - ((windowHeight) / (2 * this.zoom)) + 20);
         pop();
@@ -659,6 +668,7 @@ function DisplayTracks(x, y, rot) {
  * Checks to see if a key is pressed. Function name is important in p5. 
  * If it a key is pressed it can change the direction of the rect moving
  */
+
 function keyPressed() {
     // console.log(tank.direction.x + ":" + tank.direction.y);
     if (tank.TankStatus) {
@@ -753,11 +763,13 @@ function keyPressed() {
                 }
             }
         }
-        
+
         if (keyIsDown(71)) {
-            if(tank.points >= 30){
+            if ((tank.points >= 30) && speedupgradeCD == 0) {
                 shopspeed += .5;
                 tank.points -= 30;
+                speedupgradeCD = setInterval(speedCDClear, 1000);
+
             }
         }
 
@@ -803,13 +815,10 @@ function keyPressed() {
             // displayShop();
         }
         if (keyIsDown(69)) {
-            console.log("e");
-            if(abilityCoolDown == 0){
+            if (abilityCoolDown == 0) {
                 tank.ability.useActive();
                 abilityCoolDown = setInterval(abilityCD, 5000);
             }
-            
-            
         }
         camera.position.x = tank.x;
         camera.position.y = tank.y;
@@ -832,12 +841,18 @@ function keyPressed() {
     }
 }
 
+function speedCDClear() {
+    clearInterval(speedupgradeCD);
+    speedupgradeCD = 0;
+}
+
 function scoreCounter() {
     if (tank.TankStatus) {
         tank.score += 8;
     }
 }
-function abilityCD(){
+
+function abilityCD() {
     clearInterval(abilityCoolDown);
     abilityCoolDown = 0;
 }
