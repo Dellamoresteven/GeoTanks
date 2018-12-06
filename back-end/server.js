@@ -172,6 +172,9 @@ io.on('connect', (socket) => {
             for (let i = 0; i < result.length; i++) {
                 delete result[i]._id;
                 delete result[i].option;
+                if(result[i].score == undefined || result[i].score == null) {
+                    result[i].score = 0;
+                }
             }
             socket.emit('results', { "scores": results, "highest": highestScore, "highestName": highestName, "history": result });
         });
