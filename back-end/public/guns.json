@@ -31,7 +31,7 @@
 },
 {
     "_id": 2,
-    "name": "Sniper",
+    "name": "greenLazer",
     "dmg": 70,
     "speed": 10000,
     "distance": -1,
@@ -46,7 +46,7 @@
 },
 {
     "_id": 3,
-    "name": "Sniper",
+    "name": "ball",
     "dmg": 70,
     "speed": 10000,
     "distance": -1,
@@ -61,7 +61,7 @@
 },
 {
     "_id": 4,
-    "name": "Sniper",
+    "name": "shotgun",
     "dmg": 70,
     "speed": 10000,
     "distance": -1,
