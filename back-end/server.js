@@ -302,15 +302,14 @@ function newDrop() {
 function newAsteroid() {
     // console.log(numPlayers);
     // if (numPlayers > 0) {
-    if (drop.legnth < 50) {
-        const newAst = {
-            type: 3,
-            hitbox: 50,
-            x: Math.floor(Math.random() * Math.floor(1000)),
-            y: Math.floor(Math.random() * Math.floor(1000))
-        }
-        drop.push(newAst);
-        io.sockets.emit("spawnAsteroid", newAst);
+
+    const newAst = {
+        type: 3,
+        hitbox: 50,
+        x: Math.floor(Math.random() * Math.floor(5000)),
+        y: Math.floor(Math.random() * Math.floor(5000))
     }
+    drop.push(newAst);
+    io.sockets.emit("spawnAsteroid", newAst);
     // }
 }
