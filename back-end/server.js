@@ -11,7 +11,10 @@ const io = socketIO(server);
 
 let numPlayers = 0;
 let numSurvivors = 0;
+let numPlayersJoinedGame = 0;
 let allPlayerNames = "";
+let allPlayerNamesArr = [];
+let tempAllPlayerInfo = [];
 let drop = [];
 
 // setup for database
@@ -33,6 +36,8 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     };
 
     allPlayerNames = allPlayerNames + ";" + playername;
+    allPlayerNamesArr.push(playername);
+    tempAllPlayerInfo.push({"playerName": playername, "classType": classtype});
 
     const playerInfo = {
         classType: classtype,
@@ -49,36 +54,43 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     }
 }
 
-const updateScores = (playerName, playerScore) => {
+const updateScores = (playername, playerScore) => {
     const playerObj = {
-        playerName: playerName,
+        playerName: playername,
     };
 
     const playerInfo = {
-        score: playerScore,
+        score: playerScore === null ? 0 : playerScore,
+    }
+
+    console.log("SENDING TO MONGO" + playername + "  " + playerScore);
+    for(let i = 0; i < tempAllPlayerInfo.length; i++) {
+        if (tempAllPlayerInfo[i]['playerName'] == playername){
+            tempAllPlayerInfo[i]['score'] = playerInfo.score;
+        }
     }
 
     if (myDBO) {
-        myDBO.collection("players").updateOne(playerObj, { $set: playerScore }, { upsert: true }).catch(() => {
+        myDBO.collection("players").updateOne(playerObj, { "$set": playerInfo }, { upsert: true }).catch(() => {
             // catch the error
             console.log(err);
         }).then(() => {
-            // console.log(playerInfo);
+            console.log(playerInfo);
         });
     }
 }
 
-const getPlayerResults = (playerNames) => {
-
+const getPlayerResults = () => {
+    console.log("IN GET RESULTS");
+    return tempAllPlayerInfo;
 }
+
 
 const closeDB = () => {
     myDBO.close();
 }
 
 
-// app.use(express.static('public/')); 
-// app.use(express.static('front-end/public'));
 var staticPath = path.join(__dirname, '..', 'front-end', 'build');
 app.use("/", express.static(staticPath));
 app.use("/gamer*", express.static(__dirname + "/public/index.html"));
@@ -106,7 +118,8 @@ server.listen(port, () => console.log(`I'm listeni ${port}`))
 io.on('connect', (socket) => {
     console.log(drop.length);
     socket.on('inilizeGame', () => {
-        numPlayers++;
+        // numPlayers++;
+        numPlayersJoinedGame++;
         const newData = {
             socketID: socket.id,
             drop: drop
@@ -123,26 +136,35 @@ io.on('connect', (socket) => {
     socket.on('getResults', (playerNames) => {
         // need to call database
         let stubResults = [{
-                Bob: {
-                    score: 20,
-                    otherData: 5,
-                }
+                name: "bob",
+                score: 20,
+                classType: 5,
+            },
+            {   
+                name: "nick",
+                score: 30,
+                otherData: 3,
             },
             {
-                Nick: {
-                    score: 30,
-                    otherData: 3,
-                }
-            },
-            {
-                Mary: {
-                    score: 40,
-                    otherData: 4,
-                }
+                name: "mary",
+                score: 40 ,
+                otherData: 4,
             }
         ];
-        let results = getPlayerResults(playerNames);
-        socket.emit('results', stubResults);
+        console.log("GETTING THE RESULTS");
+        let results = getPlayerResults();
+        let high;
+        myDBO.collection("players").find().sort({score:-1}).toArray(function(err, result) {
+            if (err) throw err;
+            console.log("in here");
+            console.log(result);
+            console.log(result[0]["score"]);
+            let highestScore = result[0]["score"];
+            let highestName = result[0]["playerName"];
+            console.log(results);
+            console.log(highestScore);
+            socket.emit('results', {"scores":results, "highest": highestScore, "highestName": highestName});
+        });
     });
 
 
@@ -174,27 +196,24 @@ io.on('connect', (socket) => {
         // console.log((numPlayers-numSurvivors));
         // console.log((-1*(numPlayers)));
         if (!(data.TankStatus)) {
-            // console.log("THE NUMBER O FPLAYER IS " + numPlayers + " " + numSurvivors);
+            console.log("THE NUMBER OF PLAYER IS " + numPlayersJoinedGame + " " + numSurvivors);
             // numSurvivors--;
             numSurvivors--;
             // if (((numPlayers - numSurvivors) == 1) && numPlayers >= 0) {
-            if (numPlayers > 1 && numSurvivors == 1) {
+            if (numPlayersJoinedGame > 1 && numSurvivors == 1) {
                 console.log("GAME ENDING");
                 // take everyone to results page
-                io.sockets.emit('gameDone', allPlayerNames)
+                io.sockets.emit('gameDone', allPlayerNames);
                 numPlayers = 0;
                 numSurvivors = 0;
+                numPlayersJoinedGame = 0;
                 allPlayerNames = "";
             }
         }
         socket.broadcast.emit('data', data); //sends to everyone not including self        
-
-        // console.log(newData);
     })
 
     socket.on('hitSomeone', (data) => {
-        // console.log("GOT HERE: " + data);
-        // socket.broadcast.to(data.socketID).emit('hit', data);
         socket.broadcast.emit('hit', data); //sends to everyone not including self
     })
 
@@ -205,16 +224,16 @@ io.on('connect', (socket) => {
     socket.on('playerPreferences', (data) => {
         console.log("setting the player preferences")
         console.log(data)
-        console.log(data['playerName'])
         createNewPlayer(data['playerName'], data['classType'], data['option']);
     })
 
 
     socket.on('joinGame', (data) => {
         // if the number of players is less than 3, allow to join
-        console.log("JOINING GAME WITH NAME" + data);
         numPlayers++;
         numSurvivors++;
+        tempAllPlayerInfo = [];
+        allPlayerNamesArr = [];
         console.log("Num players is " + numPlayers)
         if (numPlayers <= 3) {
             // return the rul for the game

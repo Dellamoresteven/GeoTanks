@@ -15,6 +15,8 @@ class Results extends Component {
   			hasTable: false,
   			table: undefined,
   			names: playerNames,
+  			highestScore: 0,
+  			highestName: "me",
   		}
 	}
 
@@ -23,24 +25,25 @@ class Results extends Component {
 
 		table.push(<tr className = 'resultsRow'>
 			<th className = 'resultsHeader'> Name </th>
+			<th className = 'resultsHeader'> Type </th>
 			<th className = 'resultsHeader'> Score </th>
-			<th className = 'resultsHeader'> Other </th>
 		</tr>
 		);
 		// creating parent
 		for (let i = 0; i < results.length; i++) {
 			let children = [];
 
-			let playerName;
-			let it;
-			for (it in results[i]) {
-				playerName = it;
-			}
+			// let playerName;
+			// let it;
+			// for (it in results[i]) {
+				// playerName = it;
+			// }
 
 			// inner loop for children
-			let playerInfo = results[i][Object.keys(results[i])[0]];
-			children.push(<td> {playerName} </td>);
+			// let playerInfo = results[i][Object.keys(results[i])[0]];
+			// children.push(<td> {playerName} </td>);
 			let playerProp;
+			let playerInfo = Object.assign({},results[i]);
 
 			for (playerProp in playerInfo) {
 				children.push(<td> {playerInfo[playerProp]} </td>);
@@ -52,19 +55,24 @@ class Results extends Component {
 		return table;
 	}
 
+
 	getResults = () => {
 		const socket = socketIOClient(this.state.endpoint);
 		socket.emit('getResults', this.state.names);
+		console.log("emitting get results");
 		let recievedResults;
 		let table;
-		socket.on('results', results => {
-			recievedResults = results;
+		socket.on('results', data => {
+			recievedResults = data["scores"];
 			table = this.createTable(recievedResults);
-			this.setState({table, hasTable: true})
+			console.log("recieving these results")
+			console.log(data);
+			this.setState({table, hasTable: true, highestScore: data["highest"], highestName: data["highestName"]})
 		});
 	}
 
 	render() {
+		console.log("rendering results");
 		if (this.state.hasTable === true) {
 			return (
 				<div>
@@ -73,10 +81,11 @@ class Results extends Component {
 							{this.state.table}
 						</tbody>
 					</table>
+					<h3> ALL TIME HIGHEST SCORE IS: {this.state.highestScore} BY {this.state.highestName}</h3> 
 				</div>
 			);	
 		} else {
-			this.getResults();	
+			this.getResults();
 			return (
 				<div> 
 				</div>
