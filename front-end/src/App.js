@@ -19,7 +19,8 @@ class App extends Component {
 
   sendJoinGame = () => {
     // set up socket to emit event
-    if (this.state.value == '') {
+    let tempString = this.state.value;
+    if (this.state.value == '' || tempStr.search('=') != -1 || tempStr.search('/') != -1 || tempStr.search('?') != -1 || tempStr.search(';') != -1) {
       console.log("Bad name given")
       this.setState({
         badName: true,
@@ -27,7 +28,7 @@ class App extends Component {
       return;
     }
 
-    if (this.state.value != '') {
+    if (this.state.value != '' && tempStr.search('=') == -1 && tempStr.search('/') == -1 && tempStr.search('?') == -1 && tempStr.search(';') != -1) {
     	const socket = socketIOClient(this.state.endpoint);
     	socket.emit('joinGame', this.state.value);
     	socket.on('joinGameResponse', (data) => {
@@ -64,9 +65,9 @@ class App extends Component {
     if (this.state.badName === true) {
       return (
         <div className="App">
-          <h1 className = "title"> GeoTanks </h1>
+          <h1 className = "title"> AstroLite </h1>
           <div>
-                <h2 className = 'h2Mod'> Please enter valid name </h2>
+                <h2 className = 'h2Mod'> Please enter valid name (only alphanumeric characters </h2>
             <label>
                 <h3 className = 'nameStyle'> Name: </h3>
                 <input className='playerName' type="text" value={this.state.value} onChange={this.handleChange} />
@@ -85,7 +86,7 @@ class App extends Component {
 
     return (
       <div className="App">
-      	  <h1 className = "title"> AstoLite </h1>
+      	  <h1 className = "title"> AstroLite </h1>
           <div>
             <label>
                 <h3 className = 'nameStyle'> Name: </h3>
