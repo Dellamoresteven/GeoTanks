@@ -70,7 +70,13 @@ class ability {
 		        }
 		        socket.emit("spawnBarrier", barrier);
 			case 2:
+				tank.x = Math.floor(Math.random() * Math.floor(1000));
+            	tank.y = Math.floor(Math.random() * Math.floor(1000));
 			case 3:
+				if (tank.armor <= 70) {
+					tank.armor += 30;
+					tank.health -= 10;
+				}
 		}
 	}
 }

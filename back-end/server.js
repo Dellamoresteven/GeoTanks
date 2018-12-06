@@ -260,11 +260,12 @@ io.on('connect', (socket) => {
 
     socket.on('destroyAsteroid', (data) => {
         io.sockets.emit("destroyAsteroid", data);
+        drop.splice(data,1);
     })
 
     socket.on("spawnBarrier", (data) => {
-        io.sockets.emit("spawnAsteroid", data);
         drop.push(data);
+        io.sockets.emit("spawnAsteroid", data);
     })
 })
 

@@ -14,10 +14,7 @@ class terrain {
 
     takeDamage(type, damage, index) {
     	this.health -= damage;
-    	console.log("HIT");
     	if (type == 3 && this.health <= 0) {
-    		// drops.push(this.drop);
-    		// asteroids.splice(index,1);
             tank.points += 10;
     		socket.emit("destroyAsteroid",index);
     	} else if (type == 4 && this.health <= 0) {
