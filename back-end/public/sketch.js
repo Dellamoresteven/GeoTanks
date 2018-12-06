@@ -777,7 +777,7 @@ function keyPressed() {
 
 function scoreCounter() {
     if (tank.TankStatus) {
-        tank.score += 20;
+        tank.score += 8;
     }
 }
 
