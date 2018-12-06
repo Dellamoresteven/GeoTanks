@@ -26,6 +26,7 @@ var playerPreferences = {};
 var astroids = [];
 var hrefWithoutQueryString = "";
 var gui;
+var abilityCoolDown = 0;
 
 function preload() {
     // frameRate(30);
@@ -436,6 +437,9 @@ function GeoTank() {
     this.rotate = 0;
     this.points = 100;
     this.score = 0;
+    this.ability = new ability(playerPreferences["classType"], playerPreferences["option"]);
+    console.log(this.ability);
+    console.log(playerPreferences['option']);
     this.update = function() {
         if (this.health <= 0) {
             this.TankStatus = false;
@@ -745,6 +749,15 @@ function keyPressed() {
         if (keyIsDown(73)) {
             displayShop();
         }
+        if (keyIsDown(69)) {
+            console.log("e");
+            if(abilityCoolDown == 0){
+                tank.ability.useActive();
+                abilityCoolDown = setInterval(abilityCD, 5000);
+            }
+            
+            
+        }
         camera.position.x = tank.x;
         camera.position.y = tank.y;
     } else {
@@ -772,6 +785,10 @@ function scoreCounter() {
     if (tank.TankStatus) {
         tank.score += 20;
     }
+}
+function abilityCD(){
+    clearInterval(abilityCoolDown);
+    abilityCoolDown = 0;
 }
 
 
