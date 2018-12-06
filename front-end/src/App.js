@@ -85,7 +85,7 @@ class App extends Component {
 
     return (
       <div className="App">
-      	  <h1 className = "title"> GeoTanks </h1>
+      	  <h1 className = "title"> AstoLite </h1>
           <div>
             <label>
                 <h3 className = 'nameStyle'> Name: </h3>

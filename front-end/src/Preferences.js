@@ -78,9 +78,9 @@ class Preferences extends Component {
 				<div className='card' onClick={() => this.setClassInfo('Bruiser')}>
 					<h1 className = 'h1Mod'> Bruiser </h1>
 					<h3> Secondary shield bar that regens overtime but has a low shield cap </h3>
-					<h3> Options: </h3>
+					<h3> Abilities: </h3>
 					<ul> 
-						<li> Shoot like fireworks </li>
+						<li> Fireworks </li>
 						<li> Place a shield in front of you </li>
 					</ul>
 				</div>
@@ -89,8 +89,8 @@ class Preferences extends Component {
 			return (
 				<div className='card' onClick={() => this.setClassInfo('Scout')}>
 					<h1 className = 'h1Mod'> Scout </h1>
-					<h3> 50% movment speed </h3>
-					<h3> Options: </h3>
+					<h3> 50% movement speed </h3>
+					<h3> Abilities: </h3>
 					<ul>
 						<li> 300% speed boost </li>
 						<li> Stun gernade </li>
