@@ -80,6 +80,11 @@ function getPlayerInfo() {
 }
 
 function seeResults(allPlayerNames) {
+    const data = {
+        name: playerPreferences['playerName'],
+        score: tank.score
+    }
+    socket.emit("sendScores", data);
     console.log("ALL THE NAMES" + allPlayerNames);
     console.log("HTE ORIGIN PORT IS " + window.location.origin);
     window.location.href = window.location.origin + "/results" + allPlayerNames;
@@ -508,6 +513,8 @@ function GeoTank() {
             TankAngle: this.TankAngle,
             TankStatus: this.TankStatus,
             socketID: socketID,
+            score: this.score,
+            name: playerPreferences['playerName'],
 
             drop: ch
         } // bullets: bulletData,
@@ -569,7 +576,7 @@ function GeoTank() {
         textSize(9);
         rectMode(CORNER);
         fill(150, 211, 211, 60);
-        rect(this.x - 150, this.y + (windowHeight / (2 * this.zoom)) - 80, 350 , 100, 10)
+        rect(this.x - 150, this.y + (windowHeight / (2 * this.zoom)) - 80, 350, 100, 10)
         for (var i = 0; i < 3; i++) {
             if (this.wepinUse == i) {
                 fill(211, 211, 211, 100);
@@ -588,7 +595,7 @@ function GeoTank() {
         text("Shop(i)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 45);
         text("Ability(e)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 25);
         fill("#FFD700");
-        text("Cash: " + this.points,this.x - ((windowWidth) / (2*this.zoom)) + 20, this.y - ((windowHeight) / (2*this.zoom)) + 20);
+        text("Cash: " + this.points, this.x - ((windowWidth) / (2 * this.zoom)) + 20, this.y - ((windowHeight) / (2 * this.zoom)) + 20);
         pop();
     }
 }

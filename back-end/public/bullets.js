@@ -110,7 +110,7 @@ class bullet {
                         name: playerPreferences['playerName'],
                         score: tank.score
                     }
-                    socket.emit("sendScores", data);
+                    // socket.emit("sendScores", data);
                 } else {
                     tank.health -= this.dmg;
                 }

@@ -37,7 +37,7 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
 
     allPlayerNames = allPlayerNames + ";" + playername;
     allPlayerNamesArr.push(playername);
-    tempAllPlayerInfo.push({"playerName": playername, "classType": classtype});
+    tempAllPlayerInfo.push({ "playerName": playername, "classType": classtype });
 
     const playerInfo = {
         classType: classtype,
@@ -64,8 +64,8 @@ const updateScores = (playername, playerScore) => {
     }
 
     console.log("SENDING TO MONGO" + playername + "  " + playerScore);
-    for(let i = 0; i < tempAllPlayerInfo.length; i++) {
-        if (tempAllPlayerInfo[i]['playerName'] == playername){
+    for (let i = 0; i < tempAllPlayerInfo.length; i++) {
+        if (tempAllPlayerInfo[i]['playerName'] == playername) {
             tempAllPlayerInfo[i]['score'] = playerInfo.score;
         }
     }
@@ -129,6 +129,9 @@ io.on('connect', (socket) => {
 
     console.log("Connectioned " + socket.id);
     console.log("Port" + socket);
+    let x = 0;
+    let scoreX = 0;
+    let name = "";
 
     /** updates each socket, 'socket' will be the user sending the update 
      * @param 'data' will be the data being send
@@ -140,21 +143,21 @@ io.on('connect', (socket) => {
                 score: 20,
                 classType: 5,
             },
-            {   
+            {
                 name: "nick",
                 score: 30,
                 otherData: 3,
             },
             {
                 name: "mary",
-                score: 40 ,
+                score: 40,
                 otherData: 4,
             }
         ];
         console.log("GETTING THE RESULTS");
         let results = getPlayerResults();
         let high;
-        myDBO.collection("players").find().sort({score:-1}).toArray(function(err, result) {
+        myDBO.collection("players").find().sort({ score: -1 }).toArray(function(err, result) {
             if (err) throw err;
             console.log("in here");
             console.log(result);
@@ -163,7 +166,7 @@ io.on('connect', (socket) => {
             let highestName = result[0]["playerName"];
             console.log(results);
             console.log(highestScore);
-            socket.emit('results', {"scores":results, "highest": highestScore, "highestName": highestName});
+            socket.emit('results', { "scores": results, "highest": highestScore, "highestName": highestName });
         });
     });
 
@@ -172,30 +175,22 @@ io.on('connect', (socket) => {
     socket.on('sendScores', (data) => {
         console.log(data);
         updateScores(data['name'], data['score']);
-        
+
     })
 
     socket.on('update', (data) => {
+        // console.log(data.score);
+
+        // let name = data.name;
+        // let score = data.score;
+        // updateScores(data.name, data.score);
         // console.log(data);
         // console.log(drop.length);
         if (data.drop != -1) {
             drop.splice(data.drop, 1);
         }
-        // console.log(data);
-
-        // const newData = {
-        //     x: data.tank.x,
-        //     y: data.tank.y,
-        //     angle: data.tank.angle,
-        //     TankAngle: data.tank.TankAngle,
-        //     TankStatus: data.tank.TankStatus,
-        //     socketID: data.socketID,
-        //     bullets: data.tank.bullets,
-        //     drop: data.drop
-        // }
-        // console.log((numPlayers-numSurvivors));
-        // console.log((-1*(numPlayers)));
-        if (!(data.TankStatus)) {
+        if (!(data.TankStatus) && (x == 0)) {
+            x++;
             console.log("THE NUMBER OF PLAYER IS " + numPlayersJoinedGame + " " + numSurvivors);
             // numSurvivors--;
             numSurvivors--;
@@ -293,7 +288,6 @@ function newDrop() {
 function newAsteroid() {
     // console.log(numPlayers);
     if (numPlayers > 0) {
-        console.log("creating asteroid");
         const newAst = {
             hitbox: 50,
             x: Math.floor(Math.random() * Math.floor(1000)),
