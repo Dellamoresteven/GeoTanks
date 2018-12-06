@@ -82,6 +82,8 @@ const updateScores = (playername, playerScore) => {
 
 const getPlayerResults = () => {
     console.log("IN GET RESULTS");
+    tempAllPlayerInfo.sort((a,b) => a.score - b.score);
+    console.log(tempAllPlayerInfo);
     return tempAllPlayerInfo;
 }
 

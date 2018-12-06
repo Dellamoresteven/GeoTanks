@@ -73,7 +73,7 @@ class Preferences extends Component {
 	}
 
 	getClassInfo(typeName) {
-		if (typeName == 'Bruser') {
+		if (typeName == 'Bruiser') {
 			return (
 				<div className='card' onClick={() => this.setClassInfo('Bruiser')}>
 					<h1 className = 'h1Mod'> Bruiser </h1>
