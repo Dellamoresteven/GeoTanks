@@ -19,7 +19,7 @@ class App extends Component {
 
   sendJoinGame = () => {
     // set up socket to emit event
-    let tempString = this.state.value;
+    let tempStr = this.state.value;
     if (this.state.value == '' || tempStr.search('=') != -1 || tempStr.search('/') != -1 || tempStr.search('?') != -1 || tempStr.search(';') != -1) {
       console.log("Bad name given")
       this.setState({
