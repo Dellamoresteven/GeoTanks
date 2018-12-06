@@ -72,22 +72,28 @@ class bullet {
                 rect(60, -20, 80, 5, 255);
                 rect(60, 20, 80, 5, 20, 255);
                 pop();
-            } else if ("Sniper" == guns[this._id].name) {
+            } else if ("greenLazer" == guns[this._id].name) {
                 push();
+                fill("#7CFC00");
                 translate(this.x, this.y);
                 rotate(this.angle - PI / 2);
-                fill(255, 0, 0, 255);
-                rect(200, 0, 400, 20, 255);
-                let distX = abs(mouseX - tank.x);
-                let distY = abs(mouseY - tank.y);
-
-                // rect((distX+distY)/2, 0, (distX+distY), 20, 255);
+                rect(30, -40, 50, 5, 255);
+                rect(30, 40, 50, 5, 20, 255);
+                pop();
+                // console.log("X");
+            } else if ("shotgun" == guns[this._id].name) {
+                push();
+                fill("#ff00b4");
+                translate(this.x, this.y);
+                rotate(this.angle - PI / 2);
+                rect(40, -10, 20, 5, 255);
+                rect(0, 0, 20, 5, 255);
+                rect(40, 10, 20, 5, 20, 255);
                 pop();
                 // console.log("X");
             } else {
                 ellipse(this.x, this.y, this.bulletSize, this.bulletSize);
             }
-
 
             // image(this.BasicBulletIcon, this.xx, this.yy, this.BasicBulletIcon.width / 3, this.BasicBulletIcon.height / 3);
             this.x += this.intervalX * this.speed;

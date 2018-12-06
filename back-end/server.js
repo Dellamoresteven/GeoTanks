@@ -282,7 +282,7 @@ io.on('connect', (socket) => {
 //     // console.log(res.body);
 // });
 
-setInterval(newAsteroid, 10000);
+setInterval(newAsteroid, 2000);
 
 function newDrop() {
     // console.log(drop.length);

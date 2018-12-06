@@ -447,7 +447,7 @@ function GeoTank() {
     this.zoom = 1.7;
     this.direction = createVector(0, 0);
     this.rotate = 0;
-    this.points = 10000;
+    this.points = 0;
     this.score = 0;
     this.ability = new ability(playerPreferences["classType"], playerPreferences["option"]);
     console.log(this.ability);
