@@ -248,6 +248,7 @@ io.on('connect', (socket) => {
 
     socket.on('disconnect', () => {
         console.log("DISCONNECTING");
+        numPlayers--;
         const newData = {
             socketID: socket.id
         }
