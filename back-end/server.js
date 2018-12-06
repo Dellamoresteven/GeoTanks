@@ -82,7 +82,7 @@ const updateScores = (playername, playerScore) => {
 
 const getPlayerResults = () => {
     console.log("IN GET RESULTS");
-    tempAllPlayerInfo.sort((a,b) => b.score - a.score);
+    tempAllPlayerInfo.sort((a, b) => b.score - a.score);
     console.log(tempAllPlayerInfo);
     return tempAllPlayerInfo;
 }
@@ -261,7 +261,7 @@ io.on('connect', (socket) => {
 
     socket.on('destroyAsteroid', (data) => {
         io.sockets.emit("destroyAsteroid", data);
-        drop.splice(data,1);
+        drop.splice(data, 1);
     })
 
     socket.on("spawnBarrier", (data) => {
@@ -301,7 +301,8 @@ function newDrop() {
 
 function newAsteroid() {
     // console.log(numPlayers);
-    if (numPlayers > 0) {
+    // if (numPlayers > 0) {
+    if (drop.legnth < 50) {
         const newAst = {
             type: 3,
             hitbox: 50,
@@ -311,4 +312,5 @@ function newAsteroid() {
         drop.push(newAst);
         io.sockets.emit("spawnAsteroid", newAst);
     }
+    // }
 }
