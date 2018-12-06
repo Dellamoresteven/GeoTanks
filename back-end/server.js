@@ -148,8 +148,9 @@ io.on('connect', (socket) => {
 
     // CALL THIS TO SEND THE SCORES
     socket.on('sendScores', (data) => {
-        updateScores(data['name'], data['score']);
         console.log(data);
+        updateScores(data['name'], data['score']);
+        
     })
 
     socket.on('update', (data) => {

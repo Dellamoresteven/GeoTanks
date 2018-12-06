@@ -434,7 +434,8 @@ function GeoTank() {
     this.zoom = 1.7;
     this.direction = createVector(0, 0);
     this.rotate = 0;
-    this.points = 0;
+    this.points = 100;
+    this.score = 0;
     this.update = function() {
         if (this.health <= 0) {
             this.TankStatus = false;
@@ -631,13 +632,13 @@ function DisplayDust(x, y) {
 
 
 function DisplayTracks(x, y, rot) {
-    push();
-    translate(x, y);
-    angleMode(RADIANS)
-    rotate(rot);
-    tint(255, 180);
-    image(tireTracksPNG, 0, 0, tireTracksPNG.width / 5, tireTracksPNG.height / 5);
-    pop();
+    // push();
+    // translate(x, y);
+    // angleMode(RADIANS)
+    // rotate(rot);
+    // tint(255, 180);
+    // image(tireTracksPNG, 0, 0, tireTracksPNG.width / 5, tireTracksPNG.height / 5);
+    // pop();
 }
 /**
  * Checks to see if a key is pressed. Function name is important in p5. 
@@ -703,28 +704,28 @@ function keyPressed() {
             }
         }
 
-        if (keyIsDown(52)) {
-            // console.log("PRESSED");
-            if (tank.weps.indexOf(3) != -1) {
-                tank.wepinUse = 3;
-                clearInterval(mouseDownID);
-                mouseDownID = -1;
-            }
-        }
-        if (keyIsDown(53)) {
-            if (tank.weps.indexOf(4) != -1) {
-                tank.wepinUse = 4;
-                clearInterval(mouseDownID);
-                mouseDownID = -1;
-            }
-        }
-        if (keyIsDown(54)) {
-            if (tank.weps.indexOf(5) != -1) {
-                tank.wepinUse = 5;
-                clearInterval(mouseDownID);
-                mouseDownID = -1;
-            }
-        }
+        // if (keyIsDown(52)) {
+        //     // console.log("PRESSED");
+        //     if (tank.weps.indexOf(3) != -1) {
+        //         tank.wepinUse = 3;
+        //         clearInterval(mouseDownID);
+        //         mouseDownID = -1;
+        //     }
+        // }
+        // if (keyIsDown(53)) {
+        //     if (tank.weps.indexOf(4) != -1) {
+        //         tank.wepinUse = 4;
+        //         clearInterval(mouseDownID);
+        //         mouseDownID = -1;
+        //     }
+        // }
+        // if (keyIsDown(54)) {
+        //     if (tank.weps.indexOf(5) != -1) {
+        //         tank.wepinUse = 5;
+        //         clearInterval(mouseDownID);
+        //         mouseDownID = -1;
+        //     }
+        // }
         /* FOR TESTING -- press 0 to get all guns */
         if (keyIsDown(48)) {
             // console.log(guns.length);
