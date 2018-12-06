@@ -18,8 +18,12 @@
 	background-color: #f2f2f2;
 }
 
+.specialRow {
+  background-color: #FF5733;
+}
+
 .resultsHeader {
-	padding-top: 12px;
+	padding-top: 10px;
     padding-bottom: 12px;
     text-align: center;
     background-color: lightblue;
