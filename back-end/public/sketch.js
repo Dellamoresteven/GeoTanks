@@ -326,7 +326,7 @@ function checkBulletCollision() {
                                 break;
                             }
                         }
-                        asteroids[a].takeDamage(terrains[j].type, tank.bullets[i].dmg, a);
+                        asteroids[a].takeDamage(3, tank.bullets[i].dmg, a);
                     }
                     tank.bullets.splice(i, 1);
                     break;
