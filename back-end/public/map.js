@@ -19,6 +19,22 @@ class MapObjects {
                 break;
             case 3:
                 image(astroids[0], 0, 0, astroids[0].width/1.5, astroids[0].height/1.5)
+                break;
+            case 4:
+                fill("#C0C0C0");
+                stroke(127, 127, 127);
+                strokeWeight(4);
+                ellipse(0, 0, 80, 80);
+                fill("#A9A9A9");
+                fill("#7CFC00");
+                for (let i =1; i < 4; i++) {
+                    ellipse(7*i, 7*i, 10*i, 10*i);
+                    ellipse(-7*i, -7*i, 10*i, 10*i);
+                    ellipse(7*i, -7*i, 10*i, 10*i);
+                    ellipse(-7*i, 7*i, 10*i, 10*i);
+                }
+                fill("#7CFC00");
+                break;
         }
         pop();
     }
@@ -43,7 +59,12 @@ class MapObjects {
         for (let i = 0; i < asteroids.length; i++) {
             if (((tank.x + (windowWidth / 2)) > asteroids[i].x) && ((tank.x - (windowWidth / 2)) < asteroids[i].x)) {
                 if (((tank.y + (windowHeight / 2)) > asteroids[i].y) && ((tank.y - (windowHeight / 2)) < asteroids[i].y)) {
-                    this.renderObj(3, asteroids[i].x, asteroids[i].y, asteroids[i].hitbox);
+                    console.log(asteroids[i].type);
+                    if (asteroids[i].type == 3) {
+                        this.renderObj(3, asteroids[i].x, asteroids[i].y, asteroids[i].hitbox);
+                    } else {
+                        this.renderObj(4, asteroids[i].x, asteroids[i].y, asteroids[i].hitbox);
+                    }
                     terrains.push(asteroids[i]);
                 }
             }

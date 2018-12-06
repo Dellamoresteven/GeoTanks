@@ -257,6 +257,11 @@ io.on('connect', (socket) => {
     socket.on('destroyAsteroid', (data) => {
         io.sockets.emit("destroyAsteroid", data);
     })
+
+    socket.on("spawnBarrier", (data) => {
+        io.sockets.emit("spawnAsteroid", data);
+        drop.push(data);
+    })
 })
 
 // app.get('/gamer', function(req, res) {
@@ -292,9 +297,10 @@ function newAsteroid() {
     // console.log(numPlayers);
     if (numPlayers > 0) {
         const newAst = {
+            type: 3,
             hitbox: 50,
             x: Math.floor(Math.random() * Math.floor(1000)),
-            y: Math.floor(Math.random() * Math.floor(1000)),
+            y: Math.floor(Math.random() * Math.floor(1000))
         }
         drop.push(newAst);
         io.sockets.emit("spawnAsteroid", newAst);

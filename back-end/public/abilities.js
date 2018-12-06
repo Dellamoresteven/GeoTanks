@@ -7,7 +7,7 @@ class ability {
 	setActive(tankType, active) {
 		console.log(tankType);
 		console.log(active);
-		if (tankType == "Bruser") {
+		if (tankType == "Bruiser") {
 			if (active == 0) {
 				return 0;
 			} else if (active == 1) {
@@ -27,7 +27,7 @@ class ability {
 	}
 
 	setPassive(tankType) {
-		if (tankType == "Bruser") {
+		if (tankType == "Bruiser") {
 			return 0;
 		} else if (tankType == "Scout") {
 			return 1
@@ -59,7 +59,16 @@ class ability {
 				}
 				break;
 			case 1:
-				
+				let H = sqrt(pow(mouseY - windowHeight / 2, 2) + pow(mouseX - windowWidth / 2, 2)); //PROBLEM HERE!!
+       			let intervalX = (mouseX - windowWidth / 2) / H; //PROBLERM HERE!!!!
+        		let intervalY = (mouseY - windowHeight / 2) / H; //PROBLEMM HERE!!!!
+				const barrier = {
+		            type: 4,
+		            hitbox: 75,
+		            x: tank.x + intervalX*100,
+		            y: tank.y + intervalY*100
+		        }
+		        socket.emit("spawnBarrier", barrier);
 			case 2:
 			case 3:
 		}

@@ -144,7 +144,7 @@ function init(data) {
     console.log(data);
     for (var i = 0; i < data.drop.length; i++) {
         console.log("X");
-        asteroids.push(new terrain(3, data.drop[i].x, data.drop[i].y, data.drop[i].hitbox));
+        asteroids.push(new terrain(data.drop[i].type, data.drop[i].x, data.drop[i].y, data.drop[i].hitbox));
     }
     socketID = data.socketID;
 }
@@ -205,7 +205,8 @@ function updateCanvas() {
 
 function spawnAsteroid(data) {
     // let newDrop = new Drop(data.x, data.y);
-    asteroids.push(new terrain(3, data.x, data.y, data.hitbox));
+    console.log(data);
+    asteroids.push(new terrain(data.type, data.x, data.y, data.hitbox));
 }
 
 function destroyAsteroid(data) {
@@ -315,7 +316,7 @@ function checkBulletCollision() {
             for (var j = 0; j < terrains.length; j++) {
                 currDist = dist(tank.bullets[i].x, tank.bullets[i].y, terrains[j].x, terrains[j].y);
                 if (currDist < tank.bullets[i].bulletHitBox) {
-                    if (terrains[j].type == 3) {
+                    if (terrains[j].type == 3 || terrains[j].type == 4) {
                         let a = 0;
                         for (a = 0; a < asteroids.length; a++) {
                             if (JSON.stringify(terrains[j]) === JSON.stringify(asteroids[a])) {
