@@ -17,6 +17,7 @@ class Results extends Component {
   			names: playerNames,
   			highestScore: 0,
   			highestName: "me",
+  			history: 0,
   		}
 	}
 
@@ -67,7 +68,7 @@ class Results extends Component {
 			table = this.createTable(recievedResults);
 			console.log("recieving these results")
 			console.log(data);
-			this.setState({table, hasTable: true, highestScore: data["highest"], highestName: data["highestName"]})
+			this.setState({table, hasTable: true, highestScore: data["highest"], highestName: data["highestName"], history: data["history"]})
 		});
 	}
 
@@ -76,6 +77,7 @@ class Results extends Component {
 		if (this.state.hasTable === true) {
 			return (
 				<div>
+					<h1> SCORES </h1>
 					<table className="resultsTable">
 						<tbody>
 							{this.state.table}

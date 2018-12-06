@@ -27,6 +27,8 @@ var astroids = [];
 var hrefWithoutQueryString = "";
 var gui;
 var abilityCoolDown = 0;
+var baseSpeed = 6;
+var shopspeed = 0;
 
 function preload() {
     // frameRate(30);
@@ -81,6 +83,11 @@ function getPlayerInfo() {
 }
 
 function seeResults(allPlayerNames) {
+    const data = {
+        name: playerPreferences['playerName'],
+        score: tank.score
+    }
+    socket.emit("sendScores", data);
     console.log("ALL THE NAMES" + allPlayerNames);
     console.log("HTE ORIGIN PORT IS " + window.location.origin);
     window.location.href = window.location.origin + "/results" + allPlayerNames;
@@ -424,6 +431,7 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
+    this.weps.push(0);
     this.wepinUse = 0;
     this.utility = [];
     this.health = 100;
@@ -435,11 +443,12 @@ function GeoTank() {
     this.zoom = 1.7;
     this.direction = createVector(0, 0);
     this.rotate = 0;
-    this.points = 100;
+    this.points = 10000;
     this.score = 0;
     this.ability = new ability(playerPreferences["classType"], playerPreferences["option"]);
     console.log(this.ability);
     console.log(playerPreferences['option']);
+
     this.update = function() {
         if (this.health <= 0) {
             this.TankStatus = false;
@@ -512,6 +521,8 @@ function GeoTank() {
             TankAngle: this.TankAngle,
             TankStatus: this.TankStatus,
             socketID: socketID,
+            score: this.score,
+            name: playerPreferences['playerName'],
 
             drop: ch
         } // bullets: bulletData,
@@ -573,7 +584,7 @@ function GeoTank() {
         textSize(9);
         rectMode(CORNER);
         fill(150, 211, 211, 60);
-        rect(this.x - 150, this.y + (windowHeight / (2 * this.zoom)) - 80, 350 , 100, 10)
+        rect(this.x - 150, this.y + (windowHeight / (2 * this.zoom)) - 80, 350, 100, 10)
         for (var i = 0; i < 3; i++) {
             if (this.wepinUse == i) {
                 fill(211, 211, 211, 100);
@@ -589,10 +600,10 @@ function GeoTank() {
             spaceing += 90;
         }
         textSize(15);
-        text("Shop(i)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 45);
+        // text("Shop(i)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 45);
         text("Ability(e)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 25);
         fill("#FFD700");
-        text("Cash: " + this.points,this.x - ((windowWidth) / (2*this.zoom)) + 20, this.y - ((windowHeight) / (2*this.zoom)) + 20);
+        text("Cash: " + this.points, this.x - ((windowWidth) / (2 * this.zoom)) + 20, this.y - ((windowHeight) / (2 * this.zoom)) + 20);
         pop();
     }
 }
@@ -654,13 +665,13 @@ function keyPressed() {
         if (keyIsDown(68)) {
             tank.direction.x = 1;
             // checkTerrainCollision();
-            tank.x += 6;
+            tank.x += (baseSpeed + shopspeed);
             // checkTerrainCollision();
             tank.TankAngle = 80;
         } else if (keyIsDown(65)) {
             tank.direction.x = -1;
             tank.TankAngle = 80;
-            tank.x -= 6;
+            tank.x -= (baseSpeed + shopspeed);
             // checkTerrainCollision();
         } else {
             tank.direction.x = 0;
@@ -670,7 +681,7 @@ function keyPressed() {
             DisplayTracks(tank.x + 28, tank.y + 40, 0);
             DisplayTracks(tank.x - 28, tank.y + 40, 0);
             tank.TankAngle = 0;
-            tank.y -= 6;
+            tank.y -= (baseSpeed + shopspeed);
             // checkTerrainCollision();
         } else if (keyIsDown(83)) {
             tank.direction.y = -1;
@@ -679,12 +690,12 @@ function keyPressed() {
             DisplayTracks(tank.x + 28, tank.y - 40, PI);
             DisplayTracks(tank.x - 28, tank.y - 40, PI)
             tank.TankAngle = 0;
-            tank.y += 6;
+            tank.y += (baseSpeed + shopspeed);
             // checkTerrainCollision();
         } else {
             tank.direction.y = 0;
         }
-
+        //basic
         if (keyIsDown(49)) {
             if (tank.weps.indexOf(0) != -1) {
                 tank.wepinUse = 0;
@@ -692,11 +703,17 @@ function keyPressed() {
                 mouseDownID = -1;
             }
         }
+        //lazer
         if (keyIsDown(50)) {
             if (tank.weps.indexOf(1) != -1) {
                 tank.wepinUse = 1;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
+            } else {
+                if (tank.points >= 50) {
+                    tank.weps.push(1);
+                    tank.points -= 50;
+                }
             }
         }
 
@@ -705,6 +722,42 @@ function keyPressed() {
                 tank.wepinUse = 2;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
+            } else {
+                if (tank.points >= 100) {
+                    tank.weps.push(2);
+                    tank.points -= 100;
+                }
+            }
+        }
+        if (keyIsDown(52)) {
+            if (tank.weps.indexOf(3) != -1) {
+                tank.wepinUse = 3;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            } else {
+                if (tank.points >= 500) {
+                    tank.weps.push(3);
+                    tank.points -= 500;
+                }
+            }
+        }
+        if (keyIsDown(53)) {
+            if (tank.weps.indexOf(4) != -1) {
+                tank.wepinUse = 4;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            } else {
+                if (tank.points >= 1000) {
+                    tank.weps.push(4);
+                    tank.points -= 1000;
+                }
+            }
+        }
+        
+        if (keyIsDown(71)) {
+            if(tank.points >= 30){
+                shopspeed += .5;
+                tank.points -= 30;
             }
         }
 
@@ -747,7 +800,7 @@ function keyPressed() {
             tank.health -= 10;
         } //http://keycode.info
         if (keyIsDown(73)) {
-            displayShop();
+            // displayShop();
         }
         if (keyIsDown(69)) {
             console.log("e");
@@ -761,7 +814,6 @@ function keyPressed() {
         camera.position.x = tank.x;
         camera.position.y = tank.y;
     } else {
-
         if (keyIsDown(68)) {
             tank.x += 10;
             tank.TankAngle = 80;
@@ -778,12 +830,11 @@ function keyPressed() {
         camera.position.x = tank.x;
         camera.position.y = tank.y;
     }
-
 }
 
 function scoreCounter() {
     if (tank.TankStatus) {
-        tank.score += 20;
+        tank.score += 8;
     }
 }
 function abilityCD(){

@@ -37,7 +37,7 @@ class Preferences extends Component {
 
 	getOptionNames() {
 		switch(this.state.classType) {
-			case 'Bruser': return ['Shoot like fireworks', 'Place a shield in front of you']; 
+			case 'Bruiser': return ['Shoot like fireworks', 'Place a shield in front of you']; 
 			case 'JankTank': return ['Random teleport and takes the damage at that location', 'Place down a turret to fight with you'];
 			case 'Scout': return ['300% speed boost', 'Stun gernade'];
 			case 'Sniper': return ['Railgun', 'Camo UP! (if touching tree turn invis)'];
@@ -73,9 +73,9 @@ class Preferences extends Component {
 	}
 
 	getClassInfo(typeName) {
-		if (typeName == 'Bruser') {
+		if (typeName == 'Bruiser') {
 			return (
-				<div className='card' onClick={() => this.setClassInfo('Bruser')}>
+				<div className='card' onClick={() => this.setClassInfo('Bruiser')}>
 					<h1 className = 'h1Mod'> Bruiser </h1>
 					<h3> Secondary shield bar that regens overtime but has a low shield cap </h3>
 					<h3> Options: </h3>
@@ -106,7 +106,7 @@ class Preferences extends Component {
 				<table>
 					<tbody>
 						<tr>
-							<td> {this.getClassInfo('Bruser')} </td>
+							<td> {this.getClassInfo('Bruiser')} </td>
 							<td> {this.getClassInfo('Scout')} </td>
 						</tr>
 					</tbody>
@@ -130,6 +130,7 @@ class Preferences extends Component {
 			return (
 				<div>
 					<h1> Hey {this.props.playerName} </h1>
+					<h2> Choose your ability </h2>
 					{this.getOptions()}
 				</div>
 			);
