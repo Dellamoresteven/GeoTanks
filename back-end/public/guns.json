@@ -15,48 +15,6 @@
 },
 {
     "_id": 1,
-    "name": "SMG",
-    "dmg": 10,
-    "speed": 20,
-    "distance": 600,
-    "cd": 1,
-    "auto": false,
-    "color": "#EF330B",
-    "bulletsize": 10,
-    "hitbox": 50,
-    "iconname": "SMGPNG",
-    "iconfilename": "LightMachineGun.png"
-},
-{
-    "_id": 2,
-    "name": "M16",
-    "dmg": 5,
-    "speed": 25,
-    "distance": 700,
-    "cd": 100,
-    "auto": true,
-    "color": "#C0C0C0",
-    "bulletsize": 10,
-    "hitbox": 50,
-    "iconname": "MsixPNG",
-    "iconfilename": "MachineGun_Basic.png"
-},
-{
-    "_id": 3,
-    "name": "heavySMG",
-    "dmg": 7,
-    "speed": 40,
-    "distance": 370,
-    "cd": 100,
-    "auto": true,
-    "color": "#0BDAEF",
-    "bulletsize": 15,
-    "hitbox": 50,
-    "iconname": "heavyMGPNG",
-    "iconfilename": "Heavy_MG.png"
-},
-{
-    "_id": 4,
     "name": "Rocket",
     "dmg": 40,
     "speed": 15,
@@ -70,7 +28,7 @@
     "iconfilename": "rocket.png"
 },
 {
-    "_id": 5,
+    "_id": 2,
     "name": "Sniper",
     "dmg": 70,
     "speed": 10000,

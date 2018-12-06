@@ -8,7 +8,7 @@ function displayShop() {
     fill(0, 200, 255, 70);
     for (var i = 0; i < 4; i++) {
         for (var j = 0; j < 2; j++) {
-            rect(tank.x - 115 + splacingX, tank.y - 120 -  splacingY, 100, 50, 10);
+            rect(tank.x - 115 + splacingX, tank.y - 120 - splacingY, 100, 50, 10);
             splacingX += 220;
         }
         splacingY -= 75;
@@ -18,8 +18,19 @@ function displayShop() {
     push();
     textSize(20);
     fill(211, 211, 211)
-    text("Rocket", tank.x - 155, tank.y - 115);
-    // fill("#FFD700");
-    // text("95", tank.x - 260, tank.y - 95)
+    text("Lazers", tank.x - 155, tank.y - 115);
     pop();
+    //Rockets
+    if (mouseX > 442 && mouseX < 604) {
+        if (mouseY > 142 && mouseY < 218) {
+            if(mouseIsPressed){
+                if(tank.weps.indexOf(1) == -1){
+                    if(tank.points >= 50){
+                        tank.weps.push(1);
+                        tank.points -= 50;
+                    }
+                }
+            }
+        }
+    }
 }
