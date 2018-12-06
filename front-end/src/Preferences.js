@@ -75,7 +75,7 @@ class Preferences extends Component {
 	getClassInfo(typeName) {
 		if (typeName == 'Bruser') {
 			return (
-				<div className='options' onClick={() => this.setClassInfo('Bruser')}>
+				<div className='card' onClick={() => this.setClassInfo('Bruser')}>
 					<h1 className = 'h1Mod'> Bruiser </h1>
 					<h3> Secondary shield bar that regens overtime but has a low shield cap </h3>
 					<h3> Options: </h3>
@@ -87,7 +87,7 @@ class Preferences extends Component {
 			);
 		} else if (typeName == 'Scout') {
 			return (
-				<div className='options' onClick={() => this.setClassInfo('Scout')}>
+				<div className='card' onClick={() => this.setClassInfo('Scout')}>
 					<h1 className = 'h1Mod'> Scout </h1>
 					<h3> 50% movment speed </h3>
 					<h3> Options: </h3>
