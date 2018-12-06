@@ -75,8 +75,8 @@ class Preferences extends Component {
 	getClassInfo(typeName) {
 		if (typeName == 'Bruser') {
 			return (
-				<div className='card' onClick={() => this.setClassInfo('Bruser')}>
-					<h1 className = 'h1Mod'> Bruser </h1>
+				<div className='options' onClick={() => this.setClassInfo('Bruser')}>
+					<h1 className = 'h1Mod'> Bruiser </h1>
 					<h3> Secondary shield bar that regens overtime but has a low shield cap </h3>
 					<h3> Options: </h3>
 					<ul> 
@@ -85,39 +85,15 @@ class Preferences extends Component {
 					</ul>
 				</div>
 			);
-		} else if (typeName == 'JankTank') {
-			return (
-				<div className='card' onClick={() => this.setClassInfo('JankTank')}>
-					<h1 className = 'h1Mod'> JankTank </h1>
-					<h3> Take dmg, and do more dmg based on missing health </h3>
-					<h3> Options: </h3> 
-					<ul>
-						<li> Random teleport and takes the damage at that location </li>
-						<li> Place down a turret to fight with you </li>
-					</ul>
-				</div>
-			);
 		} else if (typeName == 'Scout') {
 			return (
-				<div className='card' onClick={() => this.setClassInfo('Scout')}>
+				<div className='options' onClick={() => this.setClassInfo('Scout')}>
 					<h1 className = 'h1Mod'> Scout </h1>
 					<h3> 50% movment speed </h3>
 					<h3> Options: </h3>
 					<ul>
 						<li> 300% speed boost </li>
 						<li> Stun gernade </li>
-					</ul>
-				</div>
-			);
-		} else if (typeName == 'Sniper') {
-			return (
-				<div className='card' onClick={() => this.setClassInfo('Sniper')}>
-					<h1 className = 'h1Mod'> Sniper </h1>
-					<h3> Larger zoom </h3>
-					<h3> Options: </h3>
-					<ul>
-						<li> Railgun </li>
-						<li> Camo UP! (if touching tree turn invis) </li>
 					</ul>
 				</div>
 			);
@@ -131,9 +107,7 @@ class Preferences extends Component {
 					<tbody>
 						<tr>
 							<td> {this.getClassInfo('Bruser')} </td>
-							<td> {this.getClassInfo('JankTank')} </td>
 							<td> {this.getClassInfo('Scout')} </td>
-							<td> {this.getClassInfo('Sniper')} </td>
 						</tr>
 					</tbody>
 				</table>
