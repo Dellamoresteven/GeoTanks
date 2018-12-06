@@ -15,7 +15,7 @@ class terrain {
     takeDamage(type, damage, index) {
     	this.health -= damage;
     	if (type == 3 && this.health <= 0) {
-            tank.points += 10;
+            tank.points += 30;
     		socket.emit("destroyAsteroid",index);
     	} else if (type == 4 && this.health <= 0) {
             socket.emit("destroyAsteroid",index);
