@@ -105,11 +105,6 @@ class Results extends Component {
 			return (
 				<div>
 					<h1> SCORES </h1>
-					<table className="resultsTable">
-						<tbody>
-							{this.state.table}
-						</tbody>
-					</table>
 					<h2> All time highest score is : {this.state.highestScore} by {this.state.highestName}</h2> 
 					<h2> See how you place with everyone else </h2>
 					<table className="resultsTable">
