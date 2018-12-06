@@ -45,7 +45,7 @@ const createNewPlayer = (playername, classtype, optionchosen) => {
     };
 
     if (myDBO) {
-        myDBO.collection("players").updateOne(playerObj, { $set: playerInfo }, { upsert: true }).catch(() => {
+        myDBO.collection("players1").updateOne(playerObj, { $set: playerInfo }, { upsert: true }).catch(() => {
             // catch the error
             console.log(err);
         }).then(() => {
@@ -71,7 +71,7 @@ const updateScores = (playername, playerScore) => {
     }
 
     if (myDBO) {
-        myDBO.collection("players").updateOne(playerObj, { "$set": playerInfo }, { upsert: true }).catch(() => {
+        myDBO.collection("players1").updateOne(playerObj, { "$set": playerInfo }, { upsert: true }).catch(() => {
             // catch the error
             console.log(err);
         }).then(() => {
@@ -82,7 +82,7 @@ const updateScores = (playername, playerScore) => {
 
 const getPlayerResults = () => {
     console.log("IN GET RESULTS");
-    tempAllPlayerInfo.sort((a,b) => a.score - b.score);
+    tempAllPlayerInfo.sort((a,b) => b.score - a.score);
     console.log(tempAllPlayerInfo);
     return tempAllPlayerInfo;
 }
@@ -160,16 +160,20 @@ io.on('connect', (socket) => {
         console.log("GETTING THE RESULTS");
         let results = getPlayerResults();
         let high;
-        myDBO.collection("players").find().sort({ score: -1 }).toArray(function(err, result) {
+        myDBO.collection("players1").find().sort({ score: -1 }).toArray(function(err, result) {
             if (err) throw err;
             console.log("in here");
             console.log(result);
             console.log(result[0]["score"]);
             let highestScore = result[0]["score"];
             let highestName = result[0]["playerName"];
-            console.log(results);
             console.log(highestScore);
-            socket.emit('results', { "scores": results, "highest": highestScore, "highestName": highestName });
+            // results has everything so need to only get the relevant results
+            for (let i = 0; i < result.length; i++) {
+                delete result[i]._id;
+                delete result[i].option;
+            }
+            socket.emit('results', { "scores": results, "highest": highestScore, "highestName": highestName, "history": result });
         });
     });
 
