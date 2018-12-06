@@ -76,6 +76,7 @@ class Results extends Component {
 		if (this.state.hasTable === true) {
 			return (
 				<div>
+					<h1> SCORES </h1>
 					<table className="resultsTable">
 						<tbody>
 							{this.state.table}
