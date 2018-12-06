@@ -426,8 +426,8 @@ function draw() {
  */
 function GeoTank() {
     /* Position */
-    this.x = windowWidth / 2;
-    this.y = windowHeight / 2;
+    this.x = random(5000);
+    this.y = random(5000);
 
     this.tankLength = int(BodyOfTank.width / 10);
 
