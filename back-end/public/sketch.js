@@ -26,6 +26,9 @@ var playerPreferences = {};
 var astroids = [];
 var hrefWithoutQueryString = "";
 var gui;
+var abilityCoolDown = 0;
+var baseSpeed = 6;
+var shopspeed = 0;
 
 function preload() {
     // frameRate(30);
@@ -428,6 +431,7 @@ function GeoTank() {
     /* this can hold the x,y pos, and the TYPE of projectile that is being shot */
     this.bullets = [];
     this.weps = [];
+    this.weps.push(0);
     this.wepinUse = 0;
     this.utility = [];
     this.health = 100;
@@ -439,8 +443,12 @@ function GeoTank() {
     this.zoom = 1.7;
     this.direction = createVector(0, 0);
     this.rotate = 0;
-    this.points = 100;
+    this.points = 10000;
     this.score = 0;
+    this.ability = new ability(playerPreferences["classType"], playerPreferences["option"]);
+    console.log(this.ability);
+    console.log(playerPreferences['option']);
+
     this.update = function() {
         if (this.health <= 0) {
             this.TankStatus = false;
@@ -592,7 +600,7 @@ function GeoTank() {
             spaceing += 90;
         }
         textSize(15);
-        text("Shop(i)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 45);
+        // text("Shop(i)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 45);
         text("Ability(e)", this.x + 120, this.y + (windowHeight / (2 * this.zoom)) - 25);
         fill("#FFD700");
         text("Cash: " + this.points, this.x - ((windowWidth) / (2 * this.zoom)) + 20, this.y - ((windowHeight) / (2 * this.zoom)) + 20);
@@ -657,13 +665,13 @@ function keyPressed() {
         if (keyIsDown(68)) {
             tank.direction.x = 1;
             // checkTerrainCollision();
-            tank.x += 6;
+            tank.x += (baseSpeed + shopspeed);
             // checkTerrainCollision();
             tank.TankAngle = 80;
         } else if (keyIsDown(65)) {
             tank.direction.x = -1;
             tank.TankAngle = 80;
-            tank.x -= 6;
+            tank.x -= (baseSpeed + shopspeed);
             // checkTerrainCollision();
         } else {
             tank.direction.x = 0;
@@ -673,7 +681,7 @@ function keyPressed() {
             DisplayTracks(tank.x + 28, tank.y + 40, 0);
             DisplayTracks(tank.x - 28, tank.y + 40, 0);
             tank.TankAngle = 0;
-            tank.y -= 6;
+            tank.y -= (baseSpeed + shopspeed);
             // checkTerrainCollision();
         } else if (keyIsDown(83)) {
             tank.direction.y = -1;
@@ -682,12 +690,12 @@ function keyPressed() {
             DisplayTracks(tank.x + 28, tank.y - 40, PI);
             DisplayTracks(tank.x - 28, tank.y - 40, PI)
             tank.TankAngle = 0;
-            tank.y += 6;
+            tank.y += (baseSpeed + shopspeed);
             // checkTerrainCollision();
         } else {
             tank.direction.y = 0;
         }
-
+        //basic
         if (keyIsDown(49)) {
             if (tank.weps.indexOf(0) != -1) {
                 tank.wepinUse = 0;
@@ -695,11 +703,17 @@ function keyPressed() {
                 mouseDownID = -1;
             }
         }
+        //lazer
         if (keyIsDown(50)) {
             if (tank.weps.indexOf(1) != -1) {
                 tank.wepinUse = 1;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
+            } else {
+                if (tank.points >= 50) {
+                    tank.weps.push(1);
+                    tank.points -= 50;
+                }
             }
         }
 
@@ -708,6 +722,42 @@ function keyPressed() {
                 tank.wepinUse = 2;
                 clearInterval(mouseDownID);
                 mouseDownID = -1;
+            } else {
+                if (tank.points >= 100) {
+                    tank.weps.push(2);
+                    tank.points -= 100;
+                }
+            }
+        }
+        if (keyIsDown(52)) {
+            if (tank.weps.indexOf(3) != -1) {
+                tank.wepinUse = 3;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            } else {
+                if (tank.points >= 500) {
+                    tank.weps.push(3);
+                    tank.points -= 500;
+                }
+            }
+        }
+        if (keyIsDown(53)) {
+            if (tank.weps.indexOf(4) != -1) {
+                tank.wepinUse = 4;
+                clearInterval(mouseDownID);
+                mouseDownID = -1;
+            } else {
+                if (tank.points >= 1000) {
+                    tank.weps.push(4);
+                    tank.points -= 1000;
+                }
+            }
+        }
+        
+        if (keyIsDown(71)) {
+            if(tank.points >= 30){
+                shopspeed += .5;
+                tank.points -= 30;
             }
         }
 
@@ -750,12 +800,20 @@ function keyPressed() {
             tank.health -= 10;
         } //http://keycode.info
         if (keyIsDown(73)) {
-            displayShop();
+            // displayShop();
+        }
+        if (keyIsDown(69)) {
+            console.log("e");
+            if(abilityCoolDown == 0){
+                tank.ability.useActive();
+                abilityCoolDown = setInterval(abilityCD, 5000);
+            }
+            
+            
         }
         camera.position.x = tank.x;
         camera.position.y = tank.y;
     } else {
-
         if (keyIsDown(68)) {
             tank.x += 10;
             tank.TankAngle = 80;
@@ -772,13 +830,16 @@ function keyPressed() {
         camera.position.x = tank.x;
         camera.position.y = tank.y;
     }
-
 }
 
 function scoreCounter() {
     if (tank.TankStatus) {
         tank.score += 8;
     }
+}
+function abilityCD(){
+    clearInterval(abilityCoolDown);
+    abilityCoolDown = 0;
 }
 
 
