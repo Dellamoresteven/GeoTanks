@@ -62,7 +62,7 @@
 {
     "_id": 4,
     "name": "shotgun",
-    "dmg": 4,
+    "dmg": 8,
     "speed": 20,
     "distance": 500,
     "cd": 80,
