@@ -144,9 +144,7 @@ function setup() {
  * init all the varibles we need to init 
  */
 function init(data) {
-    console.log(data);
     for (var i = 0; i < data.drop.length; i++) {
-        console.log("X");
         asteroids.push(new terrain(data.drop[i].type, data.drop[i].x, data.drop[i].y, data.drop[i].hitbox));
     }
     socketID = data.socketID;
@@ -197,8 +195,9 @@ function updateCanvas() {
             // image(HeadOfTank, 0, 0, HeadOfTank.width / 10, HeadOfTank.height / 10);
             pop();
             // console.log(player[i].bulletss.length);
+            console.log(player[i].bulletss.length);
             for (var j = 0; j < player[i].bulletss.length; j++) {
-                player[i].bulletss[j].nextPoint(i, player[i].bulletss, 1);
+                player[i].bulletss[j].nextPoint(j, player[i].bulletss, 1);
             }
             // console.log(player[i].bulletss.length);
         }
@@ -208,7 +207,6 @@ function updateCanvas() {
 
 function spawnAsteroid(data) {
     // let newDrop = new Drop(data.x, data.y);
-    console.log(data);
     asteroids.push(new terrain(data.type, data.x, data.y, data.hitbox));
 }
 
@@ -259,7 +257,7 @@ function checkPlayerCollision() {
 }
 
 function checkBulletCollision() {
-    var currDist = 0;
+    let currDist = 0;
     for (var i = 0; i < player.length; i++) {
         if (player[i].TankStatus) {
 
@@ -343,9 +341,11 @@ function checkCollisions() {
 }
 
 function bulletShot(data) {
-
+    // console.log("1: " + data.socketID)
     // console.log(data);
+
     for (var i = 0; i < player.length; i++) {
+        // console.log("2: "+ player[i].socketID);
         if (player[i].socketID == data.socketID) {
             player[i].bulletss.push(new bullet(data.type, data.x, data.y, data.intervalX, data.intervalY, data.angle));
             // console.log(player[i].bulletss)
@@ -426,8 +426,10 @@ function draw() {
  */
 function GeoTank() {
     /* Position */
-    this.x = random(5000);
-    this.y = random(5000);
+    // this.x = random(5000);
+    // this.y = random(5000);
+    this.x = 0; 
+    this.y = 0;
 
     this.tankLength = int(BodyOfTank.width / 10);
 
@@ -450,8 +452,6 @@ function GeoTank() {
     this.points = 0;
     this.score = 0;
     this.ability = new ability(playerPreferences["classType"], playerPreferences["option"]);
-    console.log(this.ability);
-    console.log(playerPreferences['option']);
 
     this.update = function() {
         if (this.health <= 0) {

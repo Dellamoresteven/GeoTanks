@@ -29,7 +29,7 @@ class bullet {
         this.y = y;
         this.intervalX = intervalX;
         this.intervalY = intervalY;
-        this.currDist = 0;
+        this.currDistXXXX = 0;
         // this.xx = 0;
         // this.yy = 0;
         this.angle = angle;
@@ -56,8 +56,11 @@ class bullet {
         angleMode(RADIANS);
 
         push();
-        if (this.currDist > this.travelDist) {
+        if (this.currDistXXXX > this.travelDist) {
+            console.log(this.currDistXXXX +"?" + this.travelDist + ":" + i)
+
             arr.splice(i, 1);
+            return;
         }
         //translate(this.x, this.y);
         fill(this.bulletColor);
@@ -100,8 +103,8 @@ class bullet {
             this.y += this.intervalY * this.speed;
         }
         // console.log("S");
-        this.currDist += 10;
         pop();
+        this.currDistXXXX += 10;
     }
 
     dealDamage(p, b) {
@@ -123,6 +126,7 @@ class bullet {
             } else {
                 tank.armor -= this.dmg
             }
+            console.log("X");
             player[p].bulletss.splice(b, 1);
         }
     }

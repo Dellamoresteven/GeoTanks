@@ -223,6 +223,7 @@ io.on('connect', (socket) => {
     })
 
     socket.on('bulletShot', (data) => {
+        // console.log("Bullet shot by: " + socket.id);
         socket.broadcast.emit('bulletShot', data); //sends to everyone not including self
     })
 
