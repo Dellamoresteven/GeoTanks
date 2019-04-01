@@ -1,6 +1,6 @@
 # AstroLite
 * Richard Hansen(hansen94@purdue.edu)
-* Indhu Meena Ramanathan(iramanat@purdue.edu)
+* Indhu Meena Ramanathan
 * Steven Dellamore(sdellamo@purdue.edu)
 
 ---
